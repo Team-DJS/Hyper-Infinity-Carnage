@@ -196,34 +196,4 @@ int main(int argc, char* argv[])
 	ProgramShutdown();
 
 	return EXIT_SUCCESS;
-
-	//I3DEngine* engine = New3DEngine( kTLX );
-	//engine->StartWindowed();
-
-	//IMesh* buildingMesh = engine->LoadMesh("Cube.x");
-	//IModel* building = buildingMesh->CreateModel(0.0f, 0.0f, 0.0f);
-
-	//building->SetSkin("brown.PNG");
-	//building->ScaleX(1.0f);
-	//building->ScaleY(2.0f);
-	//building->ScaleZ(1.0f);
-
-	//ICamera* camera = engine->CreateCamera(kFPS);
-	//camera->SetMovementSpeed(2.0f);
-	//camera->SetRotationSpeed(2.0f);
-
-
-	//// The main game loop, repeat until engine is stopped
-	//while (engine->IsRunning())
-	//{
-	//	engine->DrawScene();
-
-	//	if (engine->KeyHit(Key_Escape))
-	//	{
-	//		engine->Stop();
-	//	}
-	//}
-	//
-	//// Delete the 3D engine now we are finished with it
-	//engine->Delete();
 }
