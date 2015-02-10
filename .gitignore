@@ -181,3 +181,11 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+# added ignore files
+*.psh
+*.vsh
+*.exe
+*.vcxproj
+*.sln
+*.filters
