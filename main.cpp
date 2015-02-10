@@ -1,5 +1,5 @@
-#include <TL-Engine.h>
-using namespace tle;
+#include "Entity\Player.hpp"
+using namespace HIC;
 
 // Global Engine
 I3DEngine* gEngine = nullptr;
@@ -7,9 +7,8 @@ I3DEngine* gEngine = nullptr;
 // Global Camera
 ICamera* gCamera = nullptr;
 
-// TEMPORARY MESH & MODEL
-IMesh* gCubeMesh = nullptr;
-IModel* gCube = nullptr;
+// TEMPORARY PLAYER
+Entity* gPlayer = nullptr;
 
 
 // One off setup for the entire program.
@@ -49,9 +48,8 @@ bool ProgramShutdown()
 // Returns true on success, false on failure
 bool FrontEndSetup()
 {
-	gCubeMesh = gEngine->LoadMesh("Cube.x");
-
-	gCube = gCubeMesh->CreateModel();
+	Player::MESH = gEngine->LoadMesh("Player.x");
+	gPlayer = new Player();
 
 	return true;
 }
@@ -60,6 +58,8 @@ bool FrontEndSetup()
 // Returns true on success, false on failure
 bool FrontEndUpdate(float frameTime)
 {
+	gPlayer->OnUpdate(gEngine, frameTime);
+
 	return true;
 }
 
@@ -67,11 +67,13 @@ bool FrontEndUpdate(float frameTime)
 // Returns true on success, false on failure
 bool FrontEndShutdown()
 {
-	gCubeMesh->RemoveModel(gCube);
-	gCube = nullptr;
+	// Delete the player
+	delete(gPlayer);
+	gPlayer = nullptr;
 
-	gEngine->RemoveMesh(gCubeMesh);
-	gCubeMesh = nullptr;
+	// Delete the player mesh
+	gEngine->RemoveMesh(Player::MESH);
+	Player::MESH = nullptr;
 
 	return true;
 }
