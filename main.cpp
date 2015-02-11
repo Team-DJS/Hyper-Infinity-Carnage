@@ -10,6 +10,7 @@ ICamera* gCamera = nullptr;
 // TEMPORARY PLAYER
 Entity* gPlayer = nullptr;
 
+int foobarmgoogley = 6;
 
 // One off setup for the entire program.
 // Returns true on success, false on failure
