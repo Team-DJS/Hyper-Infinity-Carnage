@@ -12,7 +12,6 @@ Arena::~Arena()
 {
 }
 
-
 // Updates all the entities inside the arena
 void Arena::Update(float frameTime)
 {
