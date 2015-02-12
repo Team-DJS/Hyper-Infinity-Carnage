@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity\Player.hpp"
+#include "Entity\Enemy.hpp"
 
 namespace HIC
 {
@@ -26,6 +27,7 @@ namespace HIC
 		void Clear();
 	private:
 		Player* mPlayer;
+		std::vector<Enemy*> mEnemies;
 		uint32_t mCurrentStage;
 	};
 }

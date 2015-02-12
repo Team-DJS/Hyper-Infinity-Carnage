@@ -17,6 +17,12 @@ void Arena::Update(float frameTime)
 {
 	// Update the player
 	mPlayer->Update(frameTime);
+
+	// Update all the enemies
+	for (auto& enemy : mEnemies)
+	{
+		enemy->Update(frameTime);
+	}
 }
 
 // Proceeds to the next stage
