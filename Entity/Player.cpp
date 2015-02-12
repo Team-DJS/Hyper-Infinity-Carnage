@@ -2,12 +2,14 @@
 using namespace HIC;
 
 IMesh* Player::MESH = nullptr;
-uint32_t Player::DEFAULT_LIVES = 5U;
+const uint32_t Player::DEFAULT_LIVES = 5U;
+const uint32_t Player::DEFAULT_BOMBS = 3U;
 
 // Default constructor for Player
 Player::Player() : 
 	Entity(MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)),
-	mLives(DEFAULT_LIVES)
+	mLives(DEFAULT_LIVES),
+	mBombs(DEFAULT_BOMBS)
 {
 }
 
@@ -17,19 +19,35 @@ Player::~Player()
 }
 
 // Returns the number of remaining lives the player has
-uint32_t Player::GetRemainingLives() const
+uint32_t Player::GetLives() const
 {
 	return mLives;
 }
 
-// Called to update the entity
-void Player::OnUpdate(I3DEngine* engine, float frameTime)
+// Returns the number of reminaing bombs the player has
+uint32_t Player::GetBombs() const
 {
-	IModel* model = GetModel();
+	return mBombs;
+}
 
-	// Check for player movement
-	if (engine->KeyHeld(Key_W))
-	{
-		model->MoveZ(10.0f * frameTime);
-	}
+// Gives an extra life to the player
+void Player::GiveLife()
+{
+	mLives++;
+}
+
+// Gives an extra bomb to the player
+void Player::GiveBomb()
+{
+	mBombs++;
+}
+
+// Respawns the player inside the arena
+void Player::Respawn()
+{
+}
+
+// Called to update the entity
+void Player::Update(float frameTime)
+{
 }

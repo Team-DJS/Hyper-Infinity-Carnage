@@ -1,4 +1,4 @@
-#include "Entity\Player.hpp"
+#include "Arena.hpp"
 using namespace HIC;
 
 // Global Engine
@@ -7,8 +7,8 @@ I3DEngine* gEngine = nullptr;
 // Global Camera
 ICamera* gCamera = nullptr;
 
-// TEMPORARY PLAYER
-Entity* gPlayer = nullptr;
+// The game arena
+Arena* gArena = nullptr;
 
 
 // One off setup for the entire program.
@@ -48,9 +48,6 @@ bool ProgramShutdown()
 // Returns true on success, false on failure
 bool FrontEndSetup()
 {
-	Player::MESH = gEngine->LoadMesh("Player.x");
-	gPlayer = new Player();
-
 	return true;
 }
 
@@ -58,8 +55,6 @@ bool FrontEndSetup()
 // Returns true on success, false on failure
 bool FrontEndUpdate(float frameTime)
 {
-	gPlayer->OnUpdate(gEngine, frameTime);
-
 	return true;
 }
 
@@ -67,13 +62,7 @@ bool FrontEndUpdate(float frameTime)
 // Returns true on success, false on failure
 bool FrontEndShutdown()
 {
-	// Delete the player
-	delete(gPlayer);
-	gPlayer = nullptr;
-
-	// Delete the player mesh
-	gEngine->RemoveMesh(Player::MESH);
-	Player::MESH = nullptr;
+	
 
 	return true;
 }
@@ -82,6 +71,12 @@ bool FrontEndShutdown()
 // Returns true on success, false on failure
 bool GameSetup()
 {
+	// Load the player mesh
+	Player::MESH = gEngine->LoadMesh("Player.x");
+
+	// Load the arena
+	gArena = new Arena();
+
 	return true;
 }
 
@@ -89,13 +84,21 @@ bool GameSetup()
 // Returns true on success, false on failure
 void GameUpdate(float frameTime)
 {
-
+	gArena->Update(frameTime);
 }
 
 // Updates the main game
 // Returns true on success, false on failure
 bool GameShutdown()
 {
+	// Delete the arena
+	delete(gArena);
+	gArena = nullptr;
+
+	// Delete the player mesh
+	gEngine->RemoveMesh(Player::MESH);
+	Player::MESH = nullptr;
+
 	return true;
 }
 
