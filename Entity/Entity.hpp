@@ -26,8 +26,11 @@ namespace HIC
 		// Points the model at a given position
 		void LookAt(const XMFLOAT3& position);
 
-		// Moves the entity in the world axis
-		void Move(float dx, float dy, float dz);
+		// Moves the entity in the world x-axis
+		void MoveX(float dx);
+
+		// Moves the entity in the world z-axis
+		void MoveZ(float dz);
 	public:
 		// Called to update the entity
 		virtual void Update(float frameTime) = 0;

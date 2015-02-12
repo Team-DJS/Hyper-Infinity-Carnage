@@ -10,6 +10,18 @@ ICamera* gCamera = nullptr;
 // The game arena
 Arena* gArena = nullptr;
 
+///////////////////////////
+// Front End Data
+
+IFont* gMainMenuFont = nullptr;
+
+ISprite* gContinueButtonSprite			= nullptr;
+ISprite* gNewGameButtonSprite			= nullptr;
+ISprite* gViewHiScoreButtonSprite		= nullptr;
+ISprite* gQuitGameButtonSprite			= nullptr;
+
+const float MENU_BUTTON_WIDTH = 256U;
+const float MENU_BUTTON_HEIGHT = 64U;
 
 // One off setup for the entire program.
 // Returns true on success, false on failure
@@ -18,12 +30,13 @@ bool ProgramSetup()
 	// Initialise the TL-Engine
 	gEngine = New3DEngine(kTLX);
 	gEngine->StartWindowed();
+	gEngine->SetWindowCaption("Hyper Infinity Carnage");
 
 	// Add default folder for meshes and other media
 	gEngine->AddMediaFolder(".\\Media");
 
-	// initialise the camera
-	gCamera = gEngine->CreateCamera(kFPS);
+	// Initialise the camera
+	gCamera = gEngine->CreateCamera(kManual);
 	gCamera->SetMovementSpeed(50.0f);
 	gCamera->SetRotationSpeed(1000.0f);
 
@@ -48,6 +61,16 @@ bool ProgramShutdown()
 // Returns true on success, false on failure
 bool FrontEndSetup()
 {
+	// Load the main menu font
+	gMainMenuFont = gEngine->LoadFont("Ubuntu Mono", 72);
+
+	// Load the menu button sprites
+	uint32_t halfScreenWidth = gEngine->GetWidth() / 2;
+
+	// TODO: Check if save file exists
+
+	gContinueButtonSprite = gEngine->CreateSprite("Continue_Button.png", halfScreenWidth - (MENU_BUTTON_WIDTH / 2), 250);
+
 	return true;
 }
 
@@ -55,6 +78,13 @@ bool FrontEndSetup()
 // Returns true on success, false on failure
 bool FrontEndUpdate(float frameTime)
 {
+	// Calculate the position to draw the title text
+	uint32_t screenWidth = gEngine->GetWidth();
+	uint32_t textWidth = gMainMenuFont->MeasureTextWidth("Hyper Infinity Carnage");
+
+	// Draw the title
+	gMainMenuFont->Draw("Hyper Infinity Carnage", (screenWidth / 2) - (textWidth / 2), 100, kRed);
+
 	return true;
 }
 
@@ -62,7 +92,13 @@ bool FrontEndUpdate(float frameTime)
 // Returns true on success, false on failure
 bool FrontEndShutdown()
 {
-	
+	// Cleanup the main menu font
+	gEngine->RemoveFont(gMainMenuFont);
+	gMainMenuFont = nullptr;
+
+	// Cleanup the menu button sprites
+	gEngine->RemoveSprite(gContinueButtonSprite);
+	gContinueButtonSprite = nullptr;
 
 	return true;
 }
@@ -75,7 +111,7 @@ bool GameSetup()
 	Player::MESH = gEngine->LoadMesh("Player.x");
 
 	// Load the arena
-	gArena = new Arena();
+	gArena = new Arena(gEngine);
 
 	return true;
 }

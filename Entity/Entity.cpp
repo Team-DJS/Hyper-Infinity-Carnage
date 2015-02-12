@@ -58,8 +58,14 @@ void Entity::LookAt(const XMFLOAT3& position)
 	mModel->LookAt(position.x, position.y, position.z);
 }
 
-// Moves the entity in the world axis
-void Entity::Move(float dx, float dy, float dz)
+// Moves the entity in the world x-axis
+void Entity::MoveX(float dx)
 {
-	mModel->Move(dx, dy, dz);
+	mModel->MoveX(dx);
+}
+
+// Moves the entity in the world z-axis
+void Entity::MoveZ(float dz)
+{
+	mModel->MoveZ(dz);
 }

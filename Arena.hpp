@@ -9,7 +9,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for Arena
-		Arena();
+		Arena(I3DEngine* engine);
 
 		// Destructor for Arena
 		~Arena();
@@ -26,6 +26,7 @@ namespace HIC
 		// Removes all entities from the arena
 		void Clear();
 	private:
+		I3DEngine* mEngine;
 		Player* mPlayer;
 		std::vector<Enemy*> mEnemies;
 		uint32_t mCurrentStage;

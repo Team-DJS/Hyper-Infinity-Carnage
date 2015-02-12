@@ -2,7 +2,8 @@
 using namespace HIC;
 
 // Default constructor for Arena
-Arena::Arena() :
+Arena::Arena(I3DEngine* engine) :
+	mEngine(engine),
 	mPlayer(new Player())
 {
 }
@@ -17,6 +18,25 @@ void Arena::Update(float frameTime)
 {
 	// Update the player
 	mPlayer->Update(frameTime);
+	
+	// Handle player input
+	if (mEngine->KeyHeld(Key_W))
+	{
+		mPlayer->MoveZ(50.0f * frameTime);
+	}
+	if (mEngine->KeyHeld(Key_A))
+	{
+		mPlayer->MoveX(-50.0f * frameTime);
+	}
+	if (mEngine->KeyHeld(Key_S))
+	{
+		mPlayer->MoveZ(-50.0f * frameTime);
+	}
+	if (mEngine->KeyHeld(Key_D))
+	{
+		mPlayer->MoveX(50.0f * frameTime);
+	}
+	
 
 	// Update all the enemies
 	for (auto& enemy : mEnemies)
