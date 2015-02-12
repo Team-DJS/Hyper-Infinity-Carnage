@@ -10,7 +10,6 @@ ICamera* gCamera = nullptr;
 // The game arena
 Arena* gArena = nullptr;
 
-
 // One off setup for the entire program.
 // Returns true on success, false on failure
 bool ProgramSetup()
