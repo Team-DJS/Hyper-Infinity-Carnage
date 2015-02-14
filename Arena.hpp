@@ -2,6 +2,7 @@
 
 #include "Entity\Player.hpp"
 #include "Entity\Enemy.hpp"
+#include "Scenery.hpp"
 
 namespace HIC
 {
@@ -29,6 +30,7 @@ namespace HIC
 		I3DEngine* mEngine;
 		Player* mPlayer;
 		std::vector<Enemy*> mEnemies;
+		std::vector<Scenery*> mSceneryObjects;
 		uint32_t mCurrentStage;
 	};
 }
