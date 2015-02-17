@@ -12,27 +12,24 @@ namespace HIC
 
 		// Destructor for Weapon
 		~Weapon();
-
 	public:
-		// Increases the damage of the weapon by the given amount
-		void IncreaseDamage(float);
-
 		// Increases the fire rate of the weapon by the given amount
-		void IncreaseFireRate(float);
+		void IncreaseFireRate(float rateOfFire);
+
+		// Increases the damage of the weapon by the given amount
+		void IncreaseDamage(float damage);
 
 		// Gives the weapon another barrel
 		void AddBarrel();
 
 		// Shoots a projectile in a direction
-		void Shoot(XMFLOAT3);
+		void Shoot(const XMFLOAT3& direction);
 
 		// Called to update the weapon
-		void Update();
-
+		void Update(float frameTime);
 	private:
-		uint32_t mDamage;
 		float mFireRate;
+		uint32_t mDamage;
 		uint32_t mNoBarrels;
-
 	};
 }

@@ -20,6 +20,9 @@ namespace HIC
 		// Returns the number of reminaing bombs the player has
 		uint32_t GetBombs() const;
 
+		// Returns the weapon which the player has
+		Weapon* GetWeapon();
+
 		// Gives an extra life to the player
 		void GiveLife();
 

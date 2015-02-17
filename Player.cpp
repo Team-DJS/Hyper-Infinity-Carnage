@@ -31,6 +31,12 @@ uint32_t Player::GetBombs() const
 	return mBombs;
 }
 
+// Returns the weapon which the player has
+Weapon* Player::GetWeapon()
+{
+	return mWeapon;
+}
+
 // Gives an extra life to the player
 void Player::GiveLife()
 {
@@ -51,4 +57,6 @@ void Player::Respawn()
 // Called to update the entity
 void Player::Update(float frameTime)
 {
+	// Update the weapon
+	mWeapon->Update(frameTime);
 }
