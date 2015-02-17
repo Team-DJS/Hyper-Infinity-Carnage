@@ -7,10 +7,10 @@ namespace HIC
 	class Scenery
 	{
 	public:
-		// default constructor for Scenery
+		// Default constructor for Scenery
 		Scenery(IMesh* mesh, const XMFLOAT3& position);
 
-		// destructor for Scenery
+		// Destructor for Scenery
 		~Scenery();
 
 	private:

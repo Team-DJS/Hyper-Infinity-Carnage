@@ -7,6 +7,7 @@ Scenery::Scenery(IMesh* mesh, const XMFLOAT3& position) :
 {
 }
 
+// Destructor for Scenery
 Scenery::~Scenery()
 {
 	mModel->GetMesh()->RemoveModel(mModel);
