@@ -64,7 +64,7 @@ void Player::Update(float frameTime)
 	// Update the weapon
 	mWeapon->Update(frameTime);
 
-	//****************************** MOVEMENT ******************************//
+	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 	XMFLOAT2 thrust = XMFLOAT2(0.0f, 0.0f);	//Create thrust vector and initialise it to zero
 	XMFLOAT3 facingVect = GetFacingVector();	//Create and obtain the facing vector of the ship
 	XMFLOAT3 rightVect = GetRightVector();
@@ -128,7 +128,7 @@ void Player::Update(float frameTime)
 	mMoveBackward = false;
 
 	//UpdateCollisionCentre();	//Set new collision centre - Collision Object
-	//****************************** MOVEMENT ******************************//
+	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 
 }
 
