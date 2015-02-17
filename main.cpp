@@ -37,8 +37,6 @@ bool ProgramSetup()
 
 	// Initialise the camera
 	gCamera = gEngine->CreateCamera(kManual);
-	gCamera->SetMovementSpeed(50.0f);
-	gCamera->SetRotationSpeed(1000.0f);
 
 	return true;
 }

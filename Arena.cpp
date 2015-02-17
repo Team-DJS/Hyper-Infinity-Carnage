@@ -1,5 +1,4 @@
 #include "Arena.hpp"
-#include <fstream>
 using namespace HIC;
 
 // Default constructor for Arena

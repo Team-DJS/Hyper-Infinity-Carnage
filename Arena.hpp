@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Entity\Player.hpp"
-#include "Entity\Enemy.hpp"
+#include "Player.hpp"
+#include "Enemy.hpp"
 #include "Scenery.hpp"
 
 namespace HIC
