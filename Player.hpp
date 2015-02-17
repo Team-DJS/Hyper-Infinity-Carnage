@@ -43,5 +43,24 @@ namespace HIC
 		uint32_t mLives;
 		uint32_t mBombs;
 		Weapon* mWeapon;
+	private:
+		//*Movement Variables*//
+		//Globals Required to allow movement to perform Correctly
+		XMFLOAT2 mVelocity;
+		bool mMoveForward;
+		bool mMoveBackward;
+		bool mMoveLeft;
+		bool mMoveRight;
+		float mBaseThrust;
+		float mDragCoefficient;
+		float mTurnIncrement;
+	public:
+		//*Movement Functions*//
+		//Set the movement flags for the object to react to in Update()
+		void SetMoveForward();
+		void SetMoveBackward();
+		void SetMoveLeft();
+		void SetMoveRight();
+
 	};
 }

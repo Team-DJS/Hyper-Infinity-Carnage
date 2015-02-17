@@ -69,3 +69,37 @@ void Entity::MoveZ(float dz)
 {
 	mModel->MoveZ(dz);
 }
+
+void Entity::RotateY(float degrees)
+{
+	mModel->RotateY(degrees);
+}
+
+IModel* Entity::GetModel()
+{
+	return mModel;
+}
+
+XMFLOAT3 Entity::GetFacingVector()
+{
+	float matrix[16];
+	GetModel()->GetMatrix(matrix);
+
+	XMFLOAT3 face;
+	face.x = matrix[8];
+	face.y = matrix[9];
+	face.z = matrix[10];
+	return face;
+}
+
+XMFLOAT3 Entity::GetRightVector()
+{
+	float matrix[16];
+	GetModel()->GetMatrix(matrix);
+
+	XMFLOAT3 right;
+	right.x = matrix[0];
+	right.y = matrix[1];
+	right.z = matrix[2];
+	return right;
+}

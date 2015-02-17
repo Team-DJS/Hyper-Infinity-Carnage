@@ -36,7 +36,7 @@ bool ProgramSetup()
 	gEngine->AddMediaFolder(".\\Media");
 
 	// Initialise the camera
-	gCamera = gEngine->CreateCamera(kManual);
+	gCamera = gEngine->CreateCamera(kFPS);
 
 	return true;
 }

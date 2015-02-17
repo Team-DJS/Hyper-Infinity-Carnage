@@ -31,6 +31,14 @@ namespace HIC
 
 		// Moves the entity in the world z-axis
 		void MoveZ(float dz);
+
+		// Rotates the entity in the world y-axis
+		void RotateY(float degrees);
+
+		IModel* GetModel();
+
+		XMFLOAT3 GetFacingVector();
+		XMFLOAT3 GetRightVector();
 	public:
 		// Called to update the entity
 		virtual void Update(float frameTime) = 0;
