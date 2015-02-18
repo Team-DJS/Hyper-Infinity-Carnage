@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.hpp"
+#include "Projectile.hpp"
 
 namespace HIC
 {
@@ -31,5 +32,6 @@ namespace HIC
 		float mFireRate;
 		uint32_t mDamage;
 		uint32_t mNoBarrels;
+		vector <Projectile*> mProjectiles;
 	};
 }

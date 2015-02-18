@@ -1,5 +1,7 @@
 #include "Timer.hpp"
 
+using namespace HIC;
+
 // Default constructor for Timer
 Timer::Timer(float endTime) :
 	mEndTime(endTime)

@@ -9,12 +9,14 @@ namespace HIC
 	{
 	public:
 		// Default constructor for ExtraLife
-		ExtraLife(IMesh* mesh, const XMFLOAT3& position, float lifeTime);
+		ExtraLife(const XMFLOAT3& position, float lifeTime);
 
 		// Destructor for ExtraLife
 		~ExtraLife();
 	public:
 		// Called when the pickup is collides with a player
 		void OnPickup(Player* collectingPlayer);
+
+		static IMesh* MESH;
 	};
 }
