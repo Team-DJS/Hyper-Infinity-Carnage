@@ -1,5 +1,7 @@
 #include "ParticleEmitter.hpp"
 
+using namespace HIC;
+
 // Default constructor for ParticleEmitter
 ParticleEmitter::ParticleEmitter()
 {
