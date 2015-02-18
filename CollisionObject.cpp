@@ -2,9 +2,13 @@
 using namespace HIC;
 
 // Default constructor for CollisionObject
-CollisionObject::CollisionObject() :
-	mPosition(0.0f, 0.0f)
+CollisionObject::CollisionObject(XMFLOAT2 centre, IMesh* markerMesh) :
+	mPosition(centre)
 {
+#ifdef _DEBUG
+	mHeight = 5.0f;
+	mMarkerMesh = markerMesh;
+#endif
 }
 
 // Destructor for CollisionObject

@@ -7,7 +7,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for CollisionCylinder
-		CollisionCylinder(XMFLOAT2 centre, float radius, IMesh* markerMesh, float markerHeight);
+		CollisionCylinder(XMFLOAT2 centre, float radius, IMesh* markerMesh = 0);
 
 		// Destructor for CollisionCylinder
 		~CollisionCylinder();
@@ -23,9 +23,7 @@ namespace HIC
 	private:
 		//Collision Markers - Used to see where the collision is
 		static const uint32_t kNoSphereMarkers = 10;
-		IModel* mMarkers[kNoSphereMarkers];	//Objects to show the boundaries of the collision area
-		bool markersExist;					//Says whether or not the collision markers exist
-		float height;						//The height at which the collision markers will be drawn
+		IModel* mMarkers[kNoSphereMarkers];			//Objects to show the boundaries of the collision area
 	public:
 		//Collision Markers - Used to see where the collision is
 		void ToggleMarkers();	//Toggles whether or not this markers' mesh

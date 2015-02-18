@@ -8,7 +8,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for CollisionObject
-		CollisionObject(XMFLOAT2 centre);
+		CollisionObject(XMFLOAT2 centre, IMesh* markerMesh = 0);
 
 		// Destructor for CollisionObject
 		virtual ~CollisionObject();
@@ -20,5 +20,15 @@ namespace HIC
 		void SetPosition(const XMFLOAT2& position);
 	private:
 		XMFLOAT2 mPosition;
+
+#ifdef _DEBUG
+		//Collision Markers - Used to see where the collision is
+	protected:
+		IMesh* mMarkerMesh;
+		bool mMarkersExist;							//Says whether or not the collision markers exist
+		float mHeight;								//The height at which the collision markers will be drawn
+	public:
+		virtual void ToggleMarkers() = 0;	//Toggles whether or not this markers' mesh
+#endif
 	};
 }
