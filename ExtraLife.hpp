@@ -8,10 +8,10 @@ namespace HIC
 	class ExtraLife : public Pickup
 	{
 	public:
-		// Default constructor for Entity
+		// Default constructor for ExtraLife
 		ExtraLife(IMesh* mesh, const XMFLOAT3& position, float lifeTime);
 
-		// Destructor for Entity
+		// Destructor for ExtraLife
 		virtual ~ExtraLife();
 	public:
 		// Called to update the pickup each frame

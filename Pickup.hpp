@@ -8,7 +8,7 @@ namespace HIC
 	class Pickup
 	{
 	public:
-		// Default constructor for Entity
+		// Default constructor for Pickup
 		Pickup(IMesh* mesh, const XMFLOAT3& position, float lifeTime);
 
 		// Destructor for Entity

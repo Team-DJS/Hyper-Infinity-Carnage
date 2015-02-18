@@ -8,10 +8,10 @@ namespace HIC
 	class WeaponUpgrade : public Pickup
 	{
 	public:
-		// Default constructor for Entity
+		// Default constructor for WeaponUpgrade
 		WeaponUpgrade(IMesh* mesh, const XMFLOAT3& position, float lifeTime, float fireRateUpAmount, float damageUpAmount);
 		
-		// Destructor for Entity
+		// Destructor for WeaponUpgrade
 		virtual ~WeaponUpgrade();
 	public:
 		// Called to update the pickup each frame

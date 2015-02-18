@@ -8,10 +8,10 @@ namespace HIC
 	class HealthPack : public Pickup
 	{
 	public:
-		// Default constructor for Entity
+		// Default constructor for HealthPack
 		HealthPack(IMesh* mesh, const XMFLOAT3& position, float lifeTime, uint32_t restoreAmount);
 
-		// Destructor for Entity
+		// Destructor for HealthPack
 		virtual ~HealthPack();
 	public:
 		// Called to update the pickup each frame
