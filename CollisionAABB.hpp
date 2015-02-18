@@ -7,7 +7,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for CollisionAABB
-		CollisionAABB(const XMFLOAT2& minOffset, const XMFLOAT2& maxOffset);
+		CollisionAABB(XMFLOAT2 centre, const XMFLOAT2& minOffset, const XMFLOAT2& maxOffset);
 
 		// Destructor for AABB
 		~CollisionAABB();

@@ -2,8 +2,8 @@
 using namespace HIC;
 
 // Default constructor for CollisionAABB
-CollisionAABB::CollisionAABB(const XMFLOAT2& minOffset, const XMFLOAT2& maxOffset) :
-	CollisionObject(),
+CollisionAABB::CollisionAABB(XMFLOAT2 centre, const XMFLOAT2& minOffset, const XMFLOAT2& maxOffset) :
+	CollisionObject(centre),
 	mMinOffset(minOffset),
 	mMaxOffset(maxOffset)
 {
