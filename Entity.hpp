@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.hpp"
+#include "CollisionCylinder.hpp"
 
 namespace HIC
 {
@@ -35,10 +36,17 @@ namespace HIC
 		// Rotates the entity in the world y-axis
 		void RotateY(float degrees);
 
+		// Returns the facing vector of the entity
+		XMFLOAT3 GetFacingVector();
+
+		// Returns the right vector of the entity
+		XMFLOAT3 GetRightVector();
+
+		// Returns the model of the entity
 		IModel* GetModel();
 
-		XMFLOAT3 GetFacingVector();
-		XMFLOAT3 GetRightVector();
+		// Returns the CollisionCylinder of the entity
+		CollisionCylinder& GetCollisionCylinder();
 	public:
 		// Called to update the entity
 		virtual void Update(float frameTime) = 0;
@@ -50,5 +58,6 @@ namespace HIC
 		IModel* mModel;
 		uint32_t mHealth;
 		uint32_t mMaxHealth;
+		CollisionCylinder mCollisionCylinder;
 	};
 }
