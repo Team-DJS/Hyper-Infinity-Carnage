@@ -5,12 +5,12 @@ const uint32_t Entity::DEFAULT_HEALTH = 100U;
 const uint32_t Entity::DEFAULT_MAX_HEALTH = 100U;
 
 // Default constructor for Entity
-Entity::Entity(IMesh* mesh, const XMFLOAT3& position) :
+Entity::Entity(IMesh* mesh, const XMFLOAT3& position, float radius) :
 	mMesh(mesh),
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
 	mHealth(DEFAULT_HEALTH),
 	mMaxHealth(DEFAULT_MAX_HEALTH),
-	mCollisionCylinder()
+	mCollisionCylinder(XMFLOAT2(position.x, position.z), radius)
 {
 }
 

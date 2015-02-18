@@ -9,7 +9,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for Entity
-		Entity(IMesh* mesh, const XMFLOAT3& position);
+		Entity(IMesh* mesh, const XMFLOAT3& position, float radius);
 
 		// Destructor for Entity
 		virtual ~Entity();

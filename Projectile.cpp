@@ -9,7 +9,7 @@ Projectile::Projectile(const XMFLOAT3& position, const XMFLOAT2& velocity, uint3
 	mModel(MESH->CreateModel(position.x, position.y, position.z)),
 	mDamage(damage),
 	mVelocity(velocity),
-	mCollisionCylinder()
+	mCollisionCylinder(XMFLOAT2(position.x, position.z), RADIUS)
 {
 }
 

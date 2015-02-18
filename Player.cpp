@@ -2,12 +2,14 @@
 using namespace HIC;
 
 IMesh* Player::MESH = nullptr;
+
+const float Player::RADIUS = 1.0f;
 const uint32_t Player::DEFAULT_LIVES = 5U;
 const uint32_t Player::DEFAULT_BOMBS = 3U;
 
 // Default constructor for Player
-Player::Player() : 
-	Entity(MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)),
+Player::Player() :
+	Entity(MESH, XMFLOAT3(0.0f, 0.0f, 0.0f), RADIUS),
 	mLives(DEFAULT_LIVES),
 	mBombs(DEFAULT_BOMBS),
 	mWeapon(new Weapon()),
@@ -74,13 +76,13 @@ void Player::Update(float frameTime)
 
 	if (mMoveForward)	//If thrust flag is true (thrust is applied)
 	{
-		//Increase thrust by calculated components of thrust based upon linear thrust and the ships facing vector 
+		//Increase thrust by calculated components of thrust based upon linear thrust and the ships facing vector
 		thrust.x += (mBaseThrust * facingVect.x * frameTime);
 		thrust.y += (mBaseThrust * facingVect.z * frameTime);
 	}
 	if (mMoveRight)
 	{
-		//Increase thrust by calculated components of thrust based upon linear thrust and the ships right vector 
+		//Increase thrust by calculated components of thrust based upon linear thrust and the ships right vector
 		thrust.x += (mBaseThrust * rightVect.x * frameTime);
 		thrust.y += (mBaseThrust * rightVect.z * frameTime);
 	}
@@ -92,7 +94,7 @@ void Player::Update(float frameTime)
 	}
 	if (mMoveLeft)
 	{
-		//Decrease thrust by calculated components of thrust based upon negative linear thrust and the ships right vector 
+		//Decrease thrust by calculated components of thrust based upon negative linear thrust and the ships right vector
 		thrust.x -= (mBaseThrust * rightVect.x * frameTime);
 		thrust.y -= (mBaseThrust * rightVect.z * frameTime);
 	}
@@ -100,7 +102,7 @@ void Player::Update(float frameTime)
 	//Calculate drag components based on current velocity components and the drag Coefficient
 	drag.x = -(mVelocity.x * mDragCoefficient) * frameTime;
 	drag.y = -(mVelocity.y * mDragCoefficient) * frameTime;
-	 
+
 	//Set new velocity based upon current velocity, thrust and drag
 	mVelocity.x += thrust.x + drag.x;
 	mVelocity.y += thrust.y + drag.y;

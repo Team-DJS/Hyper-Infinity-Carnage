@@ -2,11 +2,10 @@
 using namespace HIC;
 
 // Default constructor for Enemy
-Enemy::Enemy(IMesh* mesh, const XMFLOAT3& position, uint32_t damage) :
-	Entity(mesh, position),
+Enemy::Enemy(IMesh* mesh, const XMFLOAT3& position, float radius, uint32_t damage) :
+	Entity(mesh, position, radius),
 	mDamage(damage)
 {
-
 }
 
 // Destructor for Enemy

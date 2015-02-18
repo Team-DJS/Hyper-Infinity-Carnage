@@ -2,14 +2,14 @@
 
 using namespace HIC;
 
-// Default constructor for the Particle
-Particle::Particle(IMesh* mesh, XMFLOAT3& position, XMFLOAT3 velocity) :
+// Default constructor for Particle
+Particle::Particle(IMesh* mesh, const XMFLOAT3& position, const XMFLOAT3& velocity) :
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
 	mVelocity(velocity)
 {
 }
 
-// Default destructor for the Particle
+// Destructor for Particle
 Particle::~Particle()
 {
 	mModel->GetMesh()->RemoveModel(mModel);

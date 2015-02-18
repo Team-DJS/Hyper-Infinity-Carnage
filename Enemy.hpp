@@ -8,7 +8,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for Enemy
-		Enemy(IMesh* mesh, const XMFLOAT3& position, uint32_t damage);
+		Enemy(IMesh* mesh, const XMFLOAT3& position, float radius, uint32_t damage);
 
 		// Destructor for Enemy
 		~Enemy();

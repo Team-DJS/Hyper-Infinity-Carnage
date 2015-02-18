@@ -37,6 +37,7 @@ namespace HIC
 	public:
 		static IMesh* MESH;
 	private:
+		static const float RADIUS;
 		static const uint32_t DEFAULT_LIVES;
 		static const uint32_t DEFAULT_BOMBS;
 	private:
