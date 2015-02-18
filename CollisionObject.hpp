@@ -7,13 +7,18 @@ namespace HIC
 	class CollisionObject
 	{
 	public:
+		// Default constructor for CollisionObject
 		CollisionObject();
-		virtual ~CollisionObject();
 
-		XMFLOAT2 GetPosition();
-		void SetPosition(XMFLOAT2);
+		// Destructor for CollisionObject
+		virtual ~CollisionObject();
+	public:
+		// Returns the position of the collision object
+		XMFLOAT2 GetPosition() const;
+
+		// Sets the position of the collision object
+		void SetPosition(const XMFLOAT2& position);
 	private:
 		XMFLOAT2 mPosition;
 	};
-
 }

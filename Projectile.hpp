@@ -1,18 +1,34 @@
 #pragma once
 
 #include "Common.hpp"
+#include "CollisionCylinder.hpp"
 
-class Projectile
+namespace HIC
 {
-public:
-	Projectile();
-	~Projectile();
+	class Projectile
+	{
+	public:
+		// Default constructor for Projectile
+		Projectile(const XMFLOAT3& position, const XMFLOAT2& velocity, uint32_t damage);
 
-	uint32_t GetDamage();
-	void Update();
+		// Destructor for Projectile
+		~Projectile();
+	public:
+		// Returns the damage of the projectile
+		uint32_t GetDamage();
 
-private:
-	uint32_t mDamage;
-	IModel* mModel;
-};
+		// Returns the collision cylinder of this projectile
+		CollisionCylinder& GetCollisionObject();
 
+		// Updates the movement of the projectile
+		void Update(float frameTime);
+	public:
+		static IMesh* MESH;
+		static const float RADIUS;
+	private:
+		IModel* mModel;
+		uint32_t mDamage;
+		XMFLOAT2 mVelocity;
+		CollisionCylinder mCollisionCylinder;
+	};
+}
