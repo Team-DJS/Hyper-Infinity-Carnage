@@ -9,13 +9,15 @@ namespace HIC
 	{
 	public:
 		// Default constructor for HealthPack
-		HealthPack(IMesh* mesh, const XMFLOAT3& position, float lifeTime, uint32_t restoreAmount);
+		HealthPack(const XMFLOAT3& position, float lifeTime, uint32_t restoreAmount);
 
 		// Destructor for HealthPack
 		~HealthPack();
 	public:
 		// Called when the pickup is collides with a player
 		void OnPickup(Player* collectingPlayer);
+	public:
+		static IMesh* MESH;
 	private:
 		uint32_t mHealth;
 	};
