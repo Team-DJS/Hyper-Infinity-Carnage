@@ -9,12 +9,14 @@ namespace HIC
 	{
 	public:
 		// Default constructor for Entity
-		Bomb(IMesh* mesh, const XMFLOAT3& position, float lifeTime);
+		Bomb(const XMFLOAT3& position, float lifeTime);
 
 		// Destructor for Entity
 		~Bomb();
 	public:
 		// Called when the pickup is collides with a player
 		void OnPickup(Player* collectingPlayer);
+
+		static IMesh* MESH;
 	};
 }
