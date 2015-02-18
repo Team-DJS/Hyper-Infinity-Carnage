@@ -12,11 +12,9 @@ namespace HIC
 		ExtraLife(IMesh* mesh, const XMFLOAT3& position, float lifeTime);
 
 		// Destructor for ExtraLife
-		virtual ~ExtraLife();
+		~ExtraLife();
 	public:
-		// Called to update the pickup each frame
-		virtual void Update(float frameTime);
-
-		virtual void OnPickup(Player* collectingPlayer);
+		// Called when the pickup is collides with a player
+		void OnPickup(Player* collectingPlayer);
 	};
 }

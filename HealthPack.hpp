@@ -12,13 +12,10 @@ namespace HIC
 		HealthPack(IMesh* mesh, const XMFLOAT3& position, float lifeTime, uint32_t restoreAmount);
 
 		// Destructor for HealthPack
-		virtual ~HealthPack();
+		~HealthPack();
 	public:
-		// Called to update the pickup each frame
-		virtual void Update(float frameTime);
-
-		virtual void OnPickup(Player* collectingPlayer);
-
+		// Called when the pickup is collides with a player
+		void OnPickup(Player* collectingPlayer);
 	private:
 		uint32_t mHealth;
 	};

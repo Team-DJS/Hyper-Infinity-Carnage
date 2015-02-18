@@ -12,11 +12,9 @@ namespace HIC
 		Bomb(IMesh* mesh, const XMFLOAT3& position, float lifeTime);
 
 		// Destructor for Entity
-		virtual ~Bomb();
+		~Bomb();
 	public:
-		// Called to update the pickup each frame
-		virtual void Update(float frameTime);
-
-		virtual void OnPickup(Player* collectingPlayer);
+		// Called when the pickup is collides with a player
+		void OnPickup(Player* collectingPlayer);
 	};
 }

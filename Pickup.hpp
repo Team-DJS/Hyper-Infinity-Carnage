@@ -2,6 +2,7 @@
 
 #include "Common.hpp"
 #include "Player.hpp"
+#include "Timer.hpp"
 
 namespace HIC
 {
@@ -17,15 +18,18 @@ namespace HIC
 		//Returns the model of the pickup
 		IModel* GetModel();
 
+		// Returns true if the lifetime of the pickup has been exceeded
+		bool IsLifetimeComplete();
+
 		// Called to update the pickup each frame
-		virtual void Update(float frameTime) = 0;
+		void Update(float frameTime);
 
+		// Called when the pickup is collides with a player
 		virtual void OnPickup(Player* collectingPlayer) = 0;
-
 	private:
 		IModel* mModel;
+		Timer mTimer;
 		//Collision object
-		//Timer object
 		//Particle emitter
 	};
 }

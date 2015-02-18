@@ -10,16 +10,12 @@ namespace HIC
 	public:
 		// Default constructor for WeaponUpgrade
 		WeaponUpgrade(IMesh* mesh, const XMFLOAT3& position, float lifeTime, float fireRateUpAmount, float damageUpAmount);
-		
+
 		// Destructor for WeaponUpgrade
-		virtual ~WeaponUpgrade();
+		~WeaponUpgrade();
 	public:
-		// Called to update the pickup each frame
-		virtual void Update(float frameTime);
-
-		// Called when the player 'Picks up' the pickup
-		virtual void OnPickup(Player* collectingPlayer);
-
+		// Called when the pickup is collides with a player
+		void OnPickup(Player* collectingPlayer);
 	private:
 		float mFireRate;
 		float mDamage;
