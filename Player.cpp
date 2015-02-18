@@ -12,8 +12,8 @@ Player::Player() :
 	mBombs(DEFAULT_BOMBS),
 	mWeapon(new Weapon()),
 	mVelocity(0.0f, 0.0f),
-	mBaseThrust(50.0f),
-	mDragCoefficient(2.0f),
+	mBaseThrust(480.0f),
+	mDragCoefficient(5.0f),
 	mTurnIncrement(75.0f)
 {
 }
@@ -70,7 +70,7 @@ void Player::Update(float frameTime)
 	XMFLOAT3 rightVect = GetRightVector();
 	XMFLOAT2 drag = XMFLOAT2(0.0f, 0.0f);	//Create vector of drag (resistance to motion) of the ship
 
-	//SetPreviousPos();	/**THIS IS FOR COLLISION RESOLUTION, SETS THE POSITION THE MODEL WAS JUST IN**/
+	//SetPreviousPos();	/**THIS IS FOR COLLISION RESOLUTION, SETS THE POSITION THE MODEL WAS JUST IN NOT CURRENTLY IMPLEMENTED**/
 
 	if (mMoveForward)	//If thrust flag is true (thrust is applied)
 	{

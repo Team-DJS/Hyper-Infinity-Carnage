@@ -38,7 +38,7 @@ void Arena::Update(float frameTime)
 		mPlayer->SetMoveRight();
 		//mPlayer->MoveX(50.0f * frameTime);
 	}
-	
+
 	// Update the player
 	mPlayer->Update(frameTime);
 
