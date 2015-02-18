@@ -3,7 +3,8 @@
 using namespace HIC;
 
 // Default constructor for ParticleEmitter
-ParticleEmitter::ParticleEmitter()
+ParticleEmitter::ParticleEmitter(float lifeTime) :
+	mLifeTimer(lifeTime)
 {
 }
 
@@ -33,5 +34,5 @@ void ParticleEmitter::SetPosition()
 // Called to update the ParticleEmitter
 void ParticleEmitter::Update(float frameTime)
 {
-
+	
 }

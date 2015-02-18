@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Common.hpp"
+#include "Timer.hpp"
+#include "Particle.hpp"
 
 namespace HIC
 {
@@ -8,7 +10,7 @@ namespace HIC
 	{
 	public:
 		// Default Constructor for ParticleEmitter
-		ParticleEmitter();
+		ParticleEmitter(float lifeTime);
 
 		// Default Destructor for ParticleEmitter
 		~ParticleEmitter();
@@ -17,10 +19,10 @@ namespace HIC
 		// Starts the emission of the particle
 		void StartEmission();
 
-		// Stops the emission of the partlice
+		// Stops the emission of the particle
 		void StopEmission();
 
-		// Sets the position of the particle
+		// Sets the position of the ParticleEmitter
 		void SetPosition();
 
 		// Called to update the ParticleEmitter
@@ -30,6 +32,7 @@ namespace HIC
 
 		bool mIsEmitting;
 		XMFLOAT3 mStartingVelocity;
+		Timer mLifeTimer;
+		vector<Particle> mParticles;
 	};
-
 }
