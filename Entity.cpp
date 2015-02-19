@@ -81,10 +81,20 @@ IModel* Entity::GetModel()
 	return mModel;
 }
 
+CollisionCylinder& Entity::GetCollisionCylinder()
+{
+	return mCollisionCylinder;
+}
+
+XMFLOAT3 Entity::GetWorldPos()
+{
+	return XMFLOAT3(mModel->GetX(), mModel->GetY(), mModel->GetZ());
+}
+
 XMFLOAT3 Entity::GetFacingVector()
 {
 	float matrix[16];
-	GetModel()->GetMatrix(matrix);
+	mModel->GetMatrix(matrix);
 
 	XMFLOAT3 face;
 	face.x = matrix[8];
@@ -96,7 +106,7 @@ XMFLOAT3 Entity::GetFacingVector()
 XMFLOAT3 Entity::GetRightVector()
 {
 	float matrix[16];
-	GetModel()->GetMatrix(matrix);
+	mModel->GetMatrix(matrix);
 
 	XMFLOAT3 right;
 	right.x = matrix[0];

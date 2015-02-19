@@ -9,7 +9,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for Player
-		Player();
+		Player(const XMFLOAT3& position, float radius);
 
 		// Destructor for Player
 		~Player();
@@ -52,9 +52,8 @@ namespace HIC
 		bool mMoveBackward;
 		bool mMoveLeft;
 		bool mMoveRight;
-		float mBaseThrust;
-		float mDragCoefficient;
-		float mTurnIncrement;
+		static const float BASE_THRUST;
+		static const float DRAG_COEF;
 	public:
 		//*Movement Functions*//
 		//Set the movement flags for the object to react to in Update()

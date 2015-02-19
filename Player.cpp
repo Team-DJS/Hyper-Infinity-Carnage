@@ -7,16 +7,17 @@ const float Player::RADIUS = 1.0f;
 const uint32_t Player::DEFAULT_LIVES = 5U;
 const uint32_t Player::DEFAULT_BOMBS = 3U;
 
+//***MovementVariables***//
+const float Player::BASE_THRUST = 480.0f;
+const float Player::DRAG_COEF = 5.0f;
+
 // Default constructor for Player
-Player::Player() :
-	Entity(MESH, XMFLOAT3(0.0f, 0.0f, 0.0f), RADIUS),
+Player::Player(const XMFLOAT3& position, float radius) :
+	Entity(MESH, position, radius),
 	mLives(DEFAULT_LIVES),
 	mBombs(DEFAULT_BOMBS),
 	mWeapon(new Weapon()),
-	mVelocity(0.0f, 0.0f),
-	mBaseThrust(480.0f),
-	mDragCoefficient(5.0f),
-	mTurnIncrement(75.0f)
+	mVelocity(0.0f, 0.0f)
 {
 }
 
@@ -77,31 +78,31 @@ void Player::Update(float frameTime)
 	if (mMoveForward)	//If thrust flag is true (thrust is applied)
 	{
 		//Increase thrust by calculated components of thrust based upon linear thrust and the ships facing vector
-		thrust.x += (mBaseThrust * facingVect.x * frameTime);
-		thrust.y += (mBaseThrust * facingVect.z * frameTime);
+		thrust.x += (BASE_THRUST * facingVect.x * frameTime);
+		thrust.y += (BASE_THRUST * facingVect.z * frameTime);
 	}
 	if (mMoveRight)
 	{
 		//Increase thrust by calculated components of thrust based upon linear thrust and the ships right vector
-		thrust.x += (mBaseThrust * rightVect.x * frameTime);
-		thrust.y += (mBaseThrust * rightVect.z * frameTime);
+		thrust.x += (BASE_THRUST * rightVect.x * frameTime);
+		thrust.y += (BASE_THRUST * rightVect.z * frameTime);
 	}
 	if (mMoveBackward)	//Reverse thrust flag is true (braking/reversing)
 	{
 		//Decrease thrust by calculated components of thrust based upon negative linear thrust and the ships facing vector
-		thrust.x -= (mBaseThrust * facingVect.x * frameTime);
-		thrust.y -= (mBaseThrust * facingVect.z * frameTime);
+		thrust.x -= (BASE_THRUST * facingVect.x * frameTime);
+		thrust.y -= (BASE_THRUST * facingVect.z * frameTime);
 	}
 	if (mMoveLeft)
 	{
 		//Decrease thrust by calculated components of thrust based upon negative linear thrust and the ships right vector
-		thrust.x -= (mBaseThrust * rightVect.x * frameTime);
-		thrust.y -= (mBaseThrust * rightVect.z * frameTime);
+		thrust.x -= (BASE_THRUST * rightVect.x * frameTime);
+		thrust.y -= (BASE_THRUST * rightVect.z * frameTime);
 	}
 
 	//Calculate drag components based on current velocity components and the drag Coefficient
-	drag.x = -(mVelocity.x * mDragCoefficient) * frameTime;
-	drag.y = -(mVelocity.y * mDragCoefficient) * frameTime;
+	drag.x = -(mVelocity.x * DRAG_COEF) * frameTime;
+	drag.y = -(mVelocity.y * DRAG_COEF) * frameTime;
 
 	//Set new velocity based upon current velocity, thrust and drag
 	mVelocity.x += thrust.x + drag.x;
@@ -132,6 +133,7 @@ void Player::Update(float frameTime)
 	//UpdateCollisionCentre();	//Set new collision centre - Collision Object
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 
+	GetCollisionCylinder().SetPosition(XMFLOAT2(GetWorldPos().x, GetWorldPos().z));
 }
 
 void Player::SetMoveForward()

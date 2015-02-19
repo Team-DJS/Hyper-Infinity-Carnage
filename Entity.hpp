@@ -36,6 +36,9 @@ namespace HIC
 		// Rotates the entity in the world y-axis
 		void RotateY(float degrees);
 
+		// Returns the world position of the entity
+		XMFLOAT3 GetWorldPos();
+
 		// Returns the facing vector of the entity
 		XMFLOAT3 GetFacingVector();
 

@@ -4,8 +4,9 @@ using namespace HIC;
 // Default constructor for Arena
 Arena::Arena(I3DEngine* engine) :
 	mEngine(engine),
-	mPlayer(new Player())
+	mPlayer(new Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 20.0f))
 {
+
 }
 
 // Destructor for Arena
@@ -37,6 +38,11 @@ void Arena::Update(float frameTime)
 	{
 		mPlayer->SetMoveRight();
 		//mPlayer->MoveX(50.0f * frameTime);
+	}
+
+	if (mEngine->KeyHit(Key_M))
+	{
+		mPlayer->GetCollisionCylinder().ToggleMarkers();
 	}
 
 	// Update the player
