@@ -20,9 +20,11 @@ CollisionObject::CollisionObject(XMFLOAT2 centre) :
 CollisionObject::~CollisionObject()
 {
 #ifdef _DEBUG
-	if (mMarkersExist)
+	//Remove models from memory
+	while (!mCollisionMarkers.empty())
 	{
-		ToggleMarkers();
+		MARKER_MESH->RemoveModel(mCollisionMarkers.back());
+		mCollisionMarkers.pop_back();
 	}
 #endif
 }
