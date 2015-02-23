@@ -1,7 +1,9 @@
 #include "CollisionCylinder.hpp"
 using namespace HIC;
 
+#ifdef _DEBUG
 const uint32_t CollisionCylinder::NO_COLLISION_MARKERS = 10;
+#endif
 
 // Default constructor for CollisionCylinder
 CollisionCylinder::CollisionCylinder(XMFLOAT2 centre, float radius) :

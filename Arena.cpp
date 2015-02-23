@@ -40,10 +40,12 @@ void Arena::Update(float frameTime)
 		//mPlayer->MoveX(50.0f * frameTime);
 	}
 
+#ifdef _DEBUG
 	if (mEngine->KeyHit(Key_M))
 	{
 		mPlayer->GetCollisionCylinder().ToggleMarkers();
 	}
+#endif
 
 	// Update the player
 	mPlayer->Update(frameTime);
