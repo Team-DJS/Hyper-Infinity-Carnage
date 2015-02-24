@@ -36,7 +36,7 @@ bool ProgramSetup()
 	gEngine->AddMediaFolder(".\\Media");
 
 	// Initialise the camera
-	gCamera = gEngine->CreateCamera(kFPS);
+	gCamera = gEngine->CreateCamera(kFPS, 0.0f, 500.0f, -700.0f);
 
 	return true;
 }
@@ -107,6 +107,7 @@ bool GameSetup()
 {
 	// Load the player mesh
 	Player::MESH = gEngine->LoadMesh("Player.x");
+	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
 #ifdef _DEBUG
 	CollisionObject::MARKER_MESH = gEngine->LoadMesh("dummy.x");
 #endif
@@ -121,6 +122,7 @@ bool GameSetup()
 void GameUpdate(float frameTime)
 {
 	gArena->Update(frameTime);
+	//gArena->TargetCamera(gCamera);
 }
 
 // Updates the main game
@@ -134,6 +136,9 @@ bool GameShutdown()
 	// Delete the player mesh
 	gEngine->RemoveMesh(Player::MESH);
 	Player::MESH = nullptr;
+	//Delete the arena mesh
+	gEngine->RemoveMesh(Arena::ARENA_MESH);
+	Arena::ARENA_MESH = nullptr;
 
 #ifdef _DEBUG
 	//Delete the collision object mesh
