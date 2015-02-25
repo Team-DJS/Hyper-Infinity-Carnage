@@ -1,4 +1,5 @@
 #include "Arena.hpp"
+#include "Button.h"
 using namespace HIC;
 
 // Global Engine
@@ -19,10 +20,11 @@ Arena* gArena = nullptr;
 
 IFont* gMainMenuFont = nullptr;
 
-ISprite* gContinueButtonSprite			= nullptr;
 ISprite* gNewGameButtonSprite			= nullptr;
 ISprite* gViewHiScoreButtonSprite		= nullptr;
 ISprite* gQuitGameButtonSprite			= nullptr;
+
+Button* gContinueButton = nullptr;
 
 const float MENU_BUTTON_WIDTH = 256U;
 const float MENU_BUTTON_HEIGHT = 64U;
@@ -43,6 +45,8 @@ bool ProgramSetup()
 	gGameCamera = gEngine->CreateCamera(kManual, 0.0f, 500.0f, -700.0f);
 #ifdef _DEBUG
 	gDebugCamera = gEngine->CreateCamera(kFPS, 0.0f, 500.0f, -700.0f);
+	gDebugCamera->SetMovementSpeed(200.0f);
+	gDebugCamera->SetRotationSpeed(20.0f);
 #endif
 	gCamera = gGameCamera;
 	
@@ -78,9 +82,9 @@ bool FrontEndSetup()
 	uint32_t halfScreenWidth = gEngine->GetWidth() / 2;
 
 	// TODO: Check if save file exists
-
-	gContinueButtonSprite = gEngine->CreateSprite("Continue_Button.png", halfScreenWidth - (MENU_BUTTON_WIDTH / 2), 250);
-
+	
+	Button::gEngine = gEngine;
+	gContinueButton = new Button("Continue_Button.png", CollisionAABB(XMFLOAT2((float)halfScreenWidth, 250.0f), XMFLOAT2(MENU_BUTTON_WIDTH / 2, MENU_BUTTON_HEIGHT / 2), XMFLOAT2(MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT)));
 	return true;
 }
 
@@ -107,8 +111,7 @@ bool FrontEndShutdown()
 	gMainMenuFont = nullptr;
 
 	// Cleanup the menu button sprites
-	gEngine->RemoveSprite(gContinueButtonSprite);
-	gContinueButtonSprite = nullptr;
+	delete gContinueButton;
 
 	return true;
 }
@@ -198,9 +201,23 @@ int main(int argc, char* argv[])
 			return EXIT_FAILURE;
 		}
 
+		bool quitFrontend = false;
 		// Update the front-end until the exit key is pressed
-		while (!gEngine->KeyHit(Key_P))
+		while (!quitFrontend)
 		{
+
+			if (gEngine->KeyHit(Mouse_LButton))
+			{
+				if (gContinueButton->MouseIsOver())
+				{
+					quitFrontend = true;
+				}
+			}
+			if (gEngine->KeyHit(Key_P))
+			{
+				quitFrontend = true;
+			}
+
 			// Update the front end
 			float frameTime = gEngine->Timer();
 			FrontEndUpdate(frameTime);

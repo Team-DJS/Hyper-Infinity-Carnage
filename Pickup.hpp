@@ -14,6 +14,7 @@ namespace HIC
 
 		// Destructor for Entity
 		virtual ~Pickup();
+
 	public:
 		//Returns the model of the pickup
 		IModel* GetModel();

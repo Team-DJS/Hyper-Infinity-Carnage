@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <exception>
 
 // Include TL-Engine Headers
 #include <TL-Engine.h>
