@@ -1,5 +1,6 @@
 #include "Arena.hpp"
 #include "Button.hpp"
+
 using namespace HIC;
 
 // Global Engine
@@ -21,15 +22,16 @@ Arena* gArena = nullptr;
 
 IFont* gMainMenuFont = nullptr;
 
-ISprite* gNewGameButtonSprite			= nullptr;
-ISprite* gViewHiScoreButtonSprite		= nullptr;
-ISprite* gQuitGameButtonSprite			= nullptr;
-
-Button* gContinueButton = nullptr;
+ISprite* gTitleCard			= nullptr;
+Button* gNewGameButton		= nullptr;
+Button* gContinueButton		= nullptr;
+Button* gViewHiScoreButton	= nullptr;
+Button* gQuitGameButton		= nullptr;
 
 const float MENU_BUTTON_WIDTH = 192U;
 const float MENU_BUTTON_HEIGHT = 64U;
-
+const float TITLE_CARD_WIDTH = 800U;
+const float TITLE_CARD_HEIGHT = 256;
 //-------------------------------------------
 // Program
 //-------------------------------------------
@@ -92,8 +94,15 @@ bool FrontEndSetup()
 
 	// TODO: Check if save file exists
 	
+	//Create menu buttons
+	gTitleCard = gEngine->CreateSprite("Title_Card.png", halfScreenWidth - (TITLE_CARD_WIDTH / 2), 20.0f, 0.0f);
+
 	Button::gEngine = gEngine;
-	gContinueButton = new Button("Continue_Button.png", XMFLOAT2((float)halfScreenWidth, 250.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gNewGameButton			= new Button("New_Game_Button.png", XMFLOAT2((float)halfScreenWidth, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gContinueButton			= new Button("Continue_Button.png", XMFLOAT2((float)halfScreenWidth, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gViewHiScoreButton		= new Button("View_Hi_Score_Button.png", XMFLOAT2((float)halfScreenWidth, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gQuitGameButton			= new Button("Quit_Game_Button.png", XMFLOAT2((float)halfScreenWidth, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	
 	return true;
 }
 
@@ -101,12 +110,12 @@ bool FrontEndSetup()
 // Returns true on success, false on failure
 bool FrontEndUpdate(float frameTime)
 {
-	// Calculate the position to draw the title text
-	uint32_t screenWidth = gEngine->GetWidth();
-	uint32_t textWidth = gMainMenuFont->MeasureTextWidth("Hyper Infinity Carnage");
+	//// Calculate the position to draw the title text
+	//uint32_t screenWidth = gEngine->GetWidth();
+	//uint32_t textWidth = gMainMenuFont->MeasureTextWidth("Hyper Infinity Carnage");
 
-	// Draw the title
-	gMainMenuFont->Draw("Hyper Infinity Carnage", (screenWidth / 2) - (textWidth / 2), 100, kRed);
+	//// Draw the title
+	//gMainMenuFont->Draw("Hyper Infinity Carnage", (screenWidth / 2) - (textWidth / 2), 100, kRed);
 
 	return true;
 }
@@ -120,7 +129,31 @@ bool FrontEndShutdown()
 	gMainMenuFont = nullptr;
 
 	// Cleanup the menu button sprites
-	delete gContinueButton;
+	if (gNewGameButton)
+	{
+		delete gNewGameButton;
+		gNewGameButton = nullptr;
+	}
+	if (gContinueButton)
+	{
+		delete gContinueButton;
+		gContinueButton = nullptr;
+	}
+	if (gViewHiScoreButton)
+	{
+		delete gViewHiScoreButton;
+		gViewHiScoreButton = nullptr;
+	}
+	if (gQuitGameButton)
+	{
+		delete gQuitGameButton;
+		gQuitGameButton = nullptr;
+	}
+	if (gTitleCard)
+	{
+		gEngine->RemoveSprite(gTitleCard);
+		gTitleCard = nullptr;
+	}
 
 	return true;
 }
@@ -222,30 +255,57 @@ int main(int argc, char* argv[])
 		// Update the front-end until the exit key is pressed
 		while (!quitFrontend)
 		{
-			gContinueButton->MouseIsOver();
-			if (gEngine->KeyHit(Mouse_LButton))
-			{
-				if (gContinueButton->MouseIsOver())
-				{
-					quitFrontend = true;
-				}
-			}
 			if (gEngine->KeyHit(Key_P))
 			{
 				quitFrontend = true;
 			}
 
-			// Update the front end
-			float frameTime = gEngine->Timer();
-			FrontEndUpdate(frameTime);
+			//Menu option selection
+			if (gEngine->KeyHit(Mouse_LButton))
+			{
+				if (gNewGameButton)
+				{
+					if (gNewGameButton->MouseIsOver())
+					{
+						//TODO: Perform some action
+					}
+				}
+				if (gContinueButton)			
+				{
+					if (gContinueButton->MouseIsOver())
+					{
+						quitFrontend = true;					//Load into main game
+					}
+				}
+				if (gViewHiScoreButton)
+				{
+					if (gViewHiScoreButton->MouseIsOver())
+					{
+						//TODO: Load high scores
+					}
+				}
+				if (gQuitGameButton)
+				{
+					if (gQuitGameButton->MouseIsOver())
+					{
+						FrontEndShutdown();						//Quit the program
+						ProgramShutdown();
+						return EXIT_SUCCESS;
+					}
+				}
+			}
 
-			// Exit the program if the exit key is pressed
+			// Exit the program if the exit key/button is pressed
 			if (gEngine->KeyHit(Key_Q) || !gEngine->IsRunning())
 			{
 				FrontEndShutdown();
 				ProgramShutdown();
 				return EXIT_SUCCESS;
 			}
+
+			// Update the front end
+			float frameTime = gEngine->Timer();
+			FrontEndUpdate(frameTime);
 
 			// Draw the scene
 			gEngine->DrawScene(gCamera);
