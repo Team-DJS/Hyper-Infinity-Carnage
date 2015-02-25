@@ -6,6 +6,10 @@ I3DEngine* gEngine = nullptr;
 
 // Global Camera
 ICamera* gCamera = nullptr;
+ICamera* gGameCamera = nullptr;
+#ifdef _DEBUG
+ICamera* gDebugCamera = nullptr;
+#endif
 
 // The game arena
 Arena* gArena = nullptr;
@@ -36,8 +40,12 @@ bool ProgramSetup()
 	gEngine->AddMediaFolder(".\\Media");
 
 	// Initialise the camera
-	gCamera = gEngine->CreateCamera(kFPS, 0.0f, 500.0f, -700.0f);
-
+	gGameCamera = gEngine->CreateCamera(kManual, 0.0f, 500.0f, -700.0f);
+#ifdef _DEBUG
+	gDebugCamera = gEngine->CreateCamera(kFPS, 0.0f, 500.0f, -700.0f);
+#endif
+	gCamera = gGameCamera;
+	
 	return true;
 }
 
@@ -51,6 +59,10 @@ bool ProgramShutdown()
 
 	// Cleanup pointers
 	gCamera = nullptr;
+	gGameCamera = nullptr;
+#ifdef _DEBUG
+	gDebugCamera = nullptr;
+#endif
 
 	return true;
 }
@@ -122,7 +134,22 @@ bool GameSetup()
 void GameUpdate(float frameTime)
 {
 	gArena->Update(frameTime);
-	//gArena->TargetCamera(gCamera);
+	gArena->TargetCamera(gGameCamera);
+#ifdef _DEBUG
+	if (gEngine->KeyHit(Key_Tab))
+	{
+		//Swap which camera is the gCamera
+		if (gGameCamera == gCamera)
+		{
+			gCamera = gDebugCamera;
+		}
+		else
+		{
+			gCamera = gGameCamera;
+		}
+	}
+
+#endif
 }
 
 // Updates the main game
@@ -187,7 +214,7 @@ int main(int argc, char* argv[])
 			}
 
 			// Draw the scene
-			gEngine->DrawScene();
+			gEngine->DrawScene(gCamera);
 		}
 
 		if (!FrontEndShutdown())
@@ -231,7 +258,7 @@ int main(int argc, char* argv[])
 			}
 
 			// Draw the scene
-			gEngine->DrawScene();
+			gEngine->DrawScene(gCamera);
 		}
 
 		if (!GameShutdown())
