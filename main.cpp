@@ -15,8 +15,9 @@ ICamera* gDebugCamera = nullptr;
 // The game arena
 Arena* gArena = nullptr;
 
-///////////////////////////
+//------------------------
 // Front End Data
+//------------------------
 
 IFont* gMainMenuFont = nullptr;
 
@@ -28,6 +29,10 @@ Button* gContinueButton = nullptr;
 
 const float MENU_BUTTON_WIDTH = 192U;
 const float MENU_BUTTON_HEIGHT = 64U;
+
+//-------------------------------------------
+// Program
+//-------------------------------------------
 
 // One off setup for the entire program.
 // Returns true on success, false on failure
@@ -70,6 +75,10 @@ bool ProgramShutdown()
 
 	return true;
 }
+
+//-------------------------------------------
+// Front End
+//-------------------------------------------
 
 // Setups the front end menu
 // Returns true on success, false on failure
@@ -115,6 +124,10 @@ bool FrontEndShutdown()
 
 	return true;
 }
+
+//-------------------------------------------
+// Main Game
+//-------------------------------------------
 
 // Setups the main game
 // Returns true on success, false on failure
@@ -178,6 +191,10 @@ bool GameShutdown()
 
 	return true;
 }
+
+//-------------------------------------------
+// Main
+//-------------------------------------------
 
 // Main entry to the program
 int main(int argc, char* argv[])
