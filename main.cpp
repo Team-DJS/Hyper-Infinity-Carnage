@@ -26,7 +26,7 @@ ISprite* gQuitGameButtonSprite			= nullptr;
 
 Button* gContinueButton = nullptr;
 
-const float MENU_BUTTON_WIDTH = 256U;
+const float MENU_BUTTON_WIDTH = 192U;
 const float MENU_BUTTON_HEIGHT = 64U;
 
 // One off setup for the entire program.
@@ -84,7 +84,7 @@ bool FrontEndSetup()
 	// TODO: Check if save file exists
 	
 	Button::gEngine = gEngine;
-	gContinueButton = new Button("Continue_Button.png", CollisionAABB(XMFLOAT2((float)halfScreenWidth, 250.0f), XMFLOAT2(MENU_BUTTON_WIDTH / 2, MENU_BUTTON_HEIGHT / 2), XMFLOAT2(MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT)));
+	gContinueButton = new Button("Continue_Button.png", XMFLOAT2((float)halfScreenWidth, 250.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	return true;
 }
 
@@ -205,7 +205,7 @@ int main(int argc, char* argv[])
 		// Update the front-end until the exit key is pressed
 		while (!quitFrontend)
 		{
-
+			gContinueButton->MouseIsOver();
 			if (gEngine->KeyHit(Mouse_LButton))
 			{
 				if (gContinueButton->MouseIsOver())

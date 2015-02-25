@@ -18,7 +18,7 @@ public:
 	static I3DEngine* gEngine;
 
 	//Pass a spritename, position and width - let the constructor figure the rest out
-	Button(string spriteName, CollisionAABB collisionBox);	//The object constructor
+	Button(string spriteName, XMFLOAT2 position, float width, float height);	//The object constructor
 
 	~Button();					//The object destructor
 	

@@ -17,6 +17,11 @@ namespace HIC
 
 		// Returns the maximum offset of the AABB
 		XMFLOAT2 GetMaxOffset() const;
+
+		XMFLOAT2 GetMinPosition();
+
+		XMFLOAT2 GetMaxPosition();
+
 	private:
 		XMFLOAT2 mMinOffset;
 		XMFLOAT2 mMaxOffset;

@@ -26,6 +26,23 @@ XMFLOAT2 CollisionAABB::GetMaxOffset() const
 	return mMaxOffset;
 }
 
+
+XMFLOAT2 CollisionAABB::GetMinPosition()
+{
+	XMFLOAT2 pos = GetPosition();
+	pos.x += mMinOffset.x;
+	pos.y += mMinOffset.y;
+	return pos;
+}
+		 
+XMFLOAT2 CollisionAABB::GetMaxPosition()
+{
+	XMFLOAT2 pos = GetPosition();
+	pos.x += mMaxOffset.x;
+	pos.y += mMaxOffset.y;
+	return pos;
+}
+
 #ifdef _DEBUG
 void CollisionAABB::ToggleMarkers()
 {
@@ -44,14 +61,14 @@ void CollisionAABB::ToggleMarkers()
 		else
 		{
 			//Create the markers, one at each corner and one halfway along each side
-			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(mMinOffset.x, mHeight, mMinOffset.y));
-			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(mMinOffset.x, mHeight, mMaxOffset.y));
-			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(mMaxOffset.x, mHeight, mMinOffset.y));
-			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(mMaxOffset.x, mHeight, mMaxOffset.y));
-			mCollisionMarkers.push_back(MARKER_MESH->CreateModel((mMinOffset.x + mMaxOffset.x) / 2, mHeight, mMinOffset.y));
-			mCollisionMarkers.push_back(MARKER_MESH->CreateModel((mMinOffset.x + mMaxOffset.x) / 2, mHeight, mMaxOffset.y));
-			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(mMinOffset.x, mHeight, (mMinOffset.y + mMaxOffset.y) / 2));
-			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(mMaxOffset.x, mHeight, (mMinOffset.y + mMaxOffset.y) / 2));
+			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(GetPosition().x + mMinOffset.x, mHeight, GetPosition().x + mMinOffset.y));
+			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(GetPosition().x + mMinOffset.x, mHeight, GetPosition().x + mMaxOffset.y));
+			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(GetPosition().x + mMaxOffset.x, mHeight, GetPosition().x + mMinOffset.y));
+			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(GetPosition().x + mMaxOffset.x, mHeight, GetPosition().x + mMaxOffset.y));
+			mCollisionMarkers.push_back(MARKER_MESH->CreateModel((GetPosition().x + mMinOffset.x + mMaxOffset.x) / 2, mHeight, GetPosition().x + mMinOffset.y));
+			mCollisionMarkers.push_back(MARKER_MESH->CreateModel((GetPosition().x + mMinOffset.x + mMaxOffset.x) / 2, mHeight, GetPosition().x + mMaxOffset.y));
+			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(GetPosition().x + mMinOffset.x, mHeight, (mMinOffset.y + GetPosition().x + mMaxOffset.y) / 2));
+			mCollisionMarkers.push_back(MARKER_MESH->CreateModel(GetPosition().x + mMaxOffset.x, mHeight, (mMinOffset.y + GetPosition().x + mMaxOffset.y) / 2));
 			for (uint32_t i = 0; i < mCollisionMarkers.size(); i++)
 			{
 				mCollisionMarkers[i]->Scale(MARKER_SCALE);
