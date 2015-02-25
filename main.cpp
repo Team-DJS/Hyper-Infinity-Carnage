@@ -1,5 +1,5 @@
 #include "Arena.hpp"
-#include "Button.h"
+#include "Button.hpp"
 using namespace HIC;
 
 // Global Engine

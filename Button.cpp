@@ -1,6 +1,6 @@
 //Creation of the bodies of the functions belonging to the CButton class
 
-#include "Button.h"	//Include button header file
+#include "Button.hpp"	//Include button header file
 
 /*--------------------------------------Class - CButton--------------------------------------*/
 
