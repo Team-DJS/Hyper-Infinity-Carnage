@@ -1,8 +1,17 @@
 #include "Entity.hpp"
 using namespace HIC;
 
+
+//-----------------------------------
+// Static Initialisations
+//-----------------------------------
+
 const uint32_t Entity::DEFAULT_HEALTH = 100U;
 const uint32_t Entity::DEFAULT_MAX_HEALTH = 100U;
+
+//-----------------------------------
+// Constructors / Destructors
+//-----------------------------------
 
 // Default constructor for Entity
 Entity::Entity(IMesh* mesh, const XMFLOAT3& position, float radius) :
@@ -21,11 +30,9 @@ Entity::~Entity()
 	mModel->GetMesh()->RemoveModel(mModel);
 }
 
-// Returns the health of entity
-uint32_t Entity::GetHealth() const
-{
-	return mHealth;
-}
+//-----------------------------------
+// Setters
+//-----------------------------------
 
 // Gives health to the entity. If this exceeds the maximum health, then it is clamped
 void Entity::GiveHealth(uint32_t health)
@@ -53,12 +60,6 @@ bool Entity::TakeHealth(uint32_t damage)
 	return false;
 }
 
-// Points the model at a given position
-void Entity::LookAt(const XMFLOAT3& position)
-{
-	mModel->LookAt(position.x, position.y, position.z);
-}
-
 // Moves the entity in the world x-axis
 void Entity::MoveX(float dx)
 {
@@ -76,14 +77,14 @@ void Entity::RotateY(float degrees)
 	mModel->RotateY(degrees);
 }
 
-IModel* Entity::GetModel()
-{
-	return mModel;
-}
+//-----------------------------------
+// Getters
+//-----------------------------------
 
-CollisionCylinder& Entity::GetCollisionCylinder()
+// Returns the health of entity
+uint32_t Entity::GetHealth() const
 {
-	return mCollisionCylinder;
+	return mHealth;
 }
 
 XMFLOAT3 Entity::GetWorldPos()
@@ -113,4 +114,24 @@ XMFLOAT3 Entity::GetRightVector()
 	right.y = matrix[1];
 	right.z = matrix[2];
 	return right;
+}
+
+IModel* Entity::GetModel()
+{
+	return mModel;
+}
+
+CollisionCylinder& Entity::GetCollisionCylinder()
+{
+	return mCollisionCylinder;
+}
+
+//-----------------------------------
+// Other
+//-----------------------------------
+
+// Points the model at a given position
+void Entity::LookAt(const XMFLOAT3& position)
+{
+	mModel->LookAt(position.x, position.y, position.z);
 }

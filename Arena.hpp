@@ -9,6 +9,10 @@ namespace HIC
 	class Arena
 	{
 	public:
+		//-----------------------------
+		// Constructors/Destructors
+		//-----------------------------
+
 		// Default constructor for Arena
 		Arena(I3DEngine* engine);
 
@@ -16,6 +20,18 @@ namespace HIC
 		~Arena();
 
 	public:
+		//--------------
+		// Setters
+		//--------------
+		
+		//---------------
+		// Getters
+		//---------------
+		
+		//--------------
+		// Other
+		//--------------
+		
 		// Updates all the entities inside the arena
 		void Update(float frameTime);
 
@@ -27,17 +43,31 @@ namespace HIC
 
 		// Removes all entities from the arena
 		void Clear();
-	private:
-		I3DEngine* mEngine;
-		Player mPlayer;
-		std::vector<Enemy*> mEnemies;
-		Scenery mArenaModel;
-		std::vector<Scenery*> mSceneryObjects;
-		uint32_t mCurrentStage;
+	
+		//Target the camera at the desired item
+		void TargetCamera(ICamera* camera);	//Point the camera at the current focal point
+	
 	public:
 		static IMesh* ARENA_MESH;
+	
+	private:
+		// Pointer to the game engine
+		I3DEngine* mEngine;
 
-	public:
-		void TargetCamera(ICamera* camera);	//Point the camera at the current focal point - done this way as camera is global
+		// The player character
+		Player mPlayer;
+
+		//Vector of enemies
+		std::vector<Enemy*> mEnemies;
+
+		// Model for arena area
+		Scenery mArenaModel;
+
+		// Vector of scenery (non-interactive) items
+		std::vector<Scenery*> mSceneryObjects;
+
+		// Current stage number
+		uint32_t mCurrentStage;
+
 	};
 }

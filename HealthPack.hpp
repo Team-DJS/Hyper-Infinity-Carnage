@@ -8,8 +8,20 @@ namespace HIC
 	class HealthPack : public Pickup
 	{
 	public:
+		//-----------------------------
+		// Constructors/Destructors
+		//-----------------------------
+		//--------------
+		// Setters
+		//--------------
+		//---------------
+		// Getters
+		//---------------
+		//--------------
+		// Other
+		//--------------
 		// Default constructor for HealthPack
-		HealthPack(const XMFLOAT3& position, float lifeTime, uint32_t restoreAmount);
+		HealthPack(const XMFLOAT3& position, float radius, float lifeTime, uint32_t restoreAmount);
 
 		// Destructor for HealthPack
 		~HealthPack();

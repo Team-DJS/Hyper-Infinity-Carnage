@@ -1,10 +1,18 @@
 #include "CollisionObject.hpp"
 using namespace HIC;
 
+//-----------------------------------
+// Static Initialisations
+//-----------------------------------
+
 #ifdef _DEBUG
 const float CollisionObject::MARKER_SCALE = 20.0f;
 IMesh* CollisionObject::MARKER_MESH = nullptr;
 #endif
+
+//-----------------------------------
+// Constructors / Destructors
+//-----------------------------------
 
 // Default constructor for CollisionObject
 CollisionObject::CollisionObject(XMFLOAT2 centre) :
@@ -29,11 +37,9 @@ CollisionObject::~CollisionObject()
 #endif
 }
 
-// Returns the position of the collision object
-XMFLOAT2 CollisionObject::GetPosition() const
-{
-	return mPosition;
-}
+//-----------------------------------
+// Setters
+//-----------------------------------
 
 // Sets the position of the collision object
 void CollisionObject::SetPosition(const XMFLOAT2& newPosition)
@@ -53,4 +59,18 @@ void CollisionObject::SetPosition(const XMFLOAT2& newPosition)
 #endif
 
 	mPosition = newPosition;	//Update stored position variable
+}
+
+//-----------------------------------
+// Getters
+//-----------------------------------
+
+//-----------------------------------
+// Other
+//-----------------------------------
+
+// Returns the position of the collision object
+XMFLOAT2 CollisionObject::GetPosition() const
+{
+	return mPosition;
 }

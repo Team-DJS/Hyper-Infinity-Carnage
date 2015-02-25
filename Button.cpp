@@ -1,12 +1,18 @@
-//Creation of the bodies of the functions belonging to the CButton class
-
 #include "Button.hpp"	//Include button header file
 #include "CollisionFunctions.hpp"
-/*--------------------------------------Class - CButton--------------------------------------*/
+
+//-----------------------------------
+// Static Initialisations
+//-----------------------------------
 
 I3DEngine* Button::gEngine = nullptr;
 
-Button::Button(string spriteName, XMFLOAT2 position, float width, float height) ://Constructor
+//-----------------------------------
+// Constructors / Destructors
+//-----------------------------------
+
+//Constructor
+Button::Button(string spriteName, XMFLOAT2 position, float width, float height) :
 	mCollision(CollisionAABB(position, XMFLOAT2(-(width / 2), -(height / 2)), XMFLOAT2(width / 2, height / 2)))
 {
 	if (gEngine == nullptr)
@@ -18,7 +24,8 @@ Button::Button(string spriteName, XMFLOAT2 position, float width, float height) 
 	//Initialise the sprite border values
 }
 
-Button::~Button()	//Destructor
+//Destructor
+Button::~Button()	
 {
 	if (gEngine == nullptr)
 	{
@@ -26,20 +33,21 @@ Button::~Button()	//Destructor
 	}
 	gEngine->RemoveSprite(mSprite);	//Remove the sprite from memory
 }
-#include <iostream>
-bool Button::MouseIsOver()	//Checks to see if the mouse is currently on top of the sprite
-{
-	std::cout << CylinderToBoxCollision(&CollisionCylinder(XMFLOAT2(gEngine->GetMouseX(), gEngine->GetMouseY()), 0.0f), &mCollision);
-	return CylinderToBoxCollision(&CollisionCylinder(XMFLOAT2(gEngine->GetMouseX(), gEngine->GetMouseY()), 0.0f), &mCollision);
 
-	//if(gameEnginePtr->GetMouseX() < maxX && gameEnginePtr->GetMouseX() > minX)	//If mouse within box x boundaries
-	//{
-	//	if(gameEnginePtr->GetMouseY() < maxY && gameEnginePtr->GetMouseY() > minY)	//If mouse within box y boundaries
-	//	{
-	//		return true;	//Mouse is over the box
-	//	}
-	//}
-	//return false;	//Mouse is not over the box
+//-----------------------------------
+// Setters
+//-----------------------------------
+
+//-----------------------------------
+// Getters
+//-----------------------------------
+
+//Checks to see if the mouse is currently on top of the sprite
+bool Button::MouseIsOver()	
+{
+	return CylinderToBoxCollision(&CollisionCylinder(XMFLOAT2((float)gEngine->GetMouseX(), (float)gEngine->GetMouseY()), 0.0f), &mCollision);
 }
 
-/************************************End of Class - CButton**********************************/
+//-----------------------------------
+// Other
+//-----------------------------------

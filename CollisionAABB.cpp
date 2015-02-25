@@ -1,6 +1,14 @@
 #include "CollisionAABB.hpp"
 using namespace HIC;
 
+//-----------------------------------
+// Static Initialisations
+//-----------------------------------
+
+//-----------------------------------
+// Constructors / Destructors
+//-----------------------------------
+
 // Default constructor for CollisionAABB
 CollisionAABB::CollisionAABB(XMFLOAT2 centre, const XMFLOAT2& minOffset, const XMFLOAT2& maxOffset) :
 	CollisionObject(centre),
@@ -14,6 +22,14 @@ CollisionAABB::~CollisionAABB()
 {
 }
 
+//-----------------------------------
+// Setters
+//-----------------------------------
+
+//-----------------------------------
+// Getters
+//-----------------------------------
+
 // Returns the minimum offset of the AABB
 XMFLOAT2 CollisionAABB::GetMinOffset() const
 {
@@ -25,7 +41,6 @@ XMFLOAT2 CollisionAABB::GetMaxOffset() const
 {
 	return mMaxOffset;
 }
-
 
 XMFLOAT2 CollisionAABB::GetMinPosition()
 {
@@ -43,7 +58,16 @@ XMFLOAT2 CollisionAABB::GetMaxPosition()
 	return pos;
 }
 
+//-----------------------------------
+// Other
+//-----------------------------------
+
 #ifdef _DEBUG
+
+//-----------------------------------
+// Collision Markers
+//-----------------------------------
+
 void CollisionAABB::ToggleMarkers()
 {
 	if (MARKER_MESH)

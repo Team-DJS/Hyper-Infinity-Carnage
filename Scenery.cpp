@@ -1,6 +1,14 @@
 #include "Scenery.hpp"
 using namespace HIC;
 
+//-----------------------------------
+// Static Initialisations
+//-----------------------------------
+
+//-----------------------------------
+// Constructors / Destructors
+//-----------------------------------
+
 // Default constructor for Scenery
 Scenery::Scenery(IMesh* mesh, const XMFLOAT3& position, float scale) :
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
@@ -15,13 +23,25 @@ Scenery::~Scenery()
 	mModel->GetMesh()->RemoveModel(mModel);
 }
 
-void Scenery::LookAt(ISceneNode* at)
-{
-	mModel->LookAt(at);
-	mModel->Scale(mScale);
-}
+//-----------------------------------
+// Setters
+//-----------------------------------
+
+//-----------------------------------
+// Getters
+//-----------------------------------
 
 IModel* Scenery::GetModel()
 {
 	return mModel;
+}
+
+//-----------------------------------
+// Other
+//-----------------------------------
+
+void Scenery::LookAt(ISceneNode* at)
+{
+	mModel->LookAt(at);
+	mModel->Scale(mScale);
 }

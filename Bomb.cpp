@@ -4,8 +4,8 @@ using namespace HIC;
 
 IMesh* Bomb::MESH = nullptr;
 
-Bomb::Bomb(const XMFLOAT3& position, float lifeTime) :
-Pickup(MESH, position, lifeTime)
+Bomb::Bomb(const XMFLOAT3& position, float radius, float lifeTime) :
+	Pickup(MESH, position, radius, lifeTime)
 {
 
 }

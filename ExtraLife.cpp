@@ -4,8 +4,8 @@ using namespace HIC;
 IMesh* ExtraLife::MESH = nullptr;
 
 // Default constructor for ExtraLife
-ExtraLife::ExtraLife(const XMFLOAT3& position, float lifeTime) :
-	Pickup(MESH, position, lifeTime)
+ExtraLife::ExtraLife(const XMFLOAT3& position, float radius, float lifeTime) :
+	Pickup(MESH, position, radius, lifeTime)
 {
 }
 

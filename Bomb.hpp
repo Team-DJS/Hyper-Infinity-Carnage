@@ -8,15 +8,33 @@ namespace HIC
 	class Bomb : public Pickup
 	{
 	public:
+		//-----------------------------
+		// Constructors/Destructors
+		//-----------------------------
 		// Default constructor for Entity
-		Bomb(const XMFLOAT3& position, float lifeTime);
+		Bomb(const XMFLOAT3& position, float radius, float lifeTime);
 
 		// Destructor for Entity
 		~Bomb();
+
 	public:
+		//--------------
+		// Setters
+		//--------------
+
+		//---------------
+		// Getters
+		//---------------
+		
+		//--------------
+		// Other
+		//--------------
+		
 		// Called when the pickup is collides with a player
 		void OnPickup(Player* collectingPlayer);
 
+	public:
 		static IMesh* MESH;
+
 	};
 }

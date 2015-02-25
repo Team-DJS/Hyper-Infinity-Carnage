@@ -2,7 +2,11 @@
 
 using namespace HIC;
 
-// Default constructor for Timer
+//-----------------------------------
+// Constructors / Destructors
+//-----------------------------------
+
+// Constructor for Timer
 Timer::Timer(float endTime) :
 	mEndTime(endTime)
 {
@@ -12,6 +16,10 @@ Timer::Timer(float endTime) :
 Timer::~Timer()
 {
 }
+
+//-----------------------------------
+// Other Functions
+//-----------------------------------
 
 // Update the timer by increasing its timer by the given frame time
 void Timer::Update(float frameTime)

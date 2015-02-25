@@ -1,15 +1,23 @@
 #include "Player.hpp"
 using namespace HIC;
 
+//-----------------------------------
+// Static Initialisations
+//-----------------------------------
+
 IMesh* Player::MESH = nullptr;
 
 const float Player::RADIUS = 1.0f;
 const uint32_t Player::DEFAULT_LIVES = 5U;
 const uint32_t Player::DEFAULT_BOMBS = 3U;
 
-//***MovementVariables***//
+// MovementVariables
 const float Player::BASE_THRUST = 480.0f;
 const float Player::DRAG_COEF = 5.0f;
+
+//-----------------------------------
+// Constructors / Destructors
+//-----------------------------------
 
 // Default constructor for Player
 Player::Player(const XMFLOAT3& position, float radius) :
@@ -25,6 +33,26 @@ Player::Player(const XMFLOAT3& position, float radius) :
 Player::~Player()
 {
 }
+
+//-----------------------------------
+// Setters
+//-----------------------------------
+
+// Gives an extra life to the player
+void Player::GiveLife()
+{
+	mLives++;
+}
+
+// Gives an extra bomb to the player
+void Player::GiveBomb()
+{
+	mBombs++;
+}
+
+//-----------------------------------
+// Getters
+//-----------------------------------
 
 // Returns the number of remaining lives the player has
 uint32_t Player::GetLives() const
@@ -44,17 +72,9 @@ Weapon* Player::GetWeapon()
 	return mWeapon;
 }
 
-// Gives an extra life to the player
-void Player::GiveLife()
-{
-	mLives++;
-}
-
-// Gives an extra bomb to the player
-void Player::GiveBomb()
-{
-	mBombs++;
-}
+//-----------------------------------
+// Other
+//-----------------------------------
 
 // Respawns the player inside the arena
 void Player::Respawn()
@@ -133,8 +153,13 @@ void Player::Update(float frameTime)
 	//UpdateCollisionCentre();	//Set new collision centre - Collision Object
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 
+	//Update collision object to meet new position
 	GetCollisionCylinder().SetPosition(XMFLOAT2(GetWorldPos().x, GetWorldPos().z));
 }
+
+//-----------------------------------
+// Movement / Setters
+//-----------------------------------
 
 void Player::SetMoveForward()
 {

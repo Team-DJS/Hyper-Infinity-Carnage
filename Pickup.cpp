@@ -2,9 +2,10 @@
 using namespace HIC;
 
 // Default constructor for Pickup
-Pickup::Pickup(IMesh* mesh, const XMFLOAT3& position, float lifeTime) :
+Pickup::Pickup(IMesh* mesh, const XMFLOAT3& position, float radius, float lifeTime) :
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
-	mTimer(lifeTime)
+	mTimer(lifeTime),
+	mCollisionObject(CollisionCylinder(XMFLOAT2(position.x, position.y), radius))
 {
 }
 

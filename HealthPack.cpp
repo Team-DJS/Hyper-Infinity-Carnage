@@ -4,8 +4,8 @@ using namespace HIC;
 IMesh* HealthPack::MESH = nullptr;
 
 // Default constructor for HealthPack
-HealthPack::HealthPack(const XMFLOAT3& position, float lifeTime, uint32_t restoreAmount) :
-	Pickup(MESH, position, lifeTime),
+HealthPack::HealthPack(const XMFLOAT3& position, float radius, float lifeTime, uint32_t restoreAmount) :
+	Pickup(MESH, position, radius, lifeTime ),
 	mHealth(restoreAmount)
 {
 }

@@ -1,7 +1,15 @@
 #include "Arena.hpp"
 using namespace HIC;
 
+//-----------------------------------
+// Static Initialisations
+//-----------------------------------
+
 IMesh* Arena::ARENA_MESH = nullptr;
+
+//-----------------------------------
+// Constructors / Destructors
+//-----------------------------------
 
 // Default constructor for Arena
 Arena::Arena(I3DEngine* engine) :
@@ -15,7 +23,7 @@ Arena::Arena(I3DEngine* engine) :
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			pos.x = -1170.0f + 1170.0 * j;
+			pos.x = -1170.0f + 1170.0f * j;
 			pos.y = -600.0f;
 			pos.z = 1170.0f * i;
 			Scenery* sceneryTemp = new Scenery(temp, pos, 200.0f);
@@ -33,6 +41,18 @@ Arena::~Arena()
 		mSceneryObjects.pop_back();
 	}
 }
+
+//-----------------------------------
+// Setters
+//-----------------------------------
+
+//-----------------------------------
+// Getters
+//-----------------------------------
+
+//-----------------------------------
+// Other
+//-----------------------------------
 
 // Updates all the entities inside the arena
 void Arena::Update(float frameTime)

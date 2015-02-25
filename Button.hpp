@@ -5,29 +5,45 @@
 #define BUTTON_H	
 
 #include "CollisionAABB.hpp"
-using namespace HIC;
-/*--------------------------------------Class - CButton--------------------------------------*/
-
-class Button
+namespace HIC
 {
-private:
-	ISprite* mSprite;			//The sprite that the button will appear as
-	CollisionAABB mCollision;	//The collision box of the button
+	class Button
+	{
+	public:
+		//-----------------------------
+		// Constructors/Destructors
+		//-----------------------------
 
-public:
-	static I3DEngine* gEngine;
+		//Pass a spritename, position and width - let the constructor figure the exact collision box out
+		Button(string spriteName, XMFLOAT2 position, float width, float height);
 
-	//Pass a spritename, position and width - let the constructor figure the rest out
-	Button(string spriteName, XMFLOAT2 position, float width, float height);	//The object constructor
+		// Destructor for Button
+		~Button();
 
-	~Button();					//The object destructor
-	
-	bool MouseIsOver();			//Function that says if the mouse is pointing at a position on the sprite
-	
-	//bool ButtonClicked();		//Function that says if the button has been clicked or not
-};
+	public:
+		//--------------
+		// Setters
+		//--------------
 
-/************************************End of Class - CButton**********************************/
+		//--------------
+		// Getters
+		//--------------
 
+		//Returns whether or not the mouse is pointing at a position on the sprite
+		bool MouseIsOver();			
+
+		//--------------
+		// Other
+		//--------------
+
+	public:
+		static I3DEngine* gEngine;
+
+	private:
+		ISprite* mSprite;			//The sprite that the button will appear as
+		CollisionAABB mCollision;	//The collision box of the button
+
+	};
+}
 
 #endif
