@@ -9,6 +9,19 @@ Arena::Arena(I3DEngine* engine) :
 	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 20.0f)),
 	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
 {
+	IMesh* temp = engine->LoadMesh("cityScape.x");
+	XMFLOAT3 pos;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			pos.x = -1170.0f + 1170.0 * j;
+			pos.y = -600.0f;
+			pos.z = 1170.0f * i;
+			Scenery* sceneryTemp = new Scenery(temp, pos, 200.0f);
+			mSceneryObjects.push_back(sceneryTemp);
+		}		
+	}
 }
 
 // Destructor for Arena
