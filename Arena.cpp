@@ -12,12 +12,11 @@ IMesh* Arena::ARENA_MESH = nullptr;
 //-----------------------------------
 
 // Default constructor for Arena
-Arena::Arena(I3DEngine* engine) :
-	mEngine(engine),
+Arena::Arena() :
 	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 20.0f)),
 	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
 {
-	IMesh* temp = engine->LoadMesh("cityScape.x");
+	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
 	XMFLOAT3 pos;
 	for (int i = 0; i < 3; i++)
 	{
@@ -26,7 +25,7 @@ Arena::Arena(I3DEngine* engine) :
 			pos.x = -1170.0f + 1170.0f * j;
 			pos.y = -600.0f;
 			pos.z = 1170.0f * i;
-			Scenery* sceneryTemp = new Scenery(temp, pos, 200.0f);
+			Scenery* sceneryTemp = new Scenery(buildingsMesh, pos, 200.0f);
 			mSceneryObjects.push_back(sceneryTemp);
 		}		
 	}
@@ -59,29 +58,29 @@ void Arena::Update(float frameTime)
 {
 	
 	// Handle player input
-	if (mEngine->KeyHeld(Key_W))
+	if (gEngine->KeyHeld(Key_W))
 	{
 		mPlayer.SetMoveForward();
 		//mPlayer->MoveZ(50.0f * frameTime);
 	}
-	if (mEngine->KeyHeld(Key_A))
+	if (gEngine->KeyHeld(Key_A))
 	{
 		mPlayer.SetMoveLeft();
 		//mPlayer->MoveX(-50.0f * frameTime);
 	}
-	if (mEngine->KeyHeld(Key_S))
+	if (gEngine->KeyHeld(Key_S))
 	{
 		mPlayer.SetMoveBackward();
 		//mPlayer->MoveZ(-50.0f * frameTime);
 	}
-	if (mEngine->KeyHeld(Key_D))
+	if (gEngine->KeyHeld(Key_D))
 	{
 		mPlayer.SetMoveRight();
 		//mPlayer->MoveX(50.0f * frameTime);
 	}
 
 #ifdef _DEBUG
-	if (mEngine->KeyHit(Key_M))
+	if (gEngine->KeyHit(Key_M))
 	{
 		mPlayer.GetCollisionCylinder().ToggleMarkers();
 	}

@@ -36,9 +36,6 @@ namespace HIC
 		// Other
 		//--------------
 
-	public:
-		static I3DEngine* gEngine;
-
 	private:
 		ISprite* mSprite;			//The sprite that the button will appear as
 		CollisionAABB mCollision;	//The collision box of the button

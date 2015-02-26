@@ -10,6 +10,8 @@
 #include <TL-Engine.h>
 using namespace tle;
 
+extern I3DEngine* gEngine;
+
 // Include DirectX Maths Headers
 #include <DirectXMath.h>
 using namespace DirectX;

@@ -14,7 +14,7 @@ namespace HIC
 		//-----------------------------
 
 		// Default constructor for Arena
-		Arena(I3DEngine* engine);
+		Arena();
 
 		// Destructor for Arena
 		~Arena();
@@ -52,7 +52,6 @@ namespace HIC
 	
 	private:
 		// Pointer to the game engine
-		I3DEngine* mEngine;
 
 		// The player character
 		Player mPlayer;
