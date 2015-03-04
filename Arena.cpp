@@ -13,7 +13,7 @@ IMesh* Arena::ARENA_MESH = nullptr;
 
 // Default constructor for Arena
 Arena::Arena() :
-	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 20.0f)),
+	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 40.0f)),
 	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
 {
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");

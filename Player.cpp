@@ -27,6 +27,7 @@ Player::Player(const XMFLOAT3& position, float radius) :
 	mWeapon(new Weapon()),
 	mVelocity(0.0f, 0.0f)
 {
+	
 }
 
 // Destructor for Player

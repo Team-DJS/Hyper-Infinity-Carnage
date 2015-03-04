@@ -189,6 +189,8 @@ bool GameShutdown()
 	//Delete the collision object mesh
 	gEngine->RemoveMesh(CollisionObject::MARKER_MESH);
 	CollisionObject::MARKER_MESH = nullptr;
+
+	gCamera = gGameCamera;
 #endif
 
 	return true;
@@ -236,14 +238,14 @@ int main(int argc, char* argv[])
 				{
 					if (gNewGameButton->MouseIsOver())
 					{
-						//TODO: Perform some action
+						quitFrontend = true;					//Load into main game
 					}
 				}
 				if (gContinueButton)			
 				{
 					if (gContinueButton->MouseIsOver())
 					{
-						quitFrontend = true;					//Load into main game
+						//TODO: Perform some action
 					}
 				}
 				if (gViewHiScoreButton)
