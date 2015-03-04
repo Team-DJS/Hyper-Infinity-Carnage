@@ -88,7 +88,7 @@ void Weapon::Update(float frameTime)
 
 
 	//Update all projectiles
-	for (int i = 0; i < mProjectiles.size(); i++)
+	for (size_t i = 0; i < mProjectiles.size(); i++)
 	{
 		mProjectiles[i]->Update(frameTime);
 	}
