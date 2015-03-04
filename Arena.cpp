@@ -83,6 +83,10 @@ void Arena::Update(float frameTime)
 	if (gEngine->KeyHit(Key_M))
 	{
 		mPlayer.GetCollisionCylinder().ToggleMarkers();
+		for (size_t i = 0; i < mEnemies.size(); i++)
+		{
+			mEnemies[i]->GetCollisionCylinder().ToggleMarkers();
+		}
 	}
 #endif
 
