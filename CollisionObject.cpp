@@ -6,7 +6,7 @@ using namespace HIC;
 //-----------------------------------
 
 #ifdef _DEBUG
-const float CollisionObject::MARKER_SCALE = 100.0f;
+const float CollisionObject::MARKER_SCALE = 600.0f;
 IMesh* CollisionObject::MARKER_MESH = nullptr;
 #endif
 

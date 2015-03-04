@@ -56,7 +56,6 @@ Arena::~Arena()
 // Updates all the entities inside the arena
 void Arena::Update(float frameTime)
 {
-	
 	// Handle player input
 	if (gEngine->KeyHeld(Key_W))
 	{
