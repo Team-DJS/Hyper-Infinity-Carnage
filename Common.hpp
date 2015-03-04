@@ -20,3 +20,19 @@ using namespace DirectX;
 
 
 // TODO: Include Physics Engine Headers
+
+// Helper function to safely delete a pointer
+template<class T>
+inline void SafeRelease(T* &ptr)
+{
+#ifdef _DEBUG
+	if (ptr != nullptr)
+	{
+		delete(ptr);
+		ptr = nullptr;
+	}
+#else
+	delete(ptr);
+	ptr = nullptr;
+#endif
+}

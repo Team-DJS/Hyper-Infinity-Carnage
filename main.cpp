@@ -20,8 +20,6 @@ Arena* gArena = nullptr;
 // Front End Data
 //------------------------
 
-IFont* gMainMenuFont = nullptr;
-
 ISprite* gTitleCard			= nullptr;
 Button* gNewGameButton		= nullptr;
 Button* gContinueButton		= nullptr;
@@ -64,16 +62,18 @@ bool ProgramSetup()
 // Returns true on success, false on failure
 bool ProgramShutdown()
 {
+	// Remove the cameras
+	gEngine->RemoveCamera(gGameCamera);
+	gGameCamera = nullptr;
+
+#ifdef _DEBUG
+	gEngine->RemoveCamera(gDebugCamera);
+	gDebugCamera = nullptr;
+#endif
+
 	// Shutdown the TL-Engine
 	gEngine->Delete();
 	gEngine = nullptr;
-
-	// Cleanup pointers
-	gCamera = nullptr;
-	gGameCamera = nullptr;
-#ifdef _DEBUG
-	gDebugCamera = nullptr;
-#endif
 
 	return true;
 }
@@ -86,9 +86,6 @@ bool ProgramShutdown()
 // Returns true on success, false on failure
 bool FrontEndSetup()
 {
-	// Load the main menu font
-	gMainMenuFont = gEngine->LoadFont("Ubuntu Mono", 72);
-
 	// Load the menu button sprites
 	uint32_t halfScreenWidth = gEngine->GetWidth() / 2;
 
@@ -109,13 +106,6 @@ bool FrontEndSetup()
 // Returns true on success, false on failure
 bool FrontEndUpdate(float frameTime)
 {
-	//// Calculate the position to draw the title text
-	//uint32_t screenWidth = gEngine->GetWidth();
-	//uint32_t textWidth = gMainMenuFont->MeasureTextWidth("Hyper Infinity Carnage");
-
-	//// Draw the title
-	//gMainMenuFont->Draw("Hyper Infinity Carnage", (screenWidth / 2) - (textWidth / 2), 100, kRed);
-
 	return true;
 }
 
@@ -123,31 +113,12 @@ bool FrontEndUpdate(float frameTime)
 // Returns true on success, false on failure
 bool FrontEndShutdown()
 {
-	// Cleanup the main menu font
-	gEngine->RemoveFont(gMainMenuFont);
-	gMainMenuFont = nullptr;
-
 	// Cleanup the menu button sprites
-	if (gNewGameButton)
-	{
-		delete gNewGameButton;
-		gNewGameButton = nullptr;
-	}
-	if (gContinueButton)
-	{
-		delete gContinueButton;
-		gContinueButton = nullptr;
-	}
-	if (gViewHiScoreButton)
-	{
-		delete gViewHiScoreButton;
-		gViewHiScoreButton = nullptr;
-	}
-	if (gQuitGameButton)
-	{
-		delete gQuitGameButton;
-		gQuitGameButton = nullptr;
-	}
+	SafeRelease(gNewGameButton);
+	SafeRelease(gContinueButton);
+	SafeRelease(gViewHiScoreButton);
+	SafeRelease(gQuitGameButton);
+
 	if (gTitleCard)
 	{
 		gEngine->RemoveSprite(gTitleCard);
@@ -205,8 +176,7 @@ void GameUpdate(float frameTime)
 bool GameShutdown()
 {
 	// Delete the arena
-	delete(gArena);
-	gArena = nullptr;
+	SafeRelease(gArena);
 
 	// Delete the player mesh
 	gEngine->RemoveMesh(Player::MESH);
