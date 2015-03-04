@@ -30,8 +30,8 @@ mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
 		}
 	}
 
-	IMesh* enemyMesh = gEngine->LoadMesh("Sphere.x");
-	Enemy* temp = new Enemy(enemyMesh, XMFLOAT3(0.0f, 0.0f, 120.0f), 10.0f, 10.0f);
+	IMesh* enemyMesh = gEngine->LoadMesh("Enemy.x");
+	Enemy* temp = new Enemy(enemyMesh, XMFLOAT3(0.0f, 10.0f, 120.0f), 10.0f, 10.0f);
 	mEnemies.push_back(temp);
 }
 
