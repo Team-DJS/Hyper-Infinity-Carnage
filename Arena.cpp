@@ -111,7 +111,9 @@ void Arena::Update(float frameTime)
 		//{
 		if (CylinderToCylinderCollision(&mEnemies[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
 		{
-			mEnemies[i]->GetModel()->SetSkin("tiles1.jpg");
+			delete mEnemies[i];
+			mEnemies.erase(mEnemies.begin() + i);
+			i--;
 		}
 		//}
 	}
