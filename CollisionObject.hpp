@@ -12,7 +12,7 @@ namespace HIC
 		//-----------------------------
 
 		// Default constructor for CollisionObject
-		CollisionObject(XMFLOAT2 centre);
+		CollisionObject(const XMFLOAT2& centre);
 
 		// Destructor for CollisionObject
 		virtual ~CollisionObject();

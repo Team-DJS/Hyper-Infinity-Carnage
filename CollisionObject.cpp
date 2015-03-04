@@ -15,7 +15,7 @@ IMesh* CollisionObject::MARKER_MESH = nullptr;
 //-----------------------------------
 
 // Default constructor for CollisionObject
-CollisionObject::CollisionObject(XMFLOAT2 centre) :
+CollisionObject::CollisionObject(const XMFLOAT2& centre) :
 	mPosition(centre)
 {
 #ifdef _DEBUG

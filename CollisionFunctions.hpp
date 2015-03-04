@@ -17,4 +17,4 @@ bool CylinderToBoxCollision(CollisionCylinder* cylinder, CollisionAABB* box);
 //------------------
 
 // Calculate the distance vector from the first Vector2 to the second
-XMFLOAT2 CalculateDistanceVector(XMFLOAT2 from, XMFLOAT2 to);
+XMFLOAT2 CalculateDistanceVector(const XMFLOAT2& from, const XMFLOAT2& to);

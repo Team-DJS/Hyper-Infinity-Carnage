@@ -14,7 +14,7 @@ const uint32_t CollisionCylinder::NO_COLLISION_MARKERS = 10;
 //-----------------------------------
 
 // Default constructor for CollisionCylinder
-CollisionCylinder::CollisionCylinder(XMFLOAT2 centre, float radius) :
+CollisionCylinder::CollisionCylinder(const XMFLOAT2& centre, float radius) :
 	CollisionObject(centre),
 	mRadius(radius)
 {

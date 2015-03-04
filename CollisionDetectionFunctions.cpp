@@ -23,8 +23,8 @@ bool CylinderToBoxCollision(CollisionCylinder* cylinder, CollisionAABB* box)
 
 	float radius = cylinder->GetRadius();
 
-	XMFLOAT2 min = XMFLOAT2(box->GetMinPosition().x - radius, box->GetMinPosition().y - radius);
-	XMFLOAT2 max = XMFLOAT2(box->GetMaxPosition().x + radius, box->GetMaxPosition().y + radius);
+	XMFLOAT2 min(box->GetMinPosition().x - radius, box->GetMinPosition().y - radius);
+	XMFLOAT2 max(box->GetMaxPosition().x + radius, box->GetMaxPosition().y + radius);
 
 	XMFLOAT2 spherePos = cylinder->GetPosition();
 
@@ -43,7 +43,7 @@ bool CylinderToBoxCollision(CollisionCylinder* cylinder, CollisionAABB* box)
 //------------------
 
 // Calculate the distance vector from the first Vector2 to the second
-XMFLOAT2 CalculateDistanceVector(XMFLOAT2 from, XMFLOAT2 to)	
+XMFLOAT2 CalculateDistanceVector(const XMFLOAT2& from, const XMFLOAT2& to)
 {
 	return XMFLOAT2(to.x - from.x, to.y - from.y);
 }
