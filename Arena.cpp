@@ -13,8 +13,8 @@ IMesh* Arena::ARENA_MESH = nullptr;
 
 // Default constructor for Arena
 Arena::Arena() :
-	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 40.0f)),
-	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
+mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 40.0f)),
+mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
 {
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
 	XMFLOAT3 pos;
@@ -27,8 +27,12 @@ Arena::Arena() :
 			pos.z = 1170.0f * i;
 			Scenery* sceneryTemp = new Scenery(buildingsMesh, pos, 200.0f);
 			mSceneryObjects.push_back(sceneryTemp);
-		}		
+		}
 	}
+
+	IMesh* enemyMesh = gEngine->LoadMesh("Sphere.x");
+	Enemy* temp = new Enemy(enemyMesh, XMFLOAT3(0.0f, 0.0f, 120.0f), 10.0f, 10.0f);
+	mEnemies.push_back(temp);
 }
 
 // Destructor for Arena
@@ -96,13 +100,30 @@ void Arena::Update(float frameTime)
 	// Update all the enemies
 	for (auto& enemy : mEnemies)
 	{
+		enemy->LookAt(mPlayer.GetWorldPos());
 		enemy->Update(frameTime);
+	}
+
+	// Do collision
+	for (int i = 0; i < mEnemies.size(); i++)
+	{
+		//for (int j = 0; j < mEnemies.size(); j++)
+		//{
+		if (CylinderToCylinderCollision(&mEnemies[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
+		{
+			mEnemies[i]->GetModel()->SetSkin("tiles1.jpg");
+		}
+		//}
 	}
 }
 
 // Proceeds to the next stage
 void Arena::NextStage()
 {
+	// Get current stage
+	// Add one
+	// Determne number of enemies to defeat this stage
+	// Create that many enemies
 }
 
 // Saves the game to be loaded at a later date
@@ -113,9 +134,14 @@ void Arena::Save()
 // Removes all entities from the arena
 void Arena::Clear()
 {
+	for (int i = 0; i < mEnemies.size(); i++)
+	{
+		delete mEnemies[i];
+	}
+	mEnemies.clear();
 }
 
 void Arena::TargetCamera(ICamera* camera)
 {
-	camera->LookAt(mPlayer.GetModel() );
+	camera->LookAt(mPlayer.GetModel());
 }

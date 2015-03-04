@@ -3,6 +3,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Scenery.hpp"
+#include "CollisionFunctions.hpp"
 
 namespace HIC
 {

@@ -175,6 +175,9 @@ void GameUpdate(float frameTime)
 // Returns true on success, false on failure
 bool GameShutdown()
 {
+	// Before deleting the arena remove all the entities in the arena
+	gArena->Clear();
+
 	// Delete the arena
 	SafeRelease(gArena);
 

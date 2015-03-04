@@ -43,4 +43,8 @@ uint32_t Enemy::GetDamage() const
 // Called to update the entity
 void Enemy::Update(float frameTime)
 {
+	MoveX(GetFacingVector().x * 50.0f * frameTime);
+	MoveZ(GetFacingVector().z * 50.0f * frameTime);
+
+	GetCollisionCylinder().SetPosition(XMFLOAT2(GetWorldPos().x, GetWorldPos().z));
 }
