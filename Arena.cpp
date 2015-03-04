@@ -31,8 +31,13 @@ mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
 	}
 
 	IMesh* enemyMesh = gEngine->LoadMesh("Sphere.x");
-	Enemy* temp = new Enemy(enemyMesh, XMFLOAT3(0.0f, 0.0f, 120.0f), 10.0f, 10.0f);
-	mEnemies.push_back(temp);
+	for (int i = 0; i < 20; i++)
+	{
+		float random = static_cast<float>(rand() % 500);
+		Enemy* temp = new Enemy(enemyMesh, XMFLOAT3(static_cast<float>(rand() % 500), 0.0f, static_cast<float>(rand() % 500)), 10.0f, 10.0f);
+		mEnemies.push_back(temp);
+	}
+	
 }
 
 // Destructor for Arena
@@ -111,6 +116,7 @@ void Arena::Update(float frameTime)
 		//{
 		if (CylinderToCylinderCollision(&mEnemies[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
 		{
+			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
 			delete mEnemies[i];
 			mEnemies.erase(mEnemies.begin() + i);
 			i--;
