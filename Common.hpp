@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <exception>
+#include <unordered_map>
 
 // Include TL-Engine Headers
 #include <TL-Engine.h>
@@ -17,9 +18,10 @@ extern I3DEngine* gEngine;
 using namespace DirectX;
 
 // TODO: Include OpenAL Headers
-
+#include <AL\alut.h>
 
 // TODO: Include Physics Engine Headers
+
 
 // Helper function to safely delete a pointer
 template<class T>

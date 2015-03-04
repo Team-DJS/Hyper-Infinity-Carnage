@@ -1,5 +1,6 @@
 #include "Arena.hpp"
 #include "Button.hpp"
+#include "AudioManager.hpp"
 
 using namespace HIC;
 
@@ -15,6 +16,10 @@ ICamera* gDebugCamera = nullptr;
 
 // The game arena
 Arena* gArena = nullptr;
+
+// The audio manager
+AudioManager* gAudioManager = nullptr;
+AudioSource* gTitleTheme = nullptr;
 
 //------------------------
 // Front End Data
@@ -54,6 +59,9 @@ bool ProgramSetup()
 	gDebugCamera->SetRotationSpeed(20.0f);
 #endif
 	gCamera = gGameCamera;
+
+	// Initialise the AudioManager
+	gAudioManager = new AudioManager();
 	
 	return true;
 }
@@ -62,6 +70,8 @@ bool ProgramSetup()
 // Returns true on success, false on failure
 bool ProgramShutdown()
 {
+	SafeRelease(gAudioManager);
+
 	// Remove the cameras
 	gEngine->RemoveCamera(gGameCamera);
 	gGameCamera = nullptr;
@@ -98,6 +108,11 @@ bool FrontEndSetup()
 	gContinueButton			= new Button("Continue_Button.png", XMFLOAT2((float)halfScreenWidth, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	gViewHiScoreButton		= new Button("View_Hi_Score_Button.png", XMFLOAT2((float)halfScreenWidth, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	gQuitGameButton			= new Button("Quit_Game_Button.png", XMFLOAT2((float)halfScreenWidth, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	
+	// Create the title theme source
+	gAudioManager->LoadAudio("TitleTheme", "./Media/Intro_Theme.wav");
+	gTitleTheme = gAudioManager->CreateSource("TitleTheme", XMFLOAT3(0, 0, -3));
+	gTitleTheme->Play();
 
 	return true;
 }
@@ -113,6 +128,11 @@ bool FrontEndUpdate(float frameTime)
 // Returns true on success, false on failure
 bool FrontEndShutdown()
 {
+	gAudioManager->ReleaseSource(gTitleTheme);
+	gTitleTheme = nullptr;
+
+	gAudioManager->ReleaseAudio("TitleTheme");
+
 	// Cleanup the menu button sprites
 	SafeRelease(gNewGameButton);
 	SafeRelease(gContinueButton);
