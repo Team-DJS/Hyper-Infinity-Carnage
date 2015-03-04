@@ -30,11 +30,11 @@ mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
 		}
 	}
 
-	IMesh* enemyMesh = gEngine->LoadMesh("Sphere.x");
+	IMesh* enemyMesh = gEngine->LoadMesh("Enemy.x");
 	for (int i = 0; i < 20; i++)
 	{
 		float random = static_cast<float>(rand() % 500);
-		Enemy* temp = new Enemy(enemyMesh, XMFLOAT3(static_cast<float>(rand() % 500), 10.0f, static_cast<float>(rand() % 500)), 10.0f, 10.0f);
+		Enemy* temp = new Enemy(enemyMesh, XMFLOAT3(static_cast<float>(rand() % 500), 10.0f, static_cast<float>(rand() % 500)), 15.0f, 10.0f);
 	mEnemies.push_back(temp);
 }
 
