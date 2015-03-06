@@ -6,6 +6,7 @@ using namespace HIC;
 //-----------------------------------
 
 IMesh* Arena::ARENA_MESH = nullptr;
+IMesh* Arena::ENEMY_MESH = nullptr;
 
 //-----------------------------------
 // Constructors / Destructors
@@ -13,8 +14,9 @@ IMesh* Arena::ARENA_MESH = nullptr;
 
 // Default constructor for Arena
 Arena::Arena() :
-mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 40.0f)),
-mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
+	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 40.0f)),
+	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f))),
+	mCollisionBox(CollisionAABB(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f)))
 {
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
 	XMFLOAT3 pos;
@@ -30,14 +32,7 @@ mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)))
 		}
 	}
 
-	IMesh* enemyMesh = gEngine->LoadMesh("Enemy.x");
-	for (int i = 0; i < 20; i++)
-	{
-		float random = static_cast<float>(rand() % 500);
-		Enemy* temp = new Enemy(enemyMesh, XMFLOAT3(static_cast<float>(rand() % 500), 10.0f, static_cast<float>(rand() % 500)), 15.0f, 10.0f);
-	mEnemies.push_back(temp);
-}
-
+	SpawnEnemies();
 }
 
 // Destructor for Arena
@@ -96,21 +91,34 @@ void Arena::Update(float frameTime)
 		{
 			mEnemies[i]->GetCollisionCylinder().ToggleMarkers();
 		}
+		mCollisionBox.ToggleMarkers();
 	}
 #endif
-
+	XMFLOAT3 enitityPos = mPlayer.GetWorldPos();
 	// Update the player
 	mPlayer.Update(frameTime);
+
+	if (!CylinderToBoxCollision(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
+	{
+		mPlayer.SetPosition(enitityPos);
+	}
+
 
 	// Update all the enemies
 	for (auto& enemy : mEnemies)
 	{
+		enitityPos = enemy->GetWorldPos();
 		enemy->LookAt(mPlayer.GetWorldPos());
 		enemy->Update(frameTime);
+
+		if (!CylinderToBoxCollision(&enemy->GetCollisionCylinder(), &mCollisionBox))
+		{
+			enemy->SetPosition(enitityPos);
+		}
 	}
 
-	// Do collision
-	for (int i = 0; i < mEnemies.size(); i++)
+	// Check enemy - player collision
+	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
 		//for (int j = 0; j < mEnemies.size(); j++)
 		//{
@@ -122,6 +130,11 @@ void Arena::Update(float frameTime)
 			i--;
 		}
 		//}
+	}
+
+	if (mPlayer.GetHealth() <= 0.0f)
+	{
+		this->Clear();
 	}
 }
 
@@ -142,14 +155,26 @@ void Arena::Save()
 // Removes all entities from the arena
 void Arena::Clear()
 {
-	for (int i = 0; i < mEnemies.size(); i++)
+	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
 		delete mEnemies[i];
 	}
 	mEnemies.clear();
+	mPlayer.Respawn();
+	SpawnEnemies();
+
 }
 
 void Arena::TargetCamera(ICamera* camera)
 {
 	camera->LookAt(mPlayer.GetModel());
+}
+
+void Arena::SpawnEnemies()
+{
+	srand(time(0));
+	for (int i = 0; i < 20; i++)
+	{
+		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x, mCollisionBox.GetMaxOffset().x), 7.0f, Random(mCollisionBox.GetMinOffset().y, mCollisionBox.GetMaxOffset().y)), 15.0f, 10));
+	}
 }

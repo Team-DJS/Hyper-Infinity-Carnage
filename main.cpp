@@ -145,6 +145,8 @@ bool GameSetup()
 	// Load the player mesh
 	Player::MESH = gEngine->LoadMesh("Player.x");
 	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
+	Arena::ENEMY_MESH = gEngine->LoadMesh("Enemy.x");
+
 #ifdef _DEBUG
 	CollisionObject::MARKER_MESH = gEngine->LoadMesh("dummy.x");
 #endif
@@ -193,7 +195,9 @@ bool GameShutdown()
 	//Delete the arena mesh
 	gEngine->RemoveMesh(Arena::ARENA_MESH);
 	Arena::ARENA_MESH = nullptr;
-
+	//Delete the enemy mesh
+	gEngine->RemoveMesh(Arena::ENEMY_MESH);
+	Arena::ENEMY_MESH = nullptr;
 #ifdef _DEBUG
 	//Delete the collision object mesh
 	gEngine->RemoveMesh(CollisionObject::MARKER_MESH);

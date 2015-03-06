@@ -77,6 +77,16 @@ void Entity::RotateY(float degrees)
 	mModel->RotateY(degrees);
 }
 
+void Entity::SetPosition(XMFLOAT3 newPosition)
+{
+	mModel->SetPosition(newPosition.x, newPosition.y, newPosition.z);
+}
+
+void Entity::ResetHealth()
+{
+	mHealth = DEFAULT_HEALTH;
+}
+
 //-----------------------------------
 // Getters
 //-----------------------------------
@@ -133,5 +143,5 @@ CollisionCylinder& Entity::GetCollisionCylinder()
 // Points the model at a given position
 void Entity::LookAt(const XMFLOAT3& position)
 {
-	mModel->LookAt(position.x, position.y, position.z);
+	mModel->LookAt(position.x, mModel->GetY(), position.z);
 }

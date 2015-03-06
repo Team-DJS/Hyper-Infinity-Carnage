@@ -11,7 +11,7 @@ const float Player::RADIUS = 1.0f;
 const uint32_t Player::DEFAULT_LIVES = 5U;
 const uint32_t Player::DEFAULT_BOMBS = 3U;
 
-// MovementVariables
+// Movement Variables
 const float Player::BASE_THRUST = 480.0f;
 const float Player::DRAG_COEF = 5.0f;
 const float Player::TURN_SPEED = 100.0f;
@@ -80,18 +80,14 @@ Weapon* Player::GetWeapon()
 // Respawns the player inside the arena
 void Player::Respawn()
 {
+	SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	ResetHealth();
 }
 
 // Called to update the entity
 void Player::Update(float frameTime)
 {
 	//************WEAPON*************//
-
-	if (mTryFire)
-	{
-		mWeapon->SetFire();
-		mTryFire = false;
-	}
 	// Update the weapon
 	mWeapon->Update(frameTime);
 
@@ -129,8 +125,8 @@ void Player::Update(float frameTime)
 
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 	XMFLOAT2 thrust = XMFLOAT2(0.0f, 0.0f);	//Create thrust vector and initialise it to zero
-	XMFLOAT3 facingVect = GetFacingVector();
-	XMFLOAT3 rightVect = GetRightVector();
+	XMFLOAT3 facingVect = XMFLOAT3(0.0f, 0.0f, 1.0f);//GetFacingVector();
+	XMFLOAT3 rightVect = XMFLOAT3(1.0f, 0.0f, 0.0f);//GetRightVector();
 	XMFLOAT2 drag = XMFLOAT2(0.0f, 0.0f);	//Create vector of drag (resistance to motion) of the ship
 
 	//SetPreviousPos();	/**THIS IS FOR COLLISION RESOLUTION, SETS THE POSITION THE MODEL WAS JUST IN NOT CURRENTLY IMPLEMENTED**/
@@ -212,5 +208,5 @@ void Player::SetMoveRight()
 
 void Player::SetTryFire()
 {
-
+	mWeapon->SetFire();
 }

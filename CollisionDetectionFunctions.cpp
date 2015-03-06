@@ -23,8 +23,8 @@ bool CylinderToBoxCollision(CollisionCylinder* cylinder, CollisionAABB* box)
 
 	float radius = cylinder->GetRadius();
 
-	XMFLOAT2 min(box->GetMinPosition().x - radius, box->GetMinPosition().y - radius);
-	XMFLOAT2 max(box->GetMaxPosition().x + radius, box->GetMaxPosition().y + radius);
+	XMFLOAT2 min(box->GetMinPosition().x + radius, box->GetMinPosition().y + radius);
+	XMFLOAT2 max(box->GetMaxPosition().x - radius, box->GetMaxPosition().y - radius);
 
 	XMFLOAT2 spherePos = cylinder->GetPosition();
 

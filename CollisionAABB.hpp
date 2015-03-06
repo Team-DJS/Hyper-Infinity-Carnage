@@ -52,7 +52,7 @@ namespace HIC
 
 	public:
 		//Collision Markers - Used to see where the collision is
-		void ToggleMarkers();	//Toggles whether or not this markers' mesh
+		void ToggleMarkers();	//Toggles whether or not this collision markers exist
 #endif
 	};
 }

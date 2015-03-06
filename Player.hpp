@@ -28,7 +28,7 @@ namespace HIC
 
 		// Gives an extra bomb to the player
 		void GiveBomb();
-		
+
 		//---------------
 		// Getters
 		//---------------
@@ -74,8 +74,6 @@ namespace HIC
 		bool mMoveBackward;
 		bool mMoveLeft;
 		bool mMoveRight;
-		//Other control states
-		bool mTryFire;
 
 		//Constant values
 		static const float BASE_THRUST;

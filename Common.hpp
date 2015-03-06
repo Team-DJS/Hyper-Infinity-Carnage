@@ -6,6 +6,7 @@
 #include <fstream>
 #include <exception>
 #include <unordered_map>
+#include <time.h>
 
 // Include TL-Engine Headers
 #include <TL-Engine.h>
@@ -38,3 +39,6 @@ inline void SafeRelease(T* &ptr)
 	ptr = nullptr;
 #endif
 }
+
+// Random number generator
+float Random(float lowBound, float highBound);
