@@ -74,9 +74,13 @@ namespace HIC
 		bool mMoveBackward;
 		bool mMoveLeft;
 		bool mMoveRight;
+		//Other control states
+		bool mTryFire;
+
 		//Constant values
 		static const float BASE_THRUST;
 		static const float DRAG_COEF;
+		static const float TURN_SPEED;
 
 	public:
 		//---------------------
@@ -88,6 +92,9 @@ namespace HIC
 		void SetMoveBackward();
 		void SetMoveLeft();
 		void SetMoveRight();
+
+		//Set the firing flag for the object to react to in Update()
+		void SetTryFire();
 
 	};
 }
