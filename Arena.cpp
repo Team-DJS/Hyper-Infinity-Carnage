@@ -83,6 +83,11 @@ void Arena::Update(float frameTime)
 		//mPlayer->MoveX(50.0f * frameTime);
 	}
 
+	if (gEngine->KeyHit(Mouse_LButton))
+	{
+		mPlayer.SetTryFire();
+	}
+
 #ifdef _DEBUG
 	if (gEngine->KeyHit(Key_M))
 	{
@@ -160,6 +165,7 @@ void Arena::Clear()
 		delete mEnemies[i];
 	}
 	mEnemies.clear();
+	mPlayer.Clear();
 	mPlayer.Respawn();
 	SpawnEnemies();
 

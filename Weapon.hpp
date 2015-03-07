@@ -2,6 +2,7 @@
 
 #include "Common.hpp"
 #include "Projectile.hpp"
+#include "Timer.hpp"
 
 namespace HIC
 {
@@ -50,7 +51,10 @@ namespace HIC
 		//--------------
 
 		// Called to update the weapon
-		void Update(float frameTime);
+		void Update(float frameTime, XMFLOAT3 playerPosition, XMFLOAT3 playerFacingVector);
+
+		// Called to clear all projectiles currently alive
+		void Clear();
 
 	private:
 		// Shoots a projectile in a direction
@@ -61,7 +65,7 @@ namespace HIC
 		uint32_t mDamage;					//Amount of damage a bullet deals upon contact
 		uint32_t mNoBarrels;				//Number of barrels the ship fires at once
 		vector <Projectile*> mProjectiles;	//Vector of projectiles that this weapon has fired (clear a projectile when it hits something)
-
+		Timer mFireTimer;
 		bool mTryFire;						//Whether or not the weapon should try to fire a round this frame
 	};
 }

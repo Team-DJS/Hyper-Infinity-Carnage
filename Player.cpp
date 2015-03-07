@@ -87,12 +87,6 @@ void Player::Respawn()
 // Called to update the entity
 void Player::Update(float frameTime)
 {
-	//************WEAPON*************//
-	// Update the weapon
-	mWeapon->Update(frameTime);
-
-	//*********END OF WEAPON*********//
-
 	//***** Face the player in the direction of the mouse *****// - incomplete
 
 	////Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
@@ -122,6 +116,12 @@ void Player::Update(float frameTime)
 	//}
 
 	//******* End of direct the player *********//
+
+	//************WEAPON*************//
+	// Update the weapon
+	mWeapon->Update(frameTime, GetWorldPos(), GetFacingVector());
+
+	//*********END OF WEAPON*********//
 
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 	XMFLOAT2 thrust = XMFLOAT2(0.0f, 0.0f);	//Create thrust vector and initialise it to zero
@@ -209,4 +209,9 @@ void Player::SetMoveRight()
 void Player::SetTryFire()
 {
 	mWeapon->SetFire();
+}
+
+void Player::Clear()
+{
+	mWeapon->Clear();
 }

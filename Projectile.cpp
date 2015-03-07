@@ -54,9 +54,9 @@ CollisionCylinder& Projectile::GetCollisionObject()
 void Projectile::Update(float frameTime)
 {
 	// Move the model
-	mModel->Move(mVelocity.x * frameTime,
+	mModel->Move(mVelocity.x * 50.0f * frameTime,
 				 0.0f,
-				 mVelocity.y * frameTime);
+				 mVelocity.y * 50.0f * frameTime);
 
 	// Update the collision cylinder with the new position
 	XMFLOAT2 newPosition(mModel->GetX(), mModel->GetZ());
