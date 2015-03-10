@@ -73,6 +73,12 @@ uint32_t Weapon::GetDamage()
 	return mDamage;
 }
 
+
+vector<Projectile*> Weapon::GetProjectiles()
+{
+	return mProjectiles;
+}
+
 //-----------------------------------
 // Other
 //-----------------------------------
@@ -90,11 +96,11 @@ void Weapon::Update(float frameTime, XMFLOAT3 playerPosition, XMFLOAT3 playerFac
 	{		//- Perform fire action if timer allows
 		if (mFireTimer.IsComplete())
 		{
-			Projectile* newProjectile = new Projectile(playerPosition, XMFLOAT2(playerFacingVector.x, playerFacingVector.z), mDamage);
+			Projectile* newProjectile = new Projectile(playerPosition, XMFLOAT2(-playerFacingVector.x * 8, -playerFacingVector.z * 8), mDamage);
 			mProjectiles.push_back(newProjectile);
 			mFireTimer.Reset();
 		}
-	}		
+	}
 
 
 	//Update all projectiles

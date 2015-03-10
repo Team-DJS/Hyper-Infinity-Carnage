@@ -46,6 +46,9 @@ namespace HIC
 		//Returns the damage that a new projectile will deliver
 		uint32_t GetDamage();
 
+		//Returns the projectiles for collision
+		vector<Projectile*> GetProjectiles();
+
 		//--------------
 		// Other
 		//--------------
