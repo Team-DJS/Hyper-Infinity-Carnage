@@ -36,6 +36,12 @@ void AudioSource::SetVolume(float volume)
 	}
 }
 
+// Sets the looping state of the audio
+void AudioSource::SetLooping(bool loop)
+{
+	alSourcei(mID, AL_LOOPING, loop);
+}
+
 //---------------
 // Getters
 //---------------

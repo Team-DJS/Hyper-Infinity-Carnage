@@ -25,6 +25,9 @@ namespace HIC
 		// Sets the volume of the source
 		void SetVolume(float volume);
 
+		// Sets the looping state of the audio
+		void SetLooping(bool loop);
+
 		//---------------
 		// Getters
 		//---------------

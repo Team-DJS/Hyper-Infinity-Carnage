@@ -34,6 +34,7 @@ Arena::Arena() :
 
 	gAudioManager->LoadAudio("GameplayMusic", "Media\\GameplayTheme.wav");
 	mGameMusic = gAudioManager->CreateSource("GameplayMusic", XMFLOAT3(0.0f, 0.0f, 0.0f));
+	mGameMusic->SetLooping(true);
 	mGameMusic->Play();
 
 	SpawnEnemies();
