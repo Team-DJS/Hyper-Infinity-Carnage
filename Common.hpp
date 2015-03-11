@@ -68,7 +68,7 @@ using namespace DirectX;
 //#pragma comment(lib, "hkpDynamics.lib")
 //#pragma comment(lib, "hkpInternal.lib")
 //#pragma comment(lib, "hkpUtilities.lib")
-#pragma comment(lib, "hkpVehicle.lib")
+//#pragma comment(lib, "hkpVehicle.lib")
 
 
 // Helper function to safely delete a pointer

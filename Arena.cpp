@@ -131,7 +131,7 @@ void Arena::Update(float frameTime)
 		CollisionCylinder currentEnemy = mEnemies[i]->GetCollisionCylinder();
 
 		// Check whether colliding with a projectile
-		for (int j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
+		for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
 		{
 			if (CylinderToCylinderCollision(&currentEnemy, &mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject()))
 			{
