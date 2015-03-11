@@ -87,7 +87,9 @@ void Player::Respawn()
 // Called to update the entity
 void Player::Update(float frameTime)
 {
-	//***** Face the player in the direction of the mouse *****// - incomplete
+	this->SetModelToPhysicsBody();
+
+	//***** Face the player in the direction of the mouse *****//
 
 	//Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
 	XMFLOAT2 mouseVector;

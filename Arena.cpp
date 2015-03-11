@@ -18,6 +18,8 @@ Arena::Arena() :
 	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f))),
 	mCollisionBox(CollisionAABB(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f)))
 {
+	gPhysicsManager->CreateRigidBody(mArenaModel.GetModel(), 1000);
+
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
 	XMFLOAT3 pos;
 	for (int i = 0; i < 3; i++)
@@ -211,8 +213,9 @@ void Arena::TargetCamera(ICamera* camera)
 void Arena::SpawnEnemies()
 {
 	srand((uint32_t)(time(0)));
-	for (int i = 0; i < 20; i++)
+	for (uint32_t i = 0; i < 20; i++)
 	{
 		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15 )), 15.0f, 10));
 	}
+
 }

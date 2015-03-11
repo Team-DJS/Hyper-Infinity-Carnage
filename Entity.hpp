@@ -2,10 +2,11 @@
 
 #include "Common.hpp"
 #include "CollisionCylinder.hpp"
+#include "PhysicsManager.hpp"
 
 namespace HIC
 {
-	class Entity
+	class Entity : hkpContactListener
 	{
 	public:
 		//-----------------------------
@@ -74,7 +75,11 @@ namespace HIC
 		// Points the model at a given position
 		void LookAt(const XMFLOAT3& position);
 
+		void SetModelToPhysicsBody();
 
+		void SetPhysicsBodyToModel();
+
+		void contactPointCallback(const hkpContactPointEvent& p_event);
 
 	public:
 		// Called to update the entity
@@ -90,5 +95,7 @@ namespace HIC
 		uint32_t mHealth;
 		uint32_t mMaxHealth;
 		CollisionCylinder mCollisionCylinder;
+		hkpRigidBody* mRigidBody;
+
 	};
 }

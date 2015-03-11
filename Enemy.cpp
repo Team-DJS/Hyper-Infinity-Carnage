@@ -43,6 +43,8 @@ uint32_t Enemy::GetDamage() const
 // Called to update the entity
 void Enemy::Update(float frameTime)
 {
+	this->SetModelToPhysicsBody();
+
 	MoveX(GetFacingVector().x * 50.0f * frameTime);
 	MoveZ(GetFacingVector().z * 50.0f * frameTime);
 

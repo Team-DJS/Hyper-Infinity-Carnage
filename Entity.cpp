@@ -21,6 +21,9 @@ Entity::Entity(IMesh* mesh, const XMFLOAT3& position, float radius) :
 	mMaxHealth(DEFAULT_MAX_HEALTH),
 	mCollisionCylinder(XMFLOAT2(position.x, position.z), radius)
 {
+	mRigidBody = gPhysicsManager->CreateRigidBody(mModel, 100);
+	SetPhysicsBodyToModel();
+	mRigidBody->addContactListener(this);
 }
 
 // Destructor for Entity
@@ -28,6 +31,15 @@ Entity::~Entity()
 {
 	// Remove the entity model
 	mModel->GetMesh()->RemoveModel(mModel);
+
+	if (mRigidBody->isActive())
+	{
+		// Remove the rigid body from the physics world
+		gPhysicsManager->RemoveRigidBody(mRigidBody);
+		mRigidBody->removeContactListener(this);
+	}
+
+
 }
 
 //-----------------------------------
@@ -144,4 +156,48 @@ CollisionCylinder& Entity::GetCollisionCylinder()
 void Entity::LookAt(const XMFLOAT3& position)
 {
 	mModel->LookAt(position.x, mModel->GetY(), position.z);
+}
+
+
+void Entity::SetModelToPhysicsBody()
+{
+	// Get the (world) matrix of the physics body from Havok. However, Havok does not retain scaling for bodies, so this function ensures the existing model scaling is kept
+	HK_ALIGN16(hkFloat32 mat[16]); // See comment on function above
+	mModel->GetMatrix(mat);
+	float scaleX = sqrt(mat[0] * mat[0] + mat[1] * mat[1] + mat[2] * mat[2]);
+	float scaleY = sqrt(mat[4] * mat[4] + mat[5] * mat[5] + mat[6] * mat[6]);
+	float scaleZ = sqrt(mat[8] * mat[8] + mat[9] * mat[9] + mat[10] * mat[10]);
+	mRigidBody->getTransform().get4x4ColumnMajor(mat);
+	mat[0] *= scaleX;	mat[1] *= scaleX;	mat[2] *= scaleX;
+	mat[4] *= scaleY;	mat[5] *= scaleY;	mat[6] *= scaleY;
+	mat[8] *= scaleZ;	mat[9] *= scaleZ;	mat[10] *= scaleZ;
+	mModel->SetMatrix(mat);
+
+}
+
+void Entity::SetPhysicsBodyToModel()
+{
+	// Need to use the model's (world) matrix to position the physics body in Havok. However, Havok does not handle scaling of bodies, so this function removes the scaling first
+	HK_ALIGN16(hkFloat32 mat[16]); // The Havok HK_ALIGN16 macro lets us declare this array so it starts on a 16 byte boundary in memory (0, 16, or 32 etc.). This 
+	// allows Havok to implement a more efficient matrix copy. Must also do this in your own code - it will crash without the alignment
+	mModel->GetMatrix(mat);
+	float scaleX = sqrt(mat[0] * mat[0] + mat[1] * mat[1] + mat[2] * mat[2]);
+	float scaleY = sqrt(mat[4] * mat[4] + mat[5] * mat[5] + mat[6] * mat[6]);
+	float scaleZ = sqrt(mat[8] * mat[8] + mat[9] * mat[9] + mat[10] * mat[10]);
+	mat[0] /= scaleX;	mat[1] /= scaleX;	mat[2] /= scaleX;
+	mat[4] /= scaleY;	mat[5] /= scaleY;	mat[6] /= scaleY;
+	mat[8] /= scaleZ;	mat[9] /= scaleZ;	mat[10] /= scaleZ;
+	hkTransform transform;
+	transform.set4x4ColumnMajor(mat);
+	mRigidBody->setTransform(transform);
+}
+
+void Entity::contactPointCallback(const hkpContactPointEvent& p_event)
+{
+	//HK_ASSERT2(0xf455ea07, p_event.m_source != hkpCollisionEvent::SOURCE_WORLD, "Do not add this listener to the world.");
+	//printf("IT WENT IN THE THING \n");
+
+	// Put your collision here
+	// or alternatively, set a boolean to tell you that
+	//   you are colliding, and use it in your update()
 }

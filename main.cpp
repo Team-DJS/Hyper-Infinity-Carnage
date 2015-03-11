@@ -142,6 +142,8 @@ bool FrontEndShutdown()
 // Returns true on success, false on failure
 bool GameSetup()
 {
+	gPhysicsManager = new PhysicsManager(1000, 1.0f/60.0f, XMFLOAT3(0.0f, 0.0f, 0.0f));
+
 	// Load the player mesh
 	Player::MESH = gEngine->LoadMesh("Player.x");
 	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
@@ -161,6 +163,7 @@ bool GameSetup()
 // Returns true on success, false on failure
 void GameUpdate(float frameTime)
 {
+	gPhysicsManager->Update(frameTime);
 	gArena->Update(frameTime);
 	gArena->TargetCamera(gGameCamera);
 #ifdef _DEBUG
@@ -207,6 +210,7 @@ bool GameShutdown()
 	gCamera = gGameCamera;
 #endif
 
+	SafeRelease(gPhysicsManager);
 	return true;
 }
 
