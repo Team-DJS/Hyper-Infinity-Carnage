@@ -8,7 +8,8 @@ using namespace HIC;
 
 // Constructor for Timer
 Timer::Timer(float endTime) :
-	mEndTime(endTime)
+	mEndTime(endTime),
+	mCurrentTime(0.0f)
 {
 }
 

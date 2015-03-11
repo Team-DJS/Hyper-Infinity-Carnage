@@ -51,6 +51,9 @@ namespace HIC
 
 		// Called to update the entity
 		void Update(float frameTime);
+
+		// Called when the arena clears, clears all the projectiles currently alive
+		void Clear();
 	
 	public:
 		static IMesh* MESH;

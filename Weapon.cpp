@@ -14,7 +14,8 @@ Weapon::Weapon(float fireRate, uint32_t damage, uint32_t noBarrels) :
 	mFireRate(fireRate),
 	mDamage(damage),
 	mNoBarrels(noBarrels),
-	mTryFire(false)
+	mTryFire(false),
+	mFireTimer(fireRate)
 {
 }
 
@@ -72,19 +73,34 @@ uint32_t Weapon::GetDamage()
 	return mDamage;
 }
 
+
+vector<Projectile*> Weapon::GetProjectiles()
+{
+	return mProjectiles;
+}
+
 //-----------------------------------
 // Other
 //-----------------------------------
 
 // Called to update the weapon
-void Weapon::Update(float frameTime)
+void Weapon::Update(float frameTime, XMFLOAT3 playerPosition, XMFLOAT3 playerFacingVector)
 {
 	//**%**
 
 	//Update fire timer
+	mFireTimer.Update(frameTime);
 
 	//Check if trying to fire this frame
-		//- Perform fire action if timer allows
+	if (mTryFire)
+	{		//- Perform fire action if timer allows
+		if (mFireTimer.IsComplete())
+		{
+			Projectile* newProjectile = new Projectile(playerPosition, XMFLOAT2(-playerFacingVector.x * 8, -playerFacingVector.z * 8), mDamage);
+			mProjectiles.push_back(newProjectile);
+			mFireTimer.Reset();
+		}
+	}
 
 
 	//Update all projectiles
@@ -95,6 +111,15 @@ void Weapon::Update(float frameTime)
 
 	//Unset tryToFire boolean
 	mTryFire = false;
+}
+
+void Weapon::Clear()
+{
+	for (uint32_t i = 0; i < mProjectiles.size(); i++)
+	{
+		delete mProjectiles[i];
+	}
+	mProjectiles.clear();
 }
 
 // Shoots a new projectile in a direction

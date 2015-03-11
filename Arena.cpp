@@ -25,7 +25,7 @@ Arena::Arena() :
 		for (int j = 0; j < 3; j++)
 		{
 			pos.x = -1170.0f + 1170.0f * j;
-			pos.y = -600.0f;
+			pos.y = -700.0f;
 			pos.z = 1170.0f * i;
 			Scenery* sceneryTemp = new Scenery(buildingsMesh, pos, 200.0f);
 			mSceneryObjects.push_back(sceneryTemp);
@@ -83,6 +83,11 @@ void Arena::Update(float frameTime)
 		//mPlayer->MoveX(50.0f * frameTime);
 	}
 
+	if (gEngine->KeyHit(Mouse_LButton))
+	{
+		mPlayer.SetTryFire();
+	}
+
 #ifdef _DEBUG
 	if (gEngine->KeyHit(Key_M))
 	{
@@ -117,24 +122,47 @@ void Arena::Update(float frameTime)
 		}
 	}
 
+	bool hitEnemy;
 	// Check enemy - player collision
 	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
-		//for (int j = 0; j < mEnemies.size(); j++)
-		//{
-		if (CylinderToCylinderCollision(&mEnemies[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
+		hitEnemy = false;
+		// get a temp cylinder so you dont need to get it again for each collision
+		CollisionCylinder currentEnemy = mEnemies[i]->GetCollisionCylinder();
+
+		// Check whether colliding with a projectile
+		for (int j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
+		{
+			if (CylinderToCylinderCollision(&currentEnemy, &mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject()))
+			{
+				hitEnemy = true;
+				break;
+			}
+		}
+
+		if (CylinderToCylinderCollision(&currentEnemy, &mPlayer.GetCollisionCylinder()))
 		{
 			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
+			hitEnemy = true;
+		}
+		//}
+
+		if (hitEnemy)
+		{
 			delete mEnemies[i];
 			mEnemies.erase(mEnemies.begin() + i);
 			i--;
 		}
-		//}
 	}
 
 	if (mPlayer.GetHealth() <= 0.0f)
 	{
 		this->Clear();
+	}
+
+	if (mEnemies.size() <= 0)
+	{
+		NextStage();
 	}
 }
 
@@ -145,6 +173,8 @@ void Arena::NextStage()
 	// Add one
 	// Determne number of enemies to defeat this stage
 	// Create that many enemies
+
+	this->Clear();
 }
 
 // Saves the game to be loaded at a later date
@@ -160,6 +190,7 @@ void Arena::Clear()
 		delete mEnemies[i];
 	}
 	mEnemies.clear();
+	mPlayer.Clear();
 	mPlayer.Respawn();
 	SpawnEnemies();
 
@@ -175,6 +206,6 @@ void Arena::SpawnEnemies()
 	srand((uint32_t)(time(0)));
 	for (int i = 0; i < 20; i++)
 	{
-		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x, mCollisionBox.GetMaxOffset().x), 7.0f, Random(mCollisionBox.GetMinOffset().y, mCollisionBox.GetMaxOffset().y)), 15.0f, 10));
+		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15 )), 15.0f, 10));
 	}
 }

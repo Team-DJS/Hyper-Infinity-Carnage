@@ -146,6 +146,7 @@ bool GameSetup()
 	Player::MESH = gEngine->LoadMesh("Player.x");
 	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
 	Arena::ENEMY_MESH = gEngine->LoadMesh("Enemy.x");
+	Projectile::MESH = gEngine->LoadMesh("Sphere.x");
 
 #ifdef _DEBUG
 	CollisionObject::MARKER_MESH = gEngine->LoadMesh("dummy.x");
