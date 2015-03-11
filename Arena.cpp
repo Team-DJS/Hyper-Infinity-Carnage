@@ -172,7 +172,7 @@ void Arena::TargetCamera(ICamera* camera)
 
 void Arena::SpawnEnemies()
 {
-	srand(time(0));
+	srand((uint32_t)(time(0)));
 	for (int i = 0; i < 20; i++)
 	{
 		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x, mCollisionBox.GetMaxOffset().x), 7.0f, Random(mCollisionBox.GetMinOffset().y, mCollisionBox.GetMaxOffset().y)), 15.0f, 10));
