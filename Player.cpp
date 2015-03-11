@@ -91,8 +91,8 @@ void Player::Update(float frameTime)
 
 	//Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
 	XMFLOAT2 mouseVector;
-	mouseVector.x = gEngine->GetMouseX() - (gEngine->GetWidth() / 2) - 1;
-	mouseVector.y = 1 - (gEngine->GetMouseY() - gEngine->GetHeight() / 2);
+	mouseVector.x = gEngine->GetMouseX() - (gEngine->GetWidth() / 2.0f) - 1.0f;
+	mouseVector.y = 1.0f - (gEngine->GetMouseY() - gEngine->GetHeight() / 2.0f);
 	
 	////Normalise the mouse vector
 	XMStoreFloat2(&mouseVector, XMVector2Normalize(XMLoadFloat2(&mouseVector)));
