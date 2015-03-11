@@ -4,6 +4,7 @@
 #include "Enemy.hpp"
 #include "Scenery.hpp"
 #include "CollisionFunctions.hpp"
+#include "AudioManager.hpp"
 
 namespace HIC
 {
@@ -75,5 +76,6 @@ namespace HIC
 
 		CollisionAABB mCollisionBox;
 
+		AudioSource* mGameMusic;
 	};
 }

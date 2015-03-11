@@ -32,6 +32,10 @@ Arena::Arena() :
 		}
 	}
 
+	gAudioManager->LoadAudio("GameplayMusic", "Media\\GameplayTheme.wav");
+	mGameMusic = gAudioManager->CreateSource("GameplayMusic", XMFLOAT3(0.0f, 0.0f, 0.0f));
+	mGameMusic->Play();
+
 	SpawnEnemies();
 }
 
@@ -43,6 +47,9 @@ Arena::~Arena()
 		delete mSceneryObjects.back();
 		mSceneryObjects.pop_back();
 	}
+	mGameMusic->Stop();
+	gAudioManager->ReleaseSource(mGameMusic);
+	gAudioManager->ReleaseAudio("GameplayMusic");
 }
 
 //-----------------------------------
