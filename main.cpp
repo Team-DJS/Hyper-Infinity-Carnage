@@ -176,7 +176,6 @@ void GameUpdate(float frameTime)
 			gCamera = gGameCamera;
 		}
 	}
-
 #endif
 }
 

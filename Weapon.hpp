@@ -14,7 +14,7 @@ namespace HIC
 		//-----------------------------
 
 		// Constructor for Weapon
-		Weapon(float fireRate = 1.0f, uint32_t damage = 1U, uint32_t noBarrels = 1U);
+		Weapon(float fireRate = 0.3f, uint32_t damage = 1U, uint32_t noBarrels = 1U);
 
 		// Destructor for Weapon
 		~Weapon();
@@ -54,14 +54,14 @@ namespace HIC
 		//--------------
 
 		// Called to update the weapon
-		void Update(float frameTime, XMFLOAT3 playerPosition, XMFLOAT3 playerFacingVector);
+		void Update(float frameTime, const XMFLOAT3 playerPosition, const XMFLOAT3 playerFacingVector);
 
 		// Called to clear all projectiles currently alive
 		void Clear();
 
 	private:
 		// Shoots a projectile in a direction
-		void Shoot(const XMFLOAT3& direction);
+		void Shoot(const XMFLOAT3& direction, const XMFLOAT3 playerFacingVector);
 
 	private:
 		float mFireRate;					//Length of time between bullet fires

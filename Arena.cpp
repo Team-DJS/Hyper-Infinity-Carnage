@@ -8,6 +8,10 @@ using namespace HIC;
 IMesh* Arena::ARENA_MESH = nullptr;
 IMesh* Arena::ENEMY_MESH = nullptr;
 
+#ifdef _DEBUG
+	IFont* Arena::DebugHUD = nullptr;
+#endif
+
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
@@ -37,7 +41,12 @@ Arena::Arena() :
 	mGameMusic->SetLooping(true);
 	mGameMusic->Play();
 
-	SpawnEnemies();
+#ifdef _DEBUG
+	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
+#endif
+
+	// Load the first stage
+	LoadStage(1);
 }
 
 // Destructor for Arena
@@ -106,6 +115,21 @@ void Arena::Update(float frameTime)
 		}
 		mCollisionBox.ToggleMarkers();
 	}
+
+	// Debug HUD
+	string hudText = "Stage: " + to_string(mCurrentStage);
+	DebugHUD->Draw(hudText, 10, 10, kRed);
+	hudText = "Lives: " + to_string(mPlayer.GetLives());
+	DebugHUD->Draw(hudText, 10, 22, kRed);
+	hudText = "Health: " + to_string(mPlayer.GetHealth());
+	DebugHUD->Draw(hudText, 10, 34, kRed);
+	hudText = "Enemies: " + to_string(mEnemies.size());
+	DebugHUD->Draw(hudText, 10, 46, kRed);
+	hudText = "Projectiles: " + to_string(mPlayer.GetWeapon()->GetProjectiles().size());
+	DebugHUD->Draw(hudText, 10, 58, kRed);
+
+
+
 #endif
 	XMFLOAT3 enitityPos = mPlayer.GetWorldPos();
 	// Update the player
@@ -166,23 +190,29 @@ void Arena::Update(float frameTime)
 	if (mPlayer.GetHealth() <= 0.0f)
 	{
 		this->Clear();
+		LoadStage(mCurrentStage);
 	}
 
-	if (mEnemies.size() <= 0)
+	if (mEnemies.size() == 0)
 	{
-		NextStage();
+		LoadStage(mCurrentStage + 1);
 	}
 }
 
 // Proceeds to the next stage
-void Arena::NextStage()
+void Arena::LoadStage(uint32_t stageNumber)
 {
-	// Get current stage
-	// Add one
-	// Determne number of enemies to defeat this stage
-	// Create that many enemies
+	mPlayer.GetWeapon()->Clear();
+	// Get current stage and add one
+	mCurrentStage = stageNumber;
 
-	this->Clear();
+	// Determne number of enemies to defeat this stage
+	uint32_t noOfEnemies = (mCurrentStage + 10) * 1.5;
+
+	// Create that many enemies
+	SpawnEnemies(noOfEnemies);
+
+	//this->Clear();
 }
 
 // Saves the game to be loaded at a later date
@@ -197,10 +227,10 @@ void Arena::Clear()
 	{
 		delete mEnemies[i];
 	}
+	
 	mEnemies.clear();
 	mPlayer.Clear();
 	mPlayer.Respawn();
-	SpawnEnemies();
 
 }
 
@@ -209,10 +239,10 @@ void Arena::TargetCamera(ICamera* camera)
 	camera->LookAt(mPlayer.GetModel());
 }
 
-void Arena::SpawnEnemies()
+void Arena::SpawnEnemies(uint32_t noOfEnemies)
 {
 	srand((uint32_t)(time(0)));
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < noOfEnemies; i++)
 	{
 		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15 )), 15.0f, 10));
 	}

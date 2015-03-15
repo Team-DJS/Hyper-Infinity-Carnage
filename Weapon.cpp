@@ -84,7 +84,7 @@ vector<Projectile*> Weapon::GetProjectiles()
 //-----------------------------------
 
 // Called to update the weapon
-void Weapon::Update(float frameTime, XMFLOAT3 playerPosition, XMFLOAT3 playerFacingVector)
+void Weapon::Update(float frameTime, const XMFLOAT3 playerPosition, const XMFLOAT3 playerFacingVector)
 {
 	//**%**
 
@@ -96,9 +96,7 @@ void Weapon::Update(float frameTime, XMFLOAT3 playerPosition, XMFLOAT3 playerFac
 	{		//- Perform fire action if timer allows
 		if (mFireTimer.IsComplete())
 		{
-			Projectile* newProjectile = new Projectile(playerPosition, XMFLOAT2(-playerFacingVector.x * 8, -playerFacingVector.z * 8), mDamage);
-			mProjectiles.push_back(newProjectile);
-			mFireTimer.Reset();
+			Shoot(playerPosition, playerFacingVector);
 		}
 	}
 
@@ -123,8 +121,11 @@ void Weapon::Clear()
 }
 
 // Shoots a new projectile in a direction
-void Weapon::Shoot(const XMFLOAT3& direction)
+void Weapon::Shoot(const XMFLOAT3& playerPosition, const XMFLOAT3 playerFacingVector)
 {
 	//**%**
 	//Create new projectiles moving in the provided direction (use an angle offset for additional barrels)
+	Projectile* newProjectile = new Projectile(playerPosition, XMFLOAT2(-playerFacingVector.x * 8, -playerFacingVector.z * 8), mDamage);
+	mProjectiles.push_back(newProjectile);
+	mFireTimer.Reset();
 }

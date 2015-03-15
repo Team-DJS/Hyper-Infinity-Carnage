@@ -38,7 +38,7 @@ namespace HIC
 		void Update(float frameTime);
 
 		// Proceeds to the next stage
-		void NextStage();
+		void LoadStage(uint32_t stageNumber);
 
 		// Saves the game to be loaded at a later date
 		void Save();
@@ -50,11 +50,14 @@ namespace HIC
 		void TargetCamera(ICamera* camera);	//Point the camera at the current focal point
 	
 		//Spawn a group of enemies (TO DO: Create parameters for the rules of spawning enemies)
-		void SpawnEnemies();
+		void SpawnEnemies(uint32_t noOfEnemies);
 
 	public:
 		static IMesh* ARENA_MESH;
 		static IMesh* ENEMY_MESH;
+#ifdef _DEBUG
+		static IFont* DebugHUD;
+#endif
 
 	private:
 		// Pointer to the game engine
