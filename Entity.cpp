@@ -14,14 +14,13 @@ const uint32_t Entity::DEFAULT_MAX_HEALTH = 100U;
 //-----------------------------------
 
 // Default constructor for Entity
-Entity::Entity(IMesh* mesh, const XMFLOAT3& position, float radius) :
+Entity::Entity(IMesh* mesh, const XMFLOAT3& position, float mass) :
 	mMesh(mesh),
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
 	mHealth(DEFAULT_HEALTH),
-	mMaxHealth(DEFAULT_MAX_HEALTH),
-	mCollisionCylinder(XMFLOAT2(position.x, position.z), radius)
+	mMaxHealth(DEFAULT_MAX_HEALTH)
 {
-	mRigidBody = gPhysicsManager->CreateRigidBody(mModel, 100);
+	mRigidBody = gPhysicsManager->CreateRigidBody(mModel, mass);
 	SetPhysicsBodyToModel();
 	mRigidBody->addContactListener(this);
 }
@@ -81,12 +80,12 @@ void Entity::MoveX(float dx)
 // Moves the entity in the world z-axis
 void Entity::MoveZ(float dz)
 {
-	mModel->MoveZ(dz);
+	mRigidBody->setLinearVelocity(hkVector4(0.0f, 0.0f, dz));
 }
 
-void Entity::RotateY(float degrees)
+void Entity::RotateY(float force, float frameTime)
 {
-	mModel->RotateY(degrees);
+	mRigidBody->applyAngularImpulse(hkVector4(0.0f, force * frameTime, 0.0f, 0.0f));
 }
 
 void Entity::SetPosition(XMFLOAT3 newPosition)
@@ -143,10 +142,11 @@ IModel* Entity::GetModel()
 	return mModel;
 }
 
-CollisionCylinder& Entity::GetCollisionCylinder()
+hkpRigidBody* Entity::GetRigidBody()
 {
-	return mCollisionCylinder;
+	return mRigidBody;
 }
+
 
 //-----------------------------------
 // Other
@@ -190,11 +190,12 @@ void Entity::SetPhysicsBodyToModel()
 	hkTransform transform;
 	transform.set4x4ColumnMajor(mat);
 	mRigidBody->setTransform(transform);
+	
 }
 
 void Entity::contactPointCallback(const hkpContactPointEvent& p_event)
 {
-	//HK_ASSERT2(0xf455ea07, p_event.m_source != hkpCollisionEvent::SOURCE_WORLD, "Do not add this listener to the world.");
+	HK_ASSERT2(0xf455ea07, p_event.m_source != hkpCollisionEvent::SOURCE_WORLD, "Do not add this listener to the world.");
 	//printf("IT WENT IN THE THING \n");
 
 	// Put your collision here

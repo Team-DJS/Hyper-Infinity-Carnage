@@ -163,7 +163,6 @@ bool GameSetup()
 // Returns true on success, false on failure
 void GameUpdate(float frameTime)
 {
-	gPhysicsManager->Update(frameTime);
 	gArena->Update(frameTime);
 	gArena->TargetCamera(gGameCamera);
 #ifdef _DEBUG

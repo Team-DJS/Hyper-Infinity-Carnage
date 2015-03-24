@@ -14,7 +14,7 @@ namespace HIC
 		//-----------------------------
 		
 		// Default constructor for Entity
-		Entity(IMesh* mesh, const XMFLOAT3& position, float radius);
+		Entity(IMesh* mesh, const XMFLOAT3& position, float mass);
 
 		// Destructor for Entity
 		virtual ~Entity();
@@ -38,7 +38,7 @@ namespace HIC
 		void MoveZ(float dz);
 
 		// Rotates the entity in the world y-axis
-		void RotateY(float degrees);
+		void RotateY(float degrees, float frameTime);
 		
 		//Places the entity at the provided world position
 		void SetPosition(XMFLOAT3 newPos);
@@ -64,10 +64,9 @@ namespace HIC
 
 		// Returns the model of the entity
 		IModel* GetModel();
-
-		// Returns the CollisionCylinder of the entity
-		CollisionCylinder& GetCollisionCylinder();
 		
+		hkpRigidBody* GetRigidBody();
+
 		//--------------
 		// Other
 		//--------------
@@ -89,13 +88,14 @@ namespace HIC
 		static const uint32_t DEFAULT_HEALTH;
 		static const uint32_t DEFAULT_MAX_HEALTH;
 	
+	protected:
+		hkpRigidBody* mRigidBody;
+
 	private:
 		IMesh* mMesh;
 		IModel* mModel;
 		uint32_t mHealth;
 		uint32_t mMaxHealth;
-		CollisionCylinder mCollisionCylinder;
-		hkpRigidBody* mRigidBody;
 
 	};
 }

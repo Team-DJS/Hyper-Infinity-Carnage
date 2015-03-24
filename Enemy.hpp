@@ -11,7 +11,7 @@ namespace HIC
 		// Constructors/Destructors
 		//-----------------------------
 		// Default constructor for Enemy
-		Enemy(IMesh* mesh, const XMFLOAT3& position, float radius, uint32_t damage);
+		Enemy(IMesh* mesh, const XMFLOAT3& position, uint32_t damage, float mass);
 
 		// Destructor for Enemy
 		~Enemy();

@@ -13,21 +13,20 @@ const uint32_t Player::DEFAULT_BOMBS = 3U;
 
 // Movement Variables
 const float Player::BASE_THRUST = 480.0f;
-const float Player::DRAG_COEF = 5.0f;
-const float Player::TURN_SPEED = 200.0f;
+const float Player::TURN_SPEED = 80000.0f;
 
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
 
 // Default constructor for Player
-Player::Player(const XMFLOAT3& position, float radius) :
-	Entity(MESH, position, radius),
+Player::Player(const XMFLOAT3& position) :
+	Entity(MESH, position, 350.0f),
 	mLives(DEFAULT_LIVES),
 	mBombs(DEFAULT_BOMBS),
-	mWeapon(new Weapon()),
-	mVelocity(0.0f, 0.0f)
+	mWeapon(new Weapon())
 {
+	mRigidBody->setAngularDamping(10.0f);
 }
 
 // Destructor for Player
@@ -91,12 +90,12 @@ void Player::Update(float frameTime)
 
 	//***** Face the player in the direction of the mouse *****//
 
-	//Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
+	////Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
 	XMFLOAT2 mouseVector;
 	mouseVector.x = gEngine->GetMouseX() - (gEngine->GetWidth() / 2.0f) - 1.0f;
 	mouseVector.y = 1.0f - (gEngine->GetMouseY() - gEngine->GetHeight() / 2.0f);
 	
-	////Normalise the mouse vector
+	//Normalise the mouse vector
 	XMStoreFloat2(&mouseVector, XMVector2Normalize(XMLoadFloat2(&mouseVector)));
 	
 	XMFLOAT3 rightVect3 = GetRightVector();	//Create and obtain the facing vector of the ship
@@ -109,78 +108,52 @@ void Player::Update(float frameTime)
 	////Done all the maths to determine if left or right, now set the flags for turning later in the function
 	if (dotProd < 0)		// Mouse is to the right
 	{
-		RotateY(TURN_SPEED * frameTime);	//Turn right
+		RotateY(TURN_SPEED, frameTime);	//Turn right
 	}
 	else if (dotProd > 0)	//Mouse is to the left
 	{
-		RotateY(-TURN_SPEED * frameTime);	//Turn left
+		RotateY(-TURN_SPEED, frameTime);	//Turn left
 	}
-
-	//******* End of direct the player *********//
-
-	//************WEAPON*************//
-	// Update the weapon
-	mWeapon->Update(frameTime, GetWorldPos(), GetFacingVector());
-
-	//*********END OF WEAPON*********//
-
-	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
-	XMFLOAT2 thrust = XMFLOAT2(0.0f, 0.0f);	//Create thrust vector and initialise it to zero
-	XMFLOAT3 facingVect = XMFLOAT3(0.0f, 0.0f, 1.0f);//GetFacingVector();
-	XMFLOAT3 rightVect = XMFLOAT3(1.0f, 0.0f, 0.0f);//GetRightVector();
-	XMFLOAT2 drag = XMFLOAT2(0.0f, 0.0f);	//Create vector of drag (resistance to motion) of the ship
-
-	//SetPreviousPos();	/**THIS IS FOR COLLISION RESOLUTION, SETS THE POSITION THE MODEL WAS JUST IN NOT CURRENTLY IMPLEMENTED**/
-
+	
+	////******* End of direct the player *********//
+	//
+	////************WEAPON*************//
+	//// Update the weapon
+	//mWeapon->Update(frameTime, GetWorldPos(), GetFacingVector());
+	//
+	////*********END OF WEAPON*********//
+	
+	//****************************** MOVEMENT ******************************// 
+	XMFLOAT3 directionalVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	if (mMoveForward)	//If thrust flag is true (thrust is applied)
 	{
-		//Increase thrust by calculated components of thrust based upon linear thrust and the ships facing vector
-		thrust.x += (BASE_THRUST * facingVect.x * frameTime);
-		thrust.y += (BASE_THRUST * facingVect.z * frameTime);
+		directionalVelocity.z += 100.0f * frameTime;
 	}
 	if (mMoveRight)
 	{
-		//Increase thrust by calculated components of thrust based upon linear thrust and the ships right vector
-		thrust.x += (BASE_THRUST * rightVect.x * frameTime);
-		thrust.y += (BASE_THRUST * rightVect.z * frameTime);
+		directionalVelocity.x += 100.0f * frameTime;
 	}
-	if (mMoveBackward)	//Reverse thrust flag is true (braking/reversing)
+	if (mMoveBackward)
 	{
-		//Decrease thrust by calculated components of thrust based upon negative linear thrust and the ships facing vector
-		thrust.x -= (BASE_THRUST * facingVect.x * frameTime);
-		thrust.y -= (BASE_THRUST * facingVect.z * frameTime);
+		directionalVelocity.z -= 100.0f * frameTime;
 	}
 	if (mMoveLeft)
 	{
-		//Decrease thrust by calculated components of thrust based upon negative linear thrust and the ships right vector
-		thrust.x -= (BASE_THRUST * rightVect.x * frameTime);
-		thrust.y -= (BASE_THRUST * rightVect.z * frameTime);
+		directionalVelocity.x -= 100.0f * frameTime;
 	}
-
-	//Calculate drag components based on current velocity components and the drag Coefficient
-	drag.x = -(mVelocity.x * DRAG_COEF) * frameTime;
-	drag.y = -(mVelocity.y * DRAG_COEF) * frameTime;
-
-	//Set new velocity based upon current velocity, thrust and drag
-	mVelocity.x += thrust.x + drag.x;
-	mVelocity.y += thrust.y + drag.y;
-
+	
 	//Move model by velocity vector
-	MoveX(mVelocity.x * frameTime);
-	MoveZ(mVelocity.y * frameTime);
-
+	GetRigidBody()->applyLinearImpulse(hkVector4(directionalVelocity.x, directionalVelocity.y, directionalVelocity.z));
+	
 	//Unset flags
 	mMoveLeft = false;
 	mMoveRight = false;
-
+	
 	mMoveForward = false;
 	mMoveBackward = false;
 	
-	//UpdateCollisionCentre();	//Set new collision centre - Collision Object
-	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
+	////****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 
-	//Update collision object to meet new position
-	GetCollisionCylinder().SetPosition(XMFLOAT2(GetWorldPos().x, GetWorldPos().z));
 }
 
 //-----------------------------------

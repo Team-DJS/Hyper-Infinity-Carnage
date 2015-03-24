@@ -81,7 +81,6 @@ PhysicsManager::PhysicsManager(const float worldSize, const float timeBetweenUpd
 
 	// This line is necessary to enable collision detection (of all types) in Havok
 	hkpAgentRegisterUtil::registerAllAgents(mPhysicsWorld->getCollisionDispatcher());
-
 }
 
 
@@ -118,6 +117,7 @@ void PhysicsManager::Update(float frameTime)
 
 		mTimeCount = 0;	//Reset time count back to 0
 	}
+
 }
 
 hkpRigidBody* PhysicsManager::CreateRigidBody(IModel* model, float mass)
@@ -127,7 +127,7 @@ hkpRigidBody* PhysicsManager::CreateRigidBody(IModel* model, float mass)
 
 	// Collect together all the physics information for the ground
 	hkpRigidBodyCinfo physicsInfo;
-	physicsInfo.m_shape = shape;                          // Use the convex shape set up above
+	physicsInfo.m_shape = shape;								// Use the convex shape set up above
 	physicsInfo.m_mass = massProperties.m_mass;					// Set mass properties
 	physicsInfo.m_centerOfMass = massProperties.m_centerOfMass;  
 	physicsInfo.m_inertiaTensor = massProperties.m_inertiaTensor;
@@ -138,8 +138,12 @@ hkpRigidBody* PhysicsManager::CreateRigidBody(IModel* model, float mass)
 	hkpRigidBody* newRigidBody = new hkpRigidBody(physicsInfo);
 	mPhysicsWorld->addEntity(newRigidBody);
 	mRigidBodies.push_back(newRigidBody);
-
+	
 	shape->removeReference(); // Don't need the ground shape any more, so release its memory with this function (instead of delete)
+
+	newRigidBody->setLinearVelocity(hkVector4(.0f, 0.0f, 0.0f));
+	newRigidBody->setAngularVelocity(hkVector4(.0f, 0.0f, 0.0f));
+
 
 	return newRigidBody;
 }

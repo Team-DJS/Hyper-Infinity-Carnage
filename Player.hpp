@@ -13,7 +13,7 @@ namespace HIC
 		//-----------------------------
 		
 		// Default constructor for Player
-		Player(const XMFLOAT3& position, float radius);
+		Player(const XMFLOAT3& position);
 
 		// Destructor for Player
 		~Player();
@@ -69,9 +69,6 @@ namespace HIC
 		Weapon* mWeapon;
 	
 	private:
-		// Movement Variables
-		//Globals Required to allow movement to perform Correctly
-		XMFLOAT2 mVelocity; // Horizontal (x) and vertical (y) velocities
 		//Movement control states
 		bool mMoveForward;	
 		bool mMoveBackward;
@@ -80,7 +77,6 @@ namespace HIC
 
 		//Constant values
 		static const float BASE_THRUST;
-		static const float DRAG_COEF;
 		static const float TURN_SPEED;
 
 	public:
