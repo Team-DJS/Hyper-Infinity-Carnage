@@ -19,23 +19,21 @@ namespace HIC
 		//--------------
 		// Setters
 		//--------------
-		
+
 		//---------------
 		// Getters
 		//---------------
-		
+
 		// Returns the damage the enemy deals
 		uint32_t GetDamage() const;
-		
+
 		//--------------
 		// Other
 		//--------------
-		
+
 		// Called to update the entity
 		void Update(float frameTime);
-
 	private:
 		uint32_t mDamage;
-	
 	};
 }
