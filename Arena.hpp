@@ -9,6 +9,7 @@
 #include "HealthPack.hpp"
 #include "CollisionFunctions.hpp"
 #include "AudioManager.hpp"
+#include "ParticleEmitter.hpp"
 
 namespace HIC
 {
@@ -84,6 +85,9 @@ namespace HIC
 
 		// Model for arena area
 		Scenery mArenaModel;
+
+		// Particle effects for the arena
+		ParticleEmitter* mArenaParticles;
 
 		// Vector of scenery (non-interactive) items
 		std::vector<Scenery*> mSceneryObjects;

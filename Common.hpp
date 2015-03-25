@@ -1,6 +1,7 @@
 #pragma once
 
 // Include Standard Headers
+#include <deque>
 #include <string>
 #include <vector>
 #include <fstream>

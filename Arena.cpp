@@ -51,6 +51,11 @@ Arena::Arena(bool loadFromFile) :
 	HealthPack::MESH = gEngine->LoadMesh("CardboardBox.x");
 	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
 
+	IMesh* particleMesh = gEngine->LoadMesh("Sphere.x");
+	mArenaParticles = new ParticleEmitter(particleMesh, XMFLOAT3(30,30,0), 0.2f, 0.1f);
+	mArenaParticles->StartEmission();
+
+
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
 #endif
@@ -296,6 +301,8 @@ void Arena::Update(float frameTime)
 	{
 		LoadStage(mCurrentStage + 1);
 	}
+
+	mArenaParticles->Update(frameTime);
 }
 
 // Proceeds to the next stage
