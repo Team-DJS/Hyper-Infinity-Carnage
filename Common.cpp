@@ -7,5 +7,6 @@
 
 float Random(float lowBound, float highBound)
 {
-	return lowBound + (rand() % (int)(lowBound - highBound + 2));
+	return lowBound + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (highBound - lowBound)));
+	//return (rand() % (int)(highBound - lowBound) + lowBound);
 }

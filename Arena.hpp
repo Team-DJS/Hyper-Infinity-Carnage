@@ -3,6 +3,10 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Scenery.hpp"
+#include "Pickup.hpp"
+#include "WeaponUpgrade.hpp"
+#include "ExtraLife.hpp"
+#include "HealthPack.hpp"
 #include "CollisionFunctions.hpp"
 #include "AudioManager.hpp"
 
@@ -64,9 +68,14 @@ namespace HIC
 
 		// The player character
 		Player mPlayer;
+		uint32_t mScore;
 
-		//Vector of enemies
+		// Vector of enemies
 		std::vector<Enemy*> mEnemies;
+
+		// Vector of pickups
+		std::vector<Pickup*> mPickups;
+		Timer mPickupTimer;
 
 		// Model for arena area
 		Scenery mArenaModel;

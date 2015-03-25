@@ -36,7 +36,8 @@ Weapon::~Weapon()
 // Increases the fire rate of the weapon by the given amount - (make the bullets faster)
 void Weapon::SetFireRate(float bulletsPerSecond)
 {
-	mFireRate = 1 / bulletsPerSecond;
+	mFireRate = bulletsPerSecond;
+	mFireTimer.Reset(mFireRate);
 }
 
 // Increases the damage of the weapon by the given amount
@@ -64,7 +65,7 @@ void Weapon::SetFire()
 //Returns the number of bullets fired per second
 float Weapon::GetFireRate()
 {
-	return 1 / mFireRate;
+	return mFireRate;
 }
 
 //Returns the damage that a new projectile will deliver upon collision

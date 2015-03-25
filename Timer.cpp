@@ -39,3 +39,10 @@ void Timer::Reset()
 {
 	mCurrentTime = 0.0f;
 }
+
+// Resets timer to zero and gives new end time
+void Timer::Reset(float endTime)
+{
+	mCurrentTime = 0.0f;
+	mEndTime = endTime;
+}

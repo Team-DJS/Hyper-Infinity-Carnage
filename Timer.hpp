@@ -20,6 +20,9 @@ namespace HIC
 		// Resets the timer to zero
 		void Reset();
 
+		// Resets timer to zero and gives a new end time
+		void Reset(float endTime);
+
 	private:
 		float mCurrentTime;	//The current time count for this timer
 		float mEndTime;		//The end time for this timer

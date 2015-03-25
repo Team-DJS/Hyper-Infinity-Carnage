@@ -21,8 +21,11 @@ Arena::Arena() :
 	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f
 	), 40.0f)),
 	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f))),
-	mCollisionBox(CollisionAABB(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f)))
+	mCollisionBox(CollisionAABB(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f))),
+	mScore(0U),
+	mPickupTimer(5.0f)
 {
+	// Build the scenery
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
 	XMFLOAT3 pos;
 	for (int i = 0; i < 3; i++)
@@ -41,6 +44,12 @@ Arena::Arena() :
 	mGameMusic = gAudioManager->CreateSource("GameplayMusic", XMFLOAT3(0.0f, 0.0f, 0.0f));
 	mGameMusic->SetLooping(true);
 	mGameMusic->Play();
+
+
+	// Initialise the Mesh for the pickups
+	WeaponUpgrade::mMesh = gEngine->LoadMesh("CardboardBox.x");
+	HealthPack::MESH = gEngine->LoadMesh("CardboardBox.x");
+	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
 
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
@@ -129,15 +138,17 @@ void Arena::Update(float frameTime)
 	hudText = "Projectiles: " + to_string(mPlayer.GetWeapon()->GetProjectiles().size());
 	DebugHUD->Draw(hudText, 10, 58, kRed);
 
-
+	hudText = "Score: " + to_string(mScore);
+	DebugHUD->Draw(hudText, gEngine->GetWidth() - 200, 10, kRed);
 
 #endif
+
+	// Actual HUD update
+
+
 	XMFLOAT3 enitityPos = mPlayer.GetWorldPos();
 	// Update the player
 	mPlayer.Update(frameTime);
-
-
-
 
 	// Update all the enemies
 	for (auto& enemy : mEnemies)
@@ -187,7 +198,10 @@ void Arena::Update(float frameTime)
 			{
 				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
 				if (mEnemies[i]->TakeHealth(damage))
+				{
 					hitEnemy = true;
+					mScore += mEnemies[i]->GetDamage();
+				}
 				mPlayer.GetWeapon()->RemoveProjectile(j);
 				j--;
 				break;
@@ -205,6 +219,59 @@ void Arena::Update(float frameTime)
 		{
 			delete mEnemies[i];
 			mEnemies.erase(mEnemies.begin() + i);
+			i--;
+		}
+	}
+
+	// Pickups
+	mPickupTimer.Update(frameTime);
+	if (mPickupTimer.IsComplete())
+	{
+		int pickupType = static_cast<int>(Random(0.0f, 3.0f));
+		XMFLOAT3 position = XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
+			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
+		float lifetime = Random(5.0f, 9.2f);
+
+		switch (pickupType)
+		{
+			case 0:
+			{
+				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01,0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
+				break;
+			}
+			case 1:
+			{
+				mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
+				break;
+			}
+			case 2:
+			{
+				mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
+				break;
+			}
+			default: break;
+		}
+		mPickups.back()->GetModel()->Scale(15.0f);
+
+		mPickupTimer.Reset(Random(8.6f, 12.2f));
+	}
+
+	bool deletePickup;
+	// Update pickups and check to see if they collide with player or have run out of time
+	for (int i = 0; i < mPickups.size(); i++)
+	{
+		deletePickup = false;
+		mPickups[i]->Update(frameTime);
+		if (CylinderToCylinderCollision(&mPickups[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
+		{
+			mPickups[i]->OnPickup(&mPlayer);
+			deletePickup = true;
+		}
+
+		if (mPickups[i]->IsLifetimeComplete() || deletePickup)
+		{
+			delete mPickups[i];
+			mPickups.erase(mPickups.begin() + i);
 			i--;
 		}
 	}
@@ -230,15 +297,10 @@ void Arena::LoadStage(uint32_t stageNumber)
 	mPlayer.GetWeapon()->Clear();
 	// Get current stage and add one
 	mCurrentStage = stageNumber;
-	// Player health
-	// Lives
-	// score
-	// weapon damage and fire rate
-	// possibly other things.
-	// Stage.
+
 
 	// Determne number of enemies to defeat this stage
-	uint32_t noOfEnemies = (mCurrentStage + 10) * 1.5;
+	uint32_t noOfEnemies = static_cast<uint32_t>((mCurrentStage + 10) * 1.5);
 
 	// Create that many enemies
 	SpawnEnemies(noOfEnemies);
@@ -248,7 +310,13 @@ void Arena::LoadStage(uint32_t stageNumber)
 
 // Saves the game to be loaded at a later date
 void Arena::Save()
-{
+{	
+	// Player health
+	// Lives
+	// score
+	// weapon damage and fire rate
+	// possibly other things.
+	// Stage.
 }
 
 // Removes all entities from the arena
@@ -258,8 +326,15 @@ void Arena::Clear()
 	{
 		delete mEnemies[i];
 	}
-	
+
 	mEnemies.clear();
+
+	for (auto remove : mPickups)
+	{
+		delete remove;
+	}
+	mPickups.clear();
+
 	mPlayer.Clear();
 	mPlayer.Respawn();
 
@@ -273,7 +348,7 @@ void Arena::TargetCamera(ICamera* camera)
 void Arena::SpawnEnemies(uint32_t noOfEnemies)
 {
 	srand((uint32_t)(time(0)));
-	for (int i = 0; i < noOfEnemies; i++)
+	for (uint32_t i = 0; i < noOfEnemies; i++)
 	{
 		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, 
 			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15 )), 15.0f, 10U));

@@ -13,7 +13,7 @@ namespace HIC
 		//-----------------------------
 		
 		// Default constructor for WeaponUpgrade
-		WeaponUpgrade(IMesh* mesh, const XMFLOAT3& position, float radius, float lifeTime, float fireRateUpAmount, float damageUpAmount);
+		WeaponUpgrade(IMesh* mesh, const XMFLOAT3& position, float radius, float lifeTime, float fireRateUpAmount, uint32_t damageUpAmount);
 
 		// Destructor for WeaponUpgrade
 		~WeaponUpgrade();
@@ -39,6 +39,6 @@ namespace HIC
 
 	private:
 		float mFireRate;
-		float mDamage;
+		uint32_t mDamage;
 	};
 }

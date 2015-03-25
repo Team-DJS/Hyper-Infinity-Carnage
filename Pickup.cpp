@@ -5,7 +5,7 @@ using namespace HIC;
 Pickup::Pickup(IMesh* mesh, const XMFLOAT3& position, float radius, float lifeTime) :
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
 	mTimer(lifeTime),
-	mCollisionObject(CollisionCylinder(XMFLOAT2(position.x, position.y), radius))
+	mCollisionObject(CollisionCylinder(XMFLOAT2(position.x, position.z), radius))
 {
 }
 
@@ -25,6 +25,11 @@ IModel* Pickup::GetModel()
 bool Pickup::IsLifetimeComplete()
 {
 	return mTimer.IsComplete();
+}
+
+CollisionCylinder& Pickup::GetCollisionCylinder()
+{
+	return mCollisionObject;
 }
 
 // Called to update the pickup each frame
