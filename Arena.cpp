@@ -296,6 +296,9 @@ void Arena::Update(float frameTime)
 // Proceeds to the next stage
 void Arena::LoadStage(uint32_t stageNumber)
 {
+	// Save the game before loading the next state
+	SaveToFile();
+
 	mPlayer.GetWeapon()->Clear();
 	// Get current stage and add one
 	mCurrentStage = stageNumber;
@@ -310,8 +313,29 @@ void Arena::LoadStage(uint32_t stageNumber)
 	//this->Clear();
 }
 
+// Loads the game from the save file
+// Returns true if the load file exist, false otherwise
+bool Arena::LoadFromFile()
+{
+	// Open the save file
+	std::ifstream file(SAVE_FILENAME);
+
+	if (!file.is_open())
+	{
+		return false;
+	}
+
+	// Read the game data
+	file >> mCurrentStage;
+
+	// Read the player data
+	file >> mPlayer;
+
+	return true;
+}
+
 // Saves the game to be loaded at a later date
-void Arena::Save()
+void Arena::SaveToFile()
 {
 	// Open the save file
 	std::ofstream file(SAVE_FILENAME);

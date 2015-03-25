@@ -44,8 +44,12 @@ namespace HIC
 		// Proceeds to the next stage
 		void LoadStage(uint32_t stageNumber);
 
+		// Loads the game from the save file
+		// Returns true if the load file exist, false otherwise
+		bool LoadFromFile();
+
 		// Saves the game to be loaded at a later date
-		void Save();
+		void SaveToFile();
 
 		// Removes all entities from the arena
 		void Clear();

@@ -63,7 +63,16 @@ namespace HIC
 		{
 			stream << player.mLives << std::endl;
 			stream << player.mBombs << std::endl;
-			stream << player.mWeapon << std::endl;
+			stream << (*player.mWeapon) << std::endl;
+			return stream;
+		}
+
+		// Operator overload of the input stream operator
+		friend std::istream& operator>>(std::istream& stream, Player& player)
+		{
+			stream >> player.mLives;
+			stream >> player.mBombs;
+			stream >> (*player.mWeapon);
 			return stream;
 		}
 	public:

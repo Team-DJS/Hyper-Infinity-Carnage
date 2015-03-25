@@ -189,3 +189,4 @@ FakesAssemblies/
 *.vcxproj
 *.sln
 *.filters
+*.hic

@@ -69,6 +69,14 @@ namespace HIC
 			stream << weapon.mNoBarrels << std::endl;
 			return stream;
 		}
+
+		friend std::istream& operator>>(std::istream& stream, Weapon& weapon)
+		{
+			stream >> weapon.mFireRate;
+			stream >> weapon.mDamage;
+			stream >> weapon.mNoBarrels;
+			return stream;
+		}
 	private:
 		// Shoots a projectile in a direction
 		void Shoot(const XMFLOAT3& direction, const XMFLOAT3 playerFacingVector);
