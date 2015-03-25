@@ -1,5 +1,4 @@
 #include "Particle.hpp"
-
 using namespace HIC;
 
 // Default constructor for Particle
@@ -37,8 +36,14 @@ void Particle::SetVelocity(const XMFLOAT3& vel)
 // Hide or Show the particle
 void Particle::SetVisibility(bool on)
 {
-	//mModel->Scale(on ? 1.0f : 0.0f);
-	// do something to hide the particle...
+	if (on)
+	{
+		mModel->ResetScale();
+	}
+	else
+	{
+		mModel->Scale(0.0001f);
+	}
 }
 
 // Set the lifetime of the particle

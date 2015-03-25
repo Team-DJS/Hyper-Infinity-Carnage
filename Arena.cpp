@@ -52,7 +52,7 @@ Arena::Arena(bool loadFromFile) :
 	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("Sphere.x");
-	mArenaParticles = new ParticleEmitter(particleMesh, XMFLOAT3(30,40,0), 0.5f, 1.0f);
+	mArenaParticles = new ParticleEmitter(particleMesh, XMFLOAT3(30,40,0), 0.1f, 2.0f);
 	mArenaParticles->StartEmission();
 
 
@@ -80,6 +80,9 @@ Arena::~Arena()
 		delete mSceneryObjects.back();
 		mSceneryObjects.pop_back();
 	}
+
+	delete(mArenaParticles);
+
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
 }
@@ -270,7 +273,7 @@ void Arena::Update(float frameTime)
 
 	bool deletePickup;
 	// Update pickups and check to see if they collide with player or have run out of time
-	for (int i = 0; i < mPickups.size(); i++)
+	for (size_t i = 0; i < mPickups.size(); i++)
 	{
 		deletePickup = false;
 		mPickups[i]->Update(frameTime);

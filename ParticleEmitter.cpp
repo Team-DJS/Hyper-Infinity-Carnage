@@ -11,6 +11,7 @@ ParticleEmitter::ParticleEmitter(IMesh* mesh, XMFLOAT3 position, float emissionR
 	for (uint32_t i = 0; i < 200; i++)
 	{
 		Particle* particle = new Particle(mesh, position, position, lifetime);
+		particle->SetVisibility(false);
 		mParticlePool.push_back(particle);
 	}
 }
@@ -61,7 +62,7 @@ void ParticleEmitter::Update(float frameTime)
 
 		particle->SetLifetime(mLifetime);
 		particle->SetPosition(mPosition);
-		XMFLOAT3 velocity(Random(10.0f, 15.0f), 10.0f, Random(10.0f, 15.0f));
+		XMFLOAT3 velocity(Random(-50.0f, 50.0f), 10.0f, Random(-50.0f, 50.0f));
 		particle->SetVelocity(velocity);
 		particle->SetVisibility(true);
 		mActiveParticles.push_back(particle);
