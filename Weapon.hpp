@@ -61,6 +61,14 @@ namespace HIC
 		// Called to clear all projectiles currently alive
 		void Clear();
 
+		// Operator overload of the output stream operator
+		friend std::ostream& operator<<(std::ostream& stream, const Weapon& weapon)
+		{
+			stream << weapon.mFireRate << std::endl;
+			stream << weapon.mDamage << std::endl;
+			stream << weapon.mNoBarrels << std::endl;
+			return stream;
+		}
 	private:
 		// Shoots a projectile in a direction
 		void Shoot(const XMFLOAT3& direction, const XMFLOAT3 playerFacingVector);

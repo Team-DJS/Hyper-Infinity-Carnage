@@ -12,6 +12,8 @@ IMesh* Arena::ENEMY_MESH = nullptr;
 	IFont* Arena::DebugHUD = nullptr;
 #endif
 
+const std::string Arena::SAVE_FILENAME = "Save.hic";
+
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
@@ -300,7 +302,7 @@ void Arena::LoadStage(uint32_t stageNumber)
 
 
 	// Determne number of enemies to defeat this stage
-	uint32_t noOfEnemies = static_cast<uint32_t>((mCurrentStage + 10) * 1.5);
+	uint32_t noOfEnemies = static_cast<uint32_t>((mCurrentStage + 10U) * 1.5f);
 
 	// Create that many enemies
 	SpawnEnemies(noOfEnemies);
@@ -310,13 +312,21 @@ void Arena::LoadStage(uint32_t stageNumber)
 
 // Saves the game to be loaded at a later date
 void Arena::Save()
-{	
-	// Player health
-	// Lives
-	// score
-	// weapon damage and fire rate
-	// possibly other things.
-	// Stage.
+{
+	// Open the save file
+	std::ofstream file(SAVE_FILENAME);
+
+	// Ensure the file opened successfully
+	if (!file.is_open())
+	{
+		throw std::runtime_error("Failed to open file: " + SAVE_FILENAME);
+	}
+
+	// Save the game data
+	file << mCurrentStage << std::endl;
+
+	// Save the player data
+	file << mPlayer << std::endl;
 }
 
 // Removes all entities from the arena
@@ -326,7 +336,7 @@ void Arena::Clear()
 	{
 		delete mEnemies[i];
 	}
-
+	
 	mEnemies.clear();
 
 	for (auto remove : mPickups)
@@ -351,6 +361,6 @@ void Arena::SpawnEnemies(uint32_t noOfEnemies)
 	for (uint32_t i = 0; i < noOfEnemies; i++)
 	{
 		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, 
-			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15 )), 15.0f, 10U));
+									 Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15)), 15.0f, 10U));
 	}
 }

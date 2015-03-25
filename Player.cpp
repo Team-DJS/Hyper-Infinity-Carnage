@@ -105,17 +105,17 @@ void Player::Update(float frameTime)
 	XMFLOAT2 mouseVector;
 	mouseVector.x = gEngine->GetMouseX() - (gEngine->GetWidth() / 2.0f) - 1.0f;
 	mouseVector.y = 1.0f - (gEngine->GetMouseY() - gEngine->GetHeight() / 2.0f);
-	
+
 	////Normalise the mouse vector
 	XMStoreFloat2(&mouseVector, XMVector2Normalize(XMLoadFloat2(&mouseVector)));
-	
+
 	XMFLOAT3 rightVect3 = GetRightVector();	//Create and obtain the facing vector of the ship
 	XMFLOAT2 rightVect2 = XMFLOAT2(rightVect3.x, rightVect3.z);
 	XMStoreFloat2(&rightVect2, XMVector2Normalize(XMLoadFloat2(&rightVect2)));	//Normalise the facing vector
-	
+
 	float dotProd;
 	XMStoreFloat(&dotProd, XMVector2Dot(XMLoadFloat2(&rightVect2), XMLoadFloat2(&mouseVector)));
-	
+
 	////Done all the maths to determine if left or right, now set the flags for turning later in the function
 	if (dotProd < 0)		// Mouse is to the right
 	{
@@ -185,7 +185,7 @@ void Player::Update(float frameTime)
 
 	mMoveForward = false;
 	mMoveBackward = false;
-	
+
 	//UpdateCollisionCentre();	//Set new collision centre - Collision Object
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 

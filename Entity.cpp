@@ -37,6 +37,13 @@ Entity::~Entity()
 // Gives health to the entity. If this exceeds the maximum health, then it is clamped
 void Entity::GiveHealth(uint32_t health)
 {
+#ifdef _DEBUG
+	if (health > mMaxHealth)
+	{
+		throw std::runtime_error("Cannot give more than max health");
+	}
+#endif
+
 	// Add the health to the current health
 	mHealth += health;
 
@@ -51,6 +58,13 @@ void Entity::GiveHealth(uint32_t health)
 // health of the entity, then this method will return true, otherwise false.
 bool Entity::TakeHealth(uint32_t damage)
 {
+#ifdef _DEBUG
+	if (damage > mMaxHealth)
+	{
+		throw std::runtime_error("Cannot take more than max health");
+	}
+#endif
+
 	if (damage >= mHealth)
 	{
 		mHealth = 0U;
