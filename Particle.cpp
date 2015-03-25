@@ -23,20 +23,21 @@ bool Particle::IsLifetimeOver() const
 }
 
 // Set position of the particle
-void Particle::SetPosition(XMFLOAT3 pos)
+void Particle::SetPosition(const XMFLOAT3& pos)
 {
 	mModel->SetPosition(pos.x,pos.y,pos.z);
 }
 
 // Set velocity of particle
-void Particle::SetVelocity(XMFLOAT3 vel)
+void Particle::SetVelocity(const XMFLOAT3& vel)
 {
 	mVelocity = vel;
 }
 
-// Hide or unHide the particle
+// Hide or Show the particle
 void Particle::SetVisibility(bool on)
 {
+	//mModel->Scale(on ? 1.0f : 0.0f);
 	// do something to hide the particle...
 }
 

@@ -3,12 +3,14 @@ using namespace HIC;
 
 // Default constructor for ParticleEmitter
 ParticleEmitter::ParticleEmitter(IMesh* mesh, XMFLOAT3 position, float emissionRate, float lifetime) :
-mMesh(mesh),
-mNextEmissionTimer(emissionRate)
+	mMesh(mesh),
+	mPosition(position),
+	mLifetime(lifetime),
+	mNextEmissionTimer(emissionRate)
 {
 	for (uint32_t i = 0; i < 200; i++)
 	{
-		Particle* particle = new Particle(mesh, position, XMFLOAT3(0,0,0), lifetime);
+		Particle* particle = new Particle(mesh, position, position, lifetime);
 		mParticlePool.push_back(particle);
 	}
 }
@@ -57,29 +59,33 @@ void ParticleEmitter::Update(float frameTime)
 		Particle* particle = mParticlePool.back();
 		mParticlePool.pop_back();
 
-		if (particle != nullptr)
-		{
-			particle->SetLifetime(mLifetime);
-			particle->SetPosition(mPosition);
-			XMFLOAT3 velocity(Random(10.0f, 15.0f), 10.0f, Random(10.0f, 15.0f));
-			particle->SetVelocity(velocity);
-			mActiveParticles.push_back(particle);
-		}
+		particle->SetLifetime(mLifetime);
+		particle->SetPosition(mPosition);
+		XMFLOAT3 velocity(Random(10.0f, 15.0f), 10.0f, Random(10.0f, 15.0f));
+		particle->SetVelocity(velocity);
+		particle->SetVisibility(true);
+		mActiveParticles.push_back(particle);
 
 		// Reset the timer
 		mNextEmissionTimer.Reset();
 	}
 
-	// Update all the particles
-	for (uint32_t i = 0; i < mActiveParticles.size(); i++)
+	// Update all active particles
+	for (auto iter = mActiveParticles.begin(); iter != mActiveParticles.end();)
 	{
-		mActiveParticles[i]->Update(frameTime);
+		Particle* particle = (*iter);
+		particle->Update(frameTime);
 
-		if (mActiveParticles[i]->IsLifetimeOver())
+		// Reset any completed particles
+		if (particle->IsLifetimeOver())
 		{
-			mParticlePool.push_back(mActiveParticles[i]);
-			mActiveParticles.erase(mActiveParticles.begin() + i);
-			i--;
+			particle->SetVisibility(false);
+			mParticlePool.push_back(particle);
+			iter = mActiveParticles.erase(iter);
+		}
+		else
+		{
+			iter++;
 		}
 	}
 }

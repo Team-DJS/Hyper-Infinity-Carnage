@@ -17,12 +17,12 @@ namespace HIC
 		bool IsLifetimeOver() const;
 
 		// Set the position of the Particle
-		void SetPosition(XMFLOAT3 pos);
+		void SetPosition(const XMFLOAT3& pos);
 
 		// Set velocity of particle
-		void SetVelocity(XMFLOAT3 vel);
+		void SetVelocity(const XMFLOAT3& vel);
 
-		// Hide or unHide the particle
+		// Hide or Show the particle
 		void SetVisibility(bool on);
 
 		// Set the lifetime of the particle

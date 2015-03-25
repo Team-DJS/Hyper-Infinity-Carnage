@@ -52,7 +52,7 @@ Arena::Arena(bool loadFromFile) :
 	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("Sphere.x");
-	mArenaParticles = new ParticleEmitter(particleMesh, XMFLOAT3(30,30,0), 0.2f, 0.1f);
+	mArenaParticles = new ParticleEmitter(particleMesh, XMFLOAT3(30,40,0), 0.5f, 1.0f);
 	mArenaParticles->StartEmission();
 
 
