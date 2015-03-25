@@ -19,11 +19,10 @@ const std::string Arena::SAVE_FILENAME = "Save.hic";
 //-----------------------------------
 
 // Default constructor for Arena
-Arena::Arena() :
-	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f
-	), 40.0f)),
-	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f))),
-	mCollisionBox(CollisionAABB(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f))),
+Arena::Arena(bool loadFromFile) :
+	mPlayer(XMFLOAT3(0.0f, 0.0f, 0.0f), 40.0f),
+	mArenaModel(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)),
+	mCollisionBox(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f)),
 	mScore(0U),
 	mPickupTimer(5.0f)
 {
@@ -42,7 +41,6 @@ Arena::Arena() :
 		}
 	}
 
-	gAudioManager->LoadAudio("GameplayMusic", "Media\\GameplayTheme.wav");
 	mGameMusic = gAudioManager->CreateSource("GameplayMusic", XMFLOAT3(0.0f, 0.0f, 0.0f));
 	mGameMusic->SetLooping(true);
 	mGameMusic->Play();
@@ -57,8 +55,16 @@ Arena::Arena() :
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
 #endif
 
-	// Load the first stage
-	LoadStage(1);
+	// Load from the save file
+	if (loadFromFile && LoadFromFile())
+	{
+		LoadStage(mCurrentStage);
+	}
+	else
+	{
+		// Load the first stage
+		LoadStage(1);
+	}
 }
 
 // Destructor for Arena
@@ -71,7 +77,6 @@ Arena::~Arena()
 	}
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
-	gAudioManager->ReleaseAudio("GameplayMusic");
 }
 
 //-----------------------------------
@@ -327,6 +332,7 @@ bool Arena::LoadFromFile()
 
 	// Read the game data
 	file >> mCurrentStage;
+	file >> mScore;
 
 	// Read the player data
 	file >> mPlayer;
@@ -348,6 +354,7 @@ void Arena::SaveToFile()
 
 	// Save the game data
 	file << mCurrentStage << std::endl;
+	file << mScore << std::endl;
 
 	// Save the player data
 	file << mPlayer << std::endl;

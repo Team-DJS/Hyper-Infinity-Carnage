@@ -70,11 +70,16 @@ namespace HIC
 			return stream;
 		}
 
+		// Operator overload of the input stream operator
 		friend std::istream& operator>>(std::istream& stream, Weapon& weapon)
 		{
 			stream >> weapon.mFireRate;
 			stream >> weapon.mDamage;
 			stream >> weapon.mNoBarrels;
+
+			// Reset the timer
+			weapon.mFireTimer.Reset(weapon.mFireRate);
+
 			return stream;
 		}
 	private:

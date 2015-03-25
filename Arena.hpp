@@ -20,7 +20,7 @@ namespace HIC
 		//-----------------------------
 
 		// Default constructor for Arena
-		Arena();
+		Arena(bool loadFromFile);
 
 		// Destructor for Arena
 		~Arena();

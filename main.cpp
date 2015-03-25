@@ -58,6 +58,8 @@ bool ProgramSetup()
 
 	// Initialise the AudioManager
 	gAudioManager = new AudioManager();
+	// Load the gameplay audio
+	gAudioManager->LoadAudio("GameplayMusic", "Media\\GameplayTheme.wav");
 	
 	return true;
 }
@@ -66,6 +68,9 @@ bool ProgramSetup()
 // Returns true on success, false on failure
 bool ProgramShutdown()
 {
+	// Release the gameplay audio
+	gAudioManager->ReleaseAudio("GameplayMusic");
+	// Release the audio manager
 	SafeRelease(gAudioManager);
 
 	// Remove the cameras
@@ -151,9 +156,6 @@ bool GameSetup()
 #ifdef _DEBUG
 	CollisionObject::MARKER_MESH = gEngine->LoadMesh("dummy.x");
 #endif
-	// Load the arena
-	gArena = new Arena();
-
 	return true;
 }
 
@@ -205,7 +207,6 @@ bool GameShutdown()
 
 	gCamera = gGameCamera;
 #endif
-
 	return true;
 }
 
@@ -236,6 +237,8 @@ int main(int argc, char* argv[])
 		}
 
 		bool quitFrontend = false;
+		bool loadSaveGame = false;
+
 		// Update the front-end until the exit key is pressed
 		while (!quitFrontend)
 		{
@@ -251,14 +254,16 @@ int main(int argc, char* argv[])
 				{
 					if (gNewGameButton->MouseIsOver())
 					{
-						quitFrontend = true;					//Load into main game
+						quitFrontend = true;
+						loadSaveGame = false;
 					}
 				}
 				if (gContinueButton)			
 				{
 					if (gContinueButton->MouseIsOver())
 					{
-						//TODO: Perform some action
+						quitFrontend = true;
+						loadSaveGame = true;
 					}
 				}
 				if (gViewHiScoreButton)
@@ -320,10 +325,12 @@ int main(int argc, char* argv[])
 			return EXIT_FAILURE;
 		}
 
+		// Load the arena
+		gArena = new Arena(loadSaveGame);
+
 		// Continue in game loop until exited
 		while (!gEngine->KeyHit(Key_Escape))
 		{
-
 			// Update the game
 			float frameTime = gEngine->Timer();
 			GameUpdate(frameTime);
