@@ -10,7 +10,7 @@ namespace HIC
 	{
 	public:
 		// Default Constructor for ParticleEmitter
-		ParticleEmitter(IMesh* mesh, float emissionRate);
+		ParticleEmitter(IMesh* mesh, XMFLOAT3 position, float emissionRate, float lifetime);
 
 		// Default Destructor for ParticleEmitter
 		~ParticleEmitter();
@@ -28,9 +28,12 @@ namespace HIC
 		void Update(float frameTime);
 	private:
 		IMesh* mMesh;
+		float mLifetime;
 		bool mIsEmitting;
 		XMFLOAT3 mPosition;
 		Timer mNextEmissionTimer;
-		vector<Particle> mParticles;
+		std::vector<Particle*> mParticlePool;
+		std::vector<Particle*> mActiveParticles;
+
 	};
 }

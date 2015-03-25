@@ -2,15 +2,29 @@
 using namespace HIC;
 
 // Default constructor for ParticleEmitter
-ParticleEmitter::ParticleEmitter(IMesh* mesh, float emissionRate) :
-	mMesh(mesh),
-	mNextEmissionTimer(emissionRate)
+ParticleEmitter::ParticleEmitter(IMesh* mesh, XMFLOAT3 position, float emissionRate, float lifetime) :
+mMesh(mesh),
+mNextEmissionTimer(emissionRate)
 {
+	for (uint32_t i = 0; i < 200; i++)
+	{
+		Particle* particle = new Particle(mesh, position, XMFLOAT3(0,0,0), lifetime);
+		mParticlePool.push_back(particle);
+	}
 }
 
 // Default Destructor for ParticleEmitter
 ParticleEmitter::~ParticleEmitter()
 {
+	for (auto particle : mParticlePool)
+	{
+		delete(particle);
+	}
+
+	for (auto particle : mActiveParticles)
+	{
+		delete(particle);
+	}
 }
 
 // Starts the emission of the particle
@@ -38,21 +52,34 @@ void ParticleEmitter::Update(float frameTime)
 	mNextEmissionTimer.Update(frameTime);
 
 	// Check if a new particle should be emitted
-	if (mIsEmitting && mNextEmissionTimer.IsComplete())
+	if (mIsEmitting && mNextEmissionTimer.IsComplete() && !mParticlePool.empty())
 	{
-		// TODO: Generate random velocity
-		XMFLOAT3 velocity(1.0f, 1.0f, 1.0f);
+		Particle* particle = mParticlePool.back();
+		mParticlePool.pop_back();
 
-		mParticles.emplace_back(mMesh, mPosition, velocity);
+		if (particle != nullptr)
+		{
+			particle->SetLifetime(mLifetime);
+			particle->SetPosition(mPosition);
+			XMFLOAT3 velocity(Random(10.0f, 15.0f), 10.0f, Random(10.0f, 15.0f));
+			particle->SetVelocity(velocity);
+			mActiveParticles.push_back(particle);
+		}
 
 		// Reset the timer
 		mNextEmissionTimer.Reset();
 	}
 
 	// Update all the particles
-	size_t numParticles = mParticles.size();
-	for (size_t i = 0; i < numParticles; ++i)
+	for (uint32_t i = 0; i < mActiveParticles.size(); i++)
 	{
-		mParticles[i].Update(frameTime);
+		mActiveParticles[i]->Update(frameTime);
+
+		if (mActiveParticles[i]->IsLifetimeOver())
+		{
+			mParticlePool.push_back(mActiveParticles[i]);
+			mActiveParticles.erase(mActiveParticles.begin() + i);
+			i--;
+		}
 	}
 }
