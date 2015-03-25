@@ -165,6 +165,11 @@ void Arena::Update(float frameTime)
 	// Update the player
 	mPlayer.Update(frameTime);
 
+	if (!CylinderToBoxCollision(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
+	{
+		mPlayer.SetPosition(enitityPos);
+	}
+
 	// Update all the enemies
 	for (auto& enemy : mEnemies)
 	{
@@ -181,10 +186,7 @@ void Arena::Update(float frameTime)
 	// Collision
 
 	// check if player is colliding with arena
-	if (!CylinderToBoxCollision(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
-	{
-		mPlayer.SetPosition(enitityPos);
-	}
+
 
 	// check if projectiles are colliding with arena
 	for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
