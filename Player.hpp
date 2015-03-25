@@ -93,5 +93,6 @@ namespace HIC
 		//Set the firing flag for the object to react to in Update()
 		void SetTryFire();
 
+
 	};
 }

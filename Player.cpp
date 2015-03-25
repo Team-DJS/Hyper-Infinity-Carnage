@@ -26,7 +26,7 @@ Player::Player(const XMFLOAT3& position) :
 	mBombs(DEFAULT_BOMBS),
 	mWeapon(new Weapon())
 {
-	mRigidBody->setAngularDamping(10.0f);
+	mRigidBody->setAngularDamping(10.0f); 
 }
 
 // Destructor for Player
@@ -114,36 +114,36 @@ void Player::Update(float frameTime)
 	{
 		RotateY(-TURN_SPEED, frameTime);	//Turn left
 	}
+
+	//******* End of direct the player *********//
 	
-	////******* End of direct the player *********//
-	//
-	////************WEAPON*************//
-	//// Update the weapon
-	//mWeapon->Update(frameTime, GetWorldPos(), GetFacingVector());
-	//
-	////*********END OF WEAPON*********//
+	//************WEAPON*************//
+	// Update the weapon
+	mWeapon->Update(frameTime, GetWorldPos(), GetFacingVector());
+
+	//*********END OF WEAPON*********//
 	
 	//****************************** MOVEMENT ******************************// 
 	XMFLOAT3 directionalVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	if (mMoveForward)	//If thrust flag is true (thrust is applied)
 	{
-		directionalVelocity.z += 100.0f * frameTime;
+		directionalVelocity.z += 900000.0f *frameTime;
 	}
 	if (mMoveRight)
 	{
-		directionalVelocity.x += 100.0f * frameTime;
+		directionalVelocity.x += 900000.0f *frameTime;
 	}
 	if (mMoveBackward)
 	{
-		directionalVelocity.z -= 100.0f * frameTime;
+		directionalVelocity.z -= 900000.0f *frameTime;
 	}
 	if (mMoveLeft)
 	{
-		directionalVelocity.x -= 100.0f * frameTime;
+		directionalVelocity.x -= 900000.0f *frameTime;
 	}
 	
 	//Move model by velocity vector
-	GetRigidBody()->applyLinearImpulse(hkVector4(directionalVelocity.x, directionalVelocity.y, directionalVelocity.z));
+	GetRigidBody()->setLinearVelocity(hkVector4(directionalVelocity.x, directionalVelocity.y, directionalVelocity.z));
 	
 	//Unset flags
 	mMoveLeft = false;
@@ -189,3 +189,4 @@ void Player::Clear()
 {
 	mWeapon->Clear();
 }
+
