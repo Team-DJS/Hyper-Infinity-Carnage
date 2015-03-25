@@ -18,7 +18,8 @@ IMesh* Arena::ENEMY_MESH = nullptr;
 
 // Default constructor for Arena
 Arena::Arena() :
-	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f), 40.0f)),
+	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f
+	), 40.0f)),
 	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f))),
 	mCollisionBox(CollisionAABB(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f)))
 {
@@ -100,7 +101,7 @@ void Arena::Update(float frameTime)
 		//mPlayer->MoveX(50.0f * frameTime);
 	}
 
-	if (gEngine->KeyHit(Mouse_LButton))
+	if (gEngine->KeyHeld(Mouse_LButton))
 	{
 		mPlayer.SetTryFire();
 	}
@@ -135,10 +136,7 @@ void Arena::Update(float frameTime)
 	// Update the player
 	mPlayer.Update(frameTime);
 
-	if (!CylinderToBoxCollision(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
-	{
-		mPlayer.SetPosition(enitityPos);
-	}
+
 
 
 	// Update all the enemies
@@ -154,7 +152,26 @@ void Arena::Update(float frameTime)
 		}
 	}
 
+	// Collision
+
+	// check if player is colliding with arena
+	if (!CylinderToBoxCollision(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
+	{
+		mPlayer.SetPosition(enitityPos);
+	}
+
+	// check if projectiles are colliding with arena
+	for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
+	{
+		if (!CylinderToBoxCollision(&mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject(), &mCollisionBox))
+		{
+			mPlayer.GetWeapon()->RemoveProjectile(j);
+			j--;
+		}
+	}
+
 	bool hitEnemy;
+	uint32_t damage = 0;
 	// Check enemy - player collision
 	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
@@ -165,19 +182,24 @@ void Arena::Update(float frameTime)
 		// Check whether colliding with a projectile
 		for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
 		{
+
 			if (CylinderToCylinderCollision(&currentEnemy, &mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject()))
 			{
-				hitEnemy = true;
+				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
+				if (mEnemies[i]->TakeHealth(damage))
+					hitEnemy = true;
+				mPlayer.GetWeapon()->RemoveProjectile(j);
+				j--;
 				break;
 			}
 		}
 
+		// check if player is colliding with enemies
 		if (CylinderToCylinderCollision(&currentEnemy, &mPlayer.GetCollisionCylinder()))
 		{
 			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
 			hitEnemy = true;
 		}
-		//}
 
 		if (hitEnemy)
 		{
@@ -187,13 +209,16 @@ void Arena::Update(float frameTime)
 		}
 	}
 
+	// check if Players life is 0;
 	if (mPlayer.GetHealth() <= 0.0f)
 	{
+		mPlayer.TakeLife();
 		this->Clear();
 		LoadStage(mCurrentStage);
 	}
 
-	if (mEnemies.size() == 0)
+	// check if there are no more enemies on the field
+	if (mEnemies.size() <= 0)
 	{
 		LoadStage(mCurrentStage + 1);
 	}
@@ -205,6 +230,12 @@ void Arena::LoadStage(uint32_t stageNumber)
 	mPlayer.GetWeapon()->Clear();
 	// Get current stage and add one
 	mCurrentStage = stageNumber;
+	// Player health
+	// Lives
+	// score
+	// weapon damage and fire rate
+	// possibly other things.
+	// Stage.
 
 	// Determne number of enemies to defeat this stage
 	uint32_t noOfEnemies = (mCurrentStage + 10) * 1.5;
@@ -244,6 +275,7 @@ void Arena::SpawnEnemies(uint32_t noOfEnemies)
 	srand((uint32_t)(time(0)));
 	for (int i = 0; i < noOfEnemies; i++)
 	{
-		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15 )), 15.0f, 10));
+		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, 
+			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15 )), 15.0f, 10U));
 	}
 }

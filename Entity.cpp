@@ -51,7 +51,7 @@ void Entity::GiveHealth(uint32_t health)
 // health of the entity, then this method will return true, otherwise false.
 bool Entity::TakeHealth(uint32_t damage)
 {
-	if (damage > mHealth)
+	if (damage >= mHealth)
 	{
 		mHealth = 0U;
 		return true;

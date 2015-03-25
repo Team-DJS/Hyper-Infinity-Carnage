@@ -111,6 +111,12 @@ void Weapon::Update(float frameTime, const XMFLOAT3 playerPosition, const XMFLOA
 	mTryFire = false;
 }
 
+void Weapon::RemoveProjectile(uint32_t i)
+{
+	delete mProjectiles[i];
+	mProjectiles.erase(mProjectiles.begin() + i);
+}
+
 void Weapon::Clear()
 {
 	for (uint32_t i = 0; i < mProjectiles.size(); i++)

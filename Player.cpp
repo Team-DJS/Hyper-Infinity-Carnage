@@ -28,6 +28,7 @@ Player::Player(const XMFLOAT3& position, float radius) :
 	mWeapon(new Weapon()),
 	mVelocity(0.0f, 0.0f)
 {
+	mWeapon->SetDamage(50U);
 }
 
 // Destructor for Player
@@ -72,6 +73,17 @@ Weapon* Player::GetWeapon()
 {
 	return mWeapon;
 }
+
+
+//-----------------------------------
+// Setters
+//-----------------------------------
+
+void Player::TakeLife()
+{
+	mLives--;
+}
+
 
 //-----------------------------------
 // Other
