@@ -9,8 +9,10 @@ IMesh* Arena::ARENA_MESH = nullptr;
 IMesh* Arena::ENEMY_MESH = nullptr;
 
 #ifdef _DEBUG
-	IFont* Arena::DebugHUD = nullptr;
+IFont* Arena::DebugHUD = nullptr;
 #endif
+
+const std::string Arena::SAVE_FILENAME = "Save.hic";
 
 //-----------------------------------
 // Constructors / Destructors
@@ -19,7 +21,7 @@ IMesh* Arena::ENEMY_MESH = nullptr;
 // Default constructor for Arena
 Arena::Arena() :
 	mPlayer(Player(XMFLOAT3(0.0f, 0.0f, 0.0f
-	), 40.0f)),
+						   ), 40.0f)),
 	mArenaModel(Scenery(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f))),
 	mCollisionBox(CollisionAABB(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f)))
 {
@@ -187,7 +189,7 @@ void Arena::Update(float frameTime)
 			{
 				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
 				if (mEnemies[i]->TakeHealth(damage))
-					hitEnemy = true;
+				{ hitEnemy = true; }
 				mPlayer.GetWeapon()->RemoveProjectile(j);
 				j--;
 				break;
@@ -238,7 +240,7 @@ void Arena::LoadStage(uint32_t stageNumber)
 	// Stage.
 
 	// Determne number of enemies to defeat this stage
-	uint32_t noOfEnemies = (mCurrentStage + 10) * 1.5;
+	uint32_t noOfEnemies = static_cast<uint32_t>((mCurrentStage + 10U) * 1.5f);
 
 	// Create that many enemies
 	SpawnEnemies(noOfEnemies);
@@ -249,6 +251,20 @@ void Arena::LoadStage(uint32_t stageNumber)
 // Saves the game to be loaded at a later date
 void Arena::Save()
 {
+	// Open the save file
+	std::ofstream file(SAVE_FILENAME);
+
+	// Ensure the file opened successfully
+	if (!file.is_open())
+	{
+		throw std::runtime_error("Failed to open file: " + SAVE_FILENAME);
+	}
+
+	// Save the game data
+	file << mCurrentStage << std::endl;
+
+	// Save the player data
+	file << mPlayer << std::endl;
 }
 
 // Removes all entities from the arena
@@ -258,7 +274,7 @@ void Arena::Clear()
 	{
 		delete mEnemies[i];
 	}
-	
+
 	mEnemies.clear();
 	mPlayer.Clear();
 	mPlayer.Respawn();
@@ -273,9 +289,9 @@ void Arena::TargetCamera(ICamera* camera)
 void Arena::SpawnEnemies(uint32_t noOfEnemies)
 {
 	srand((uint32_t)(time(0)));
-	for (int i = 0; i < noOfEnemies; i++)
+	for (uint32_t i = 0; i < noOfEnemies; i++)
 	{
-		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, 
-			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15 )), 15.0f, 10U));
+		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
+									 Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15)), 15.0f, 10U));
 	}
 }

@@ -29,11 +29,11 @@ namespace HIC
 		//---------------
 		// Getters
 		//---------------
-		
+
 		//--------------
 		// Other
 		//--------------
-		
+
 		// Updates all the entities inside the arena
 		void Update(float frameTime);
 
@@ -45,10 +45,10 @@ namespace HIC
 
 		// Removes all entities from the arena
 		void Clear();
-	
+
 		//Target the camera at the desired item
 		void TargetCamera(ICamera* camera);	//Point the camera at the current focal point
-	
+
 		//Spawn a group of enemies (TO DO: Create parameters for the rules of spawning enemies)
 		void SpawnEnemies(uint32_t noOfEnemies);
 
@@ -58,7 +58,8 @@ namespace HIC
 #ifdef _DEBUG
 		static IFont* DebugHUD;
 #endif
-
+	private:
+		static const std::string SAVE_FILENAME;
 	private:
 		// Pointer to the game engine
 
