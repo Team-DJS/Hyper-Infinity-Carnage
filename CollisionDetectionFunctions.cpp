@@ -5,7 +5,7 @@
 //----------------------------------
 
 // Tests to see if the bounding cylinders supplied intersect
-bool CylinderToCylinderCollision(CollisionCylinder* objectA, CollisionCylinder* objectB)	
+bool CollisionDetect(CollisionCylinder* objectA, CollisionCylinder* objectB)	
 {
 	bool hasColided = false;
 	float distBetweenPoints = 0.0f;
@@ -17,7 +17,7 @@ bool CylinderToCylinderCollision(CollisionCylinder* objectA, CollisionCylinder* 
 }
 
 // Tests to see if the cylinder instersects with the box
-bool CylinderToBoxCollision(CollisionCylinder* cylinder, CollisionAABB* box)
+bool CollisionDetect(CollisionCylinder* cylinder, CollisionAABB* box)
 {																				
 	bool hasCollided = false;
 

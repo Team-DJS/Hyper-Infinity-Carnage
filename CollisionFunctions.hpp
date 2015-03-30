@@ -7,10 +7,10 @@ using namespace HIC;
 //----------------------------------
 
 // Tests to see if the bounding cylinders supplied intersect
-bool CylinderToCylinderCollision(CollisionCylinder* objectA, CollisionCylinder* objectB);
+bool CollisionDetect(CollisionCylinder* objectA, CollisionCylinder* objectB);
 
 // Tests to see if the cylinder instersects with the box
-bool CylinderToBoxCollision(CollisionCylinder* cylinder, CollisionAABB* box);
+bool CollisionDetect(CollisionCylinder* cylinder, CollisionAABB* box);
 
 //------------------
 // Helper Functions

@@ -165,7 +165,7 @@ void Arena::Update(float frameTime)
 	// Update the player
 	mPlayer.Update(frameTime);
 
-	if (!CylinderToBoxCollision(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
+	if (!CollisionDetect(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
 	{
 		mPlayer.SetPosition(enitityPos);
 	}
@@ -178,7 +178,7 @@ void Arena::Update(float frameTime)
 		enitityPos = enemy->GetWorldPos();
 		enemy->Update(frameTime);
 
-		if (!CylinderToBoxCollision(&enemy->GetCollisionCylinder(), &mCollisionBox))
+		if (!CollisionDetect(&enemy->GetCollisionCylinder(), &mCollisionBox))
 		{
 			enemy->SetPosition(enitityPos);
 		}
@@ -194,7 +194,7 @@ void Arena::Update(float frameTime)
 	// check if projectiles are colliding with arena
 	for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
 	{
-		if (!CylinderToBoxCollision(&mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject(), &mCollisionBox))
+		if (!CollisionDetect(&mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject(), &mCollisionBox))
 		{
 			mPlayer.GetWeapon()->RemoveProjectile(j);
 			j--;
@@ -214,7 +214,7 @@ void Arena::Update(float frameTime)
 		for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
 		{
 
-			if (CylinderToCylinderCollision(&currentEnemy, &mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject()))
+			if (CollisionDetect(&currentEnemy, &mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject()))
 			{
 				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
 				if (mEnemies[i]->TakeHealth(damage))
@@ -229,7 +229,7 @@ void Arena::Update(float frameTime)
 		}
 
 		// check if player is colliding with enemies
-		if (CylinderToCylinderCollision(&currentEnemy, &mPlayer.GetCollisionCylinder()))
+		if (CollisionDetect(&currentEnemy, &mPlayer.GetCollisionCylinder()))
 		{
 			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
 			hitEnemy = true;
@@ -282,7 +282,7 @@ void Arena::Update(float frameTime)
 	{
 		deletePickup = false;
 		mPickups[i]->Update(frameTime);
-		if (CylinderToCylinderCollision(&mPickups[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
+		if (CollisionDetect(&mPickups[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
 		{
 			mPickups[i]->OnPickup(&mPlayer);
 			deletePickup = true;

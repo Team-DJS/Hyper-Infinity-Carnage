@@ -35,7 +35,7 @@ Button::~Button()
 //Checks to see if the mouse is currently on top of the sprite
 bool Button::MouseIsOver()	
 {
-	return CylinderToBoxCollision(&CollisionCylinder(D3DXVECTOR2((float)gEngine->GetMouseX(), (float)gEngine->GetMouseY()), 0.0f), &mCollision);
+	return CollisionDetect(&CollisionCylinder(D3DXVECTOR2((float)gEngine->GetMouseX(), (float)gEngine->GetMouseY()), 0.0f), &mCollision);
 }
 
 //-----------------------------------
