@@ -154,6 +154,27 @@ CollisionCylinder& Entity::GetCollisionCylinder()
 // Other
 //-----------------------------------
 
+void Entity::CollisionResolution(CollisionCylinder& collidingWith)
+{
+	////Reset model position to outside of the collision
+	//mModel->SetX(mCollisionCylinder.GetPreviousPosition().x);
+	//mModel->SetZ(mCollisionCylinder.GetPreviousPosition().y);
+	//
+	////Modify the direction of movement based upon the ships position relative to the collision object it collided with and the current movement vector
+	//XMVECTOR vectToOtherSphere = XMLoadFloat2(&XMFLOAT2(collidingWith.GetPosition().x - mCollisionCylinder.GetPosition().x, collidingWith.GetPosition().y - mCollisionCylinder.GetPosition().y));	//Vector between ship and collided object
+	//
+	////Angle by which the vector is to be rotated (degrees) - Based upon dot product and other trigonomety
+	////angle to rotate by equals 180 - 2 * alpha where alpha is the angle between the tangent of the spheres and the movement vector
+	//XMVECTOR angleBetweenVectors = XMVector2AngleBetweenVectors(XMLoadFloat2(vectToOtherSphere), XMLoadFloat2(velocity))
+	//	
+	//float rotationAngle = 180.0f - (2.0f * (90.0f - XMConvertToDegrees())));
+	//rotationAngle = XMConvertToRadians(rotationAngle);	//Convert to radians for use with c++ trig formulae
+	//
+	////Calculate the new velocity by rotating the vector using a 2D rotation matrix (multiply components by 0.8f to make movement more realistic
+	//velocity = Vector2(velocity.GetX()*cosf(rotationAngle) - velocity.GetZ()*sinf(rotationAngle) * 0.8f,
+	//velocity.GetX()*sinf(rotationAngle) + velocity.GetZ() * cosf(rotationAngle) * 0.8f);
+}
+
 // Points the model at a given position
 void Entity::LookAt(const XMFLOAT3& position)
 {

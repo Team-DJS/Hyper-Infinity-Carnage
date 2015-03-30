@@ -32,12 +32,15 @@ namespace HIC
 		// Returns the position of the collision object
 		XMFLOAT2 GetPosition() const;
 		
+		XMFLOAT2 GetPreviousPosition() const;
+
 		//--------------
 		// Other
 		//--------------
 
 	private:
 		XMFLOAT2 mPosition;
+		XMFLOAT2 mPreviousPosition;
 
 #ifdef _DEBUG
 		//--------------------

@@ -16,7 +16,8 @@ IMesh* CollisionObject::MARKER_MESH = nullptr;
 
 // Default constructor for CollisionObject
 CollisionObject::CollisionObject(const XMFLOAT2& centre) :
-	mPosition(centre)
+	mPosition(centre),
+	mPreviousPosition(centre)
 {
 #ifdef _DEBUG
 	mHeight = 5.0f;
@@ -58,6 +59,7 @@ void CollisionObject::SetPosition(const XMFLOAT2& newPosition)
 	}
 #endif
 
+	mPreviousPosition = mPosition;
 	mPosition = newPosition;	//Update stored position variable
 }
 
@@ -65,12 +67,17 @@ void CollisionObject::SetPosition(const XMFLOAT2& newPosition)
 // Getters
 //-----------------------------------
 
-//-----------------------------------
-// Other
-//-----------------------------------
-
 // Returns the position of the collision object
 XMFLOAT2 CollisionObject::GetPosition() const
 {
 	return mPosition;
 }
+
+XMFLOAT2 CollisionObject::GetPreviousPosition() const
+{
+	return mPreviousPosition;
+}
+
+//-----------------------------------
+// Other
+//-----------------------------------

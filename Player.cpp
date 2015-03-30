@@ -186,7 +186,6 @@ void Player::Update(float frameTime)
 	mMoveForward = false;
 	mMoveBackward = false;
 
-	//UpdateCollisionCentre();	//Set new collision centre - Collision Object
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 
 	//Update collision object to meet new position

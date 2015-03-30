@@ -70,6 +70,8 @@ namespace HIC
 		// Other
 		//--------------
 
+		void CollisionResolution(CollisionCylinder& collidingWith);
+
 		// Points the model at a given position
 		void LookAt(const XMFLOAT3& position);
 	public:
