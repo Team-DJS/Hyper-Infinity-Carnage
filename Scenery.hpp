@@ -12,7 +12,7 @@ namespace HIC
 		//-----------------------------
 
 		// Constructor for Scenery
-		Scenery(IMesh* mesh, const XMFLOAT3& position, float scale = 1.0f);
+		Scenery(IMesh* mesh, const D3DXVECTOR3& position, float scale = 1.0f);
 
 		// Destructor for Scenery
 		~Scenery();

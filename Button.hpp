@@ -15,7 +15,7 @@ namespace HIC
 		//-----------------------------
 
 		//Pass a spritename, position and width - let the constructor figure the exact collision box out
-		Button(string spriteName, XMFLOAT2 position, float width, float height);
+		Button(string spriteName, D3DXVECTOR2 position, float width, float height);
 
 		// Destructor for Button
 		~Button();

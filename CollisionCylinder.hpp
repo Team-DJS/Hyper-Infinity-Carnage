@@ -11,7 +11,7 @@ namespace HIC
 		//-----------------------------
 	
 		// Default constructor for CollisionCylinder
-		CollisionCylinder(const XMFLOAT2& centre, float radius = 0.0f);
+		CollisionCylinder(const D3DXVECTOR2& centre, float radius = 0.0f);
 
 		// Destructor for CollisionCylinder
 		~CollisionCylinder();

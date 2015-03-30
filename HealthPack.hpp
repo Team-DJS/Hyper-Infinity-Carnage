@@ -21,7 +21,7 @@ namespace HIC
 		// Other
 		//--------------
 		// Default constructor for HealthPack
-		HealthPack(const XMFLOAT3& position, float radius, float lifeTime, uint32_t restoreAmount);
+		HealthPack(const D3DXVECTOR3& position, float radius, float lifeTime, uint32_t restoreAmount);
 
 		// Destructor for HealthPack
 		~HealthPack();

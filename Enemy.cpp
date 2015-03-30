@@ -11,7 +11,7 @@ using namespace HIC;
 //-----------------------------------
 
 // Default constructor for Enemy
-Enemy::Enemy(IMesh* mesh, const XMFLOAT3& position, float radius, uint32_t damage) :
+Enemy::Enemy(IMesh* mesh, const D3DXVECTOR3& position, float radius, uint32_t damage) :
 	Entity(mesh, position, radius),
 	mDamage(damage)
 {
@@ -46,5 +46,5 @@ void Enemy::Update(float frameTime)
 	MoveX(GetFacingVector().x * 50.0f * frameTime);
 	MoveZ(GetFacingVector().z * 50.0f * frameTime);
 
-	GetCollisionCylinder().SetPosition(XMFLOAT2(GetWorldPos().x, GetWorldPos().z));
+	GetCollisionCylinder().SetPosition(D3DXVECTOR2(GetWorldPos().x, GetWorldPos().z));
 }

@@ -37,7 +37,7 @@ AudioManager::~AudioManager()
 //--------------
 // Setters
 //--------------
-void AudioManager::SetListenerPosition(const XMFLOAT3& position)
+void AudioManager::SetListenerPosition(const D3DXVECTOR3& position)
 {
 	ALfloat pos[] = { position.x, position.y, position.z };
 	alListenerfv(AL_POSITION, pos);
@@ -70,7 +70,7 @@ void AudioManager::ReleaseAudio(const std::string& name)
 }
 
 // Creates a new audio source at the given position
-AudioSource* AudioManager::CreateSource(const std::string& name, const XMFLOAT3& position)
+AudioSource* AudioManager::CreateSource(const std::string& name, const D3DXVECTOR3& position)
 {
 	AudioSource* source = nullptr;
 

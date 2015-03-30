@@ -54,7 +54,7 @@ namespace HIC
 		//--------------
 
 		// Called to update the weapon
-		void Update(float frameTime, const XMFLOAT3 playerPosition, const XMFLOAT3 playerFacingVector);
+		void Update(float frameTime, const D3DXVECTOR3 playerPosition, const D3DXVECTOR3 playerFacingVector);
 
 
 		void RemoveProjectile(uint32_t i);
@@ -84,7 +84,7 @@ namespace HIC
 		}
 	private:
 		// Shoots a projectile in a direction
-		void Shoot(const XMFLOAT3& direction, const XMFLOAT3 playerFacingVector);
+		void Shoot(const D3DXVECTOR3& direction, const D3DXVECTOR3 playerFacingVector);
 
 	private:
 		float mFireRate;					//Length of time between bullet fires

@@ -12,7 +12,7 @@ namespace HIC
 		// Constructors/Destructors
 		//-----------------------------
 		// Constructor for Projectile
-		Projectile(const XMFLOAT3& position, const XMFLOAT2& velocity, uint32_t damage);
+		Projectile(const D3DXVECTOR3& position, const D3DXVECTOR2& velocity, uint32_t damage);
 
 		// Destructor for Projectile
 		~Projectile();
@@ -46,7 +46,7 @@ namespace HIC
 	private:
 		IModel* mModel;
 		uint32_t mDamage;
-		XMFLOAT2 mVelocity;
+		D3DXVECTOR2 mVelocity;
 		CollisionCylinder mCollisionCylinder;
 	};
 }

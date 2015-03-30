@@ -11,7 +11,7 @@ namespace HIC
 		//-----------------------------
 	
 		// Default constructor for CollisionAABB
-		CollisionAABB(const XMFLOAT2& centre, const XMFLOAT2& minOffset, const XMFLOAT2& maxOffset);
+		CollisionAABB(const D3DXVECTOR2& centre, const D3DXVECTOR2& minOffset, const D3DXVECTOR2& maxOffset);
 
 		// Destructor for AABB
 		~CollisionAABB();
@@ -26,24 +26,24 @@ namespace HIC
 		//---------------
 		
 		// Returns the minimum offset of the AABB (ignoring position)
-		XMFLOAT2 GetMinOffset() const;
+		D3DXVECTOR2 GetMinOffset() const;
 
 		// Returns the maximum offset of the AABB (ignoring position)
-		XMFLOAT2 GetMaxOffset() const;
+		D3DXVECTOR2 GetMaxOffset() const;
 		
 		// Returns the top left point of the collision box
-		XMFLOAT2 GetMinPosition();
+		D3DXVECTOR2 GetMinPosition();
 
 		// Returns the bottom right point of the collision box
-		XMFLOAT2 GetMaxPosition();
+		D3DXVECTOR2 GetMaxPosition();
 		
 		//--------------
 		// Other
 		//--------------
 		
 	private:
-		XMFLOAT2 mMinOffset;
-		XMFLOAT2 mMaxOffset;
+		D3DXVECTOR2 mMinOffset;
+		D3DXVECTOR2 mMaxOffset;
 
 #ifdef _DEBUG
 		//--------------------

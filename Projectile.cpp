@@ -13,11 +13,11 @@ const float Projectile::RADIUS = 1.0f;
 //-----------------------------------
 
 // Default constructor for Projectile
-Projectile::Projectile(const XMFLOAT3& position, const XMFLOAT2& velocity, uint32_t damage) :
+Projectile::Projectile(const D3DXVECTOR3& position, const D3DXVECTOR2& velocity, uint32_t damage) :
 	mModel(MESH->CreateModel(position.x, position.y, position.z)),
 	mDamage(damage),
 	mVelocity(velocity),
-	mCollisionCylinder(XMFLOAT2(position.x, position.z), RADIUS)
+	mCollisionCylinder(D3DXVECTOR2(position.x, position.z), RADIUS)
 {
 }
 
@@ -59,6 +59,6 @@ void Projectile::Update(float frameTime)
 				 mVelocity.y * 50.0f * frameTime);
 
 	// Update the collision cylinder with the new position
-	XMFLOAT2 newPosition(mModel->GetX(), mModel->GetZ());
+	D3DXVECTOR2 newPosition(mModel->GetX(), mModel->GetZ());
 	mCollisionCylinder.SetPosition(newPosition);
 }

@@ -2,7 +2,7 @@
 using namespace HIC;
 
 // Default constructor for Particle
-Particle::Particle(IMesh* mesh, const XMFLOAT3& position, const XMFLOAT3& velocity, float lifetime) :
+Particle::Particle(IMesh* mesh, const D3DXVECTOR3& position, const D3DXVECTOR3& velocity, float lifetime) :
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
 	mLifetime(lifetime),
 	mVelocity(velocity)
@@ -22,13 +22,13 @@ bool Particle::IsLifetimeOver() const
 }
 
 // Set position of the particle
-void Particle::SetPosition(const XMFLOAT3& pos)
+void Particle::SetPosition(const D3DXVECTOR3& pos)
 {
 	mModel->SetPosition(pos.x,pos.y,pos.z);
 }
 
 // Set velocity of particle
-void Particle::SetVelocity(const XMFLOAT3& vel)
+void Particle::SetVelocity(const D3DXVECTOR3& vel)
 {
 	mVelocity = vel;
 }

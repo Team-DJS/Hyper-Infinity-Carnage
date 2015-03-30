@@ -13,7 +13,7 @@ namespace HIC
 		//-----------------------------
 
 		// Default constructor for Player
-		Player(const XMFLOAT3& position, float radius);
+		Player(const D3DXVECTOR3& position, float radius);
 
 		// Destructor for Player
 		~Player();
@@ -91,7 +91,7 @@ namespace HIC
 	private:
 		// Movement Variables
 		//Globals Required to allow movement to perform Correctly
-		XMFLOAT2 mVelocity; // Horizontal (x) and vertical (y) velocities
+		D3DXVECTOR2 mVelocity; // Horizontal (x) and vertical (y) velocities
 		//Movement control states
 		bool mMoveForward;
 		bool mMoveBackward;

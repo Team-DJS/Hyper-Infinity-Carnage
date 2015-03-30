@@ -9,7 +9,7 @@ IMesh* Arena::ARENA_MESH = nullptr;
 IMesh* Arena::ENEMY_MESH = nullptr;
 
 #ifdef _DEBUG
-	IFont* Arena::DebugHUD = nullptr;
+	tle::IFont* Arena::DebugHUD = nullptr;
 #endif
 
 const std::string Arena::SAVE_FILENAME = "Save.hic";
@@ -20,15 +20,15 @@ const std::string Arena::SAVE_FILENAME = "Save.hic";
 
 // Default constructor for Arena
 Arena::Arena(bool loadFromFile) :
-	mPlayer(XMFLOAT3(0.0f, 0.0f, 0.0f), 40.0f),
-	mArenaModel(ARENA_MESH, XMFLOAT3(0.0f, 0.0f, 0.0f)),
-	mCollisionBox(XMFLOAT2(0.0f, 0.0f), XMFLOAT2(-450.0f, -450.0f), XMFLOAT2(450.0f, 450.0f)),
+	mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
+	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
 	mScore(0U),
 	mPickupTimer(5.0f)
 {
 	// Build the scenery
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
-	XMFLOAT3 pos;
+	D3DXVECTOR3 pos;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -41,7 +41,7 @@ Arena::Arena(bool loadFromFile) :
 		}
 	}
 
-	mGameMusic = gAudioManager->CreateSource("GameplayMusic", XMFLOAT3(0.0f, 0.0f, 0.0f));
+	mGameMusic = gAudioManager->CreateSource("GameplayMusic", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	mGameMusic->SetLooping(true);
 	mGameMusic->Play();
 
@@ -52,7 +52,7 @@ Arena::Arena(bool loadFromFile) :
 	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("Sphere.x");
-	mArenaParticles = new ParticleEmitter(particleMesh, XMFLOAT3(30,40,0), 0.1f, 2.0f);
+	mArenaParticles = new ParticleEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
 	mArenaParticles->StartEmission();
 
 
@@ -161,7 +161,7 @@ void Arena::Update(float frameTime)
 	// Actual HUD update
 
 
-	XMFLOAT3 enitityPos = mPlayer.GetWorldPos();
+	D3DXVECTOR3 enitityPos = mPlayer.GetWorldPos();
 	// Update the player
 	mPlayer.Update(frameTime);
 
@@ -245,7 +245,7 @@ void Arena::Update(float frameTime)
 	if (mPickupTimer.IsComplete())
 	{
 		int pickupType = static_cast<int>(Random(0.0f, 3.0f));
-		XMFLOAT3 position = XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
+		D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
 			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
 		float lifetime = Random(5.0f, 9.2f);
 
@@ -403,7 +403,7 @@ void Arena::SpawnEnemies(uint32_t noOfEnemies)
 	srand((uint32_t)(time(0)));
 	for (uint32_t i = 0; i < noOfEnemies; i++)
 	{
-		mEnemies.push_back(new Enemy(ENEMY_MESH, XMFLOAT3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, 
+		mEnemies.push_back(new Enemy(ENEMY_MESH, D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, 
 									 Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15)), 15.0f, 10U));
 	}
 }

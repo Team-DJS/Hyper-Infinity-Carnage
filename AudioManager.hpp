@@ -19,7 +19,7 @@ namespace HIC
 		//--------------
 		// Setters
 		//--------------
-		void SetListenerPosition(const XMFLOAT3& position);
+		void SetListenerPosition(const D3DXVECTOR3& position);
 
 		//---------------
 		// Getters
@@ -35,7 +35,7 @@ namespace HIC
 		void ReleaseAudio(const std::string& name);
 
 		// Creates a new audio source at the given position
-		AudioSource* CreateSource(const std::string& name, const XMFLOAT3& position);
+		AudioSource* CreateSource(const std::string& name, const D3DXVECTOR3& position);
 
 		// Releases the given source from memory
 		void ReleaseSource(AudioSource* source);

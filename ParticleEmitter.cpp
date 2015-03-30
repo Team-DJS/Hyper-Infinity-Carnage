@@ -2,7 +2,7 @@
 using namespace HIC;
 
 // Default constructor for ParticleEmitter
-ParticleEmitter::ParticleEmitter(IMesh* mesh, XMFLOAT3 position, float emissionRate, float lifetime) :
+ParticleEmitter::ParticleEmitter(IMesh* mesh, D3DXVECTOR3 position, float emissionRate, float lifetime) :
 	mMesh(mesh),
 	mPosition(position),
 	mLifetime(lifetime),
@@ -43,7 +43,7 @@ void ParticleEmitter::StopEmission()
 }
 
 // Sets the position of the particle
-void ParticleEmitter::SetPosition(const XMFLOAT3& position)
+void ParticleEmitter::SetPosition(const D3DXVECTOR3& position)
 {
 	mPosition = position;
 }
@@ -62,7 +62,7 @@ void ParticleEmitter::Update(float frameTime)
 
 		particle->SetLifetime(mLifetime);
 		particle->SetPosition(mPosition);
-		XMFLOAT3 velocity(Random(-50.0f, 50.0f), 10.0f, Random(-50.0f, 50.0f));
+		D3DXVECTOR3 velocity(Random(-50.0f, 50.0f), 10.0f, Random(-50.0f, 50.0f));
 		particle->SetVelocity(velocity);
 		particle->SetVisibility(true);
 		mActiveParticles.push_back(particle);

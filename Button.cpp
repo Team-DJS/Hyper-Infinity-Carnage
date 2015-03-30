@@ -10,8 +10,8 @@
 //-----------------------------------
 
 //Constructor
-Button::Button(string spriteName, XMFLOAT2 position, float width, float height) :
-	mCollision(CollisionAABB(position, XMFLOAT2(-(width / 2), -(height / 2)), XMFLOAT2(width / 2, height / 2)))
+Button::Button(string spriteName, D3DXVECTOR2 position, float width, float height) :
+	mCollision(CollisionAABB(position, D3DXVECTOR2(-(width / 2), -(height / 2)), D3DXVECTOR2(width / 2, height / 2)))
 {
 	mSprite = gEngine->CreateSprite(spriteName, (mCollision.GetPosition().x + mCollision.GetMinOffset().x), (mCollision.GetPosition().y + mCollision.GetMinOffset().y));	//Use the engine to create the sprite from the file 'spriteName' in the position provided
 	
@@ -35,7 +35,7 @@ Button::~Button()
 //Checks to see if the mouse is currently on top of the sprite
 bool Button::MouseIsOver()	
 {
-	return CylinderToBoxCollision(&CollisionCylinder(XMFLOAT2((float)gEngine->GetMouseX(), (float)gEngine->GetMouseY()), 0.0f), &mCollision);
+	return CylinderToBoxCollision(&CollisionCylinder(D3DXVECTOR2((float)gEngine->GetMouseX(), (float)gEngine->GetMouseY()), 0.0f), &mCollision);
 }
 
 //-----------------------------------

@@ -12,7 +12,7 @@ namespace HIC
 		//-----------------------------
 
 		// Default constructor for CollisionObject
-		CollisionObject(const XMFLOAT2& centre);
+		CollisionObject(const D3DXVECTOR2& centre);
 
 		// Destructor for CollisionObject
 		virtual ~CollisionObject();
@@ -23,24 +23,24 @@ namespace HIC
 		//--------------
 		
 		// Sets the position of the collision object
-		void SetPosition(const XMFLOAT2& position);
+		void SetPosition(const D3DXVECTOR2& position);
 		
 		//---------------
 		// Getters
 		//---------------
 		
 		// Returns the position of the collision object
-		XMFLOAT2 GetPosition() const;
+		D3DXVECTOR2 GetPosition() const;
 		
-		XMFLOAT2 GetPreviousPosition() const;
+		D3DXVECTOR2 GetPreviousPosition() const;
 
 		//--------------
 		// Other
 		//--------------
 
 	private:
-		XMFLOAT2 mPosition;
-		XMFLOAT2 mPreviousPosition;
+		D3DXVECTOR2 mPosition;
+		D3DXVECTOR2 mPreviousPosition;
 
 #ifdef _DEBUG
 		//--------------------

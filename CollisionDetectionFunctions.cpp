@@ -9,7 +9,7 @@ bool CylinderToCylinderCollision(CollisionCylinder* objectA, CollisionCylinder* 
 {
 	bool hasColided = false;
 	float distBetweenPoints = 0.0f;
-	XMFLOAT2 vect = CalculateDistanceVector(objectA->GetPosition(), objectB->GetPosition());
+	D3DXVECTOR2 vect = CalculateDistanceVector(objectA->GetPosition(), objectB->GetPosition());
 
 	distBetweenPoints = (vect.x * vect.x) + (vect.y * vect.y);	//Calculates the magnitude of the vector between the two models
 
@@ -23,10 +23,10 @@ bool CylinderToBoxCollision(CollisionCylinder* cylinder, CollisionAABB* box)
 
 	float radius = cylinder->GetRadius();
 
-	XMFLOAT2 min(box->GetMinPosition().x + radius, box->GetMinPosition().y + radius);
-	XMFLOAT2 max(box->GetMaxPosition().x - radius, box->GetMaxPosition().y - radius);
+	D3DXVECTOR2 min = D3DXVECTOR2(box->GetMinPosition().x + radius, box->GetMinPosition().y + radius);
+	D3DXVECTOR2 max = D3DXVECTOR2(box->GetMaxPosition().x - radius, box->GetMaxPosition().y - radius);
 
-	XMFLOAT2 spherePos = cylinder->GetPosition();
+	D3DXVECTOR2 spherePos = cylinder->GetPosition();
 
 	if (spherePos.x >= min.x && spherePos.x <= max.x)
 	{
@@ -43,7 +43,7 @@ bool CylinderToBoxCollision(CollisionCylinder* cylinder, CollisionAABB* box)
 //------------------
 
 // Calculate the distance vector from the first Vector2 to the second
-XMFLOAT2 CalculateDistanceVector(const XMFLOAT2& from, const XMFLOAT2& to)
+D3DXVECTOR2 CalculateDistanceVector(const D3DXVECTOR2& from, const D3DXVECTOR2& to)
 {
-	return XMFLOAT2(to.x - from.x, to.y - from.y);
+	return D3DXVECTOR2(to.x - from.x, to.y - from.y);
 }

@@ -14,12 +14,12 @@ const uint32_t Entity::DEFAULT_MAX_HEALTH = 100U;
 //-----------------------------------
 
 // Default constructor for Entity
-Entity::Entity(IMesh* mesh, const XMFLOAT3& position, float radius) :
+Entity::Entity(IMesh* mesh, const D3DXVECTOR3& position, float radius) :
 	mMesh(mesh),
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
 	mHealth(DEFAULT_HEALTH),
 	mMaxHealth(DEFAULT_MAX_HEALTH),
-	mCollisionCylinder(XMFLOAT2(position.x, position.z), radius)
+	mCollisionCylinder(D3DXVECTOR2(position.x, position.z), radius)
 {
 }
 
@@ -91,7 +91,7 @@ void Entity::RotateY(float degrees)
 	mModel->RotateY(degrees);
 }
 
-void Entity::SetPosition(XMFLOAT3 newPosition)
+void Entity::SetPosition(D3DXVECTOR3 newPosition)
 {
 	mModel->SetPosition(newPosition.x, newPosition.y, newPosition.z);
 }
@@ -111,29 +111,29 @@ uint32_t Entity::GetHealth() const
 	return mHealth;
 }
 
-XMFLOAT3 Entity::GetWorldPos()
+D3DXVECTOR3 Entity::GetWorldPos()
 {
-	return XMFLOAT3(mModel->GetX(), mModel->GetY(), mModel->GetZ());
+	return D3DXVECTOR3(mModel->GetX(), mModel->GetY(), mModel->GetZ());
 }
 
-XMFLOAT3 Entity::GetFacingVector()
+D3DXVECTOR3 Entity::GetFacingVector()
 {
 	float matrix[16];
 	mModel->GetMatrix(matrix);
 
-	XMFLOAT3 face;
+	D3DXVECTOR3 face;
 	face.x = matrix[8];
 	face.y = matrix[9];
 	face.z = matrix[10];
 	return face;
 }
 
-XMFLOAT3 Entity::GetRightVector()
+D3DXVECTOR3 Entity::GetRightVector()
 {
 	float matrix[16];
 	mModel->GetMatrix(matrix);
 
-	XMFLOAT3 right;
+	D3DXVECTOR3 right;
 	right.x = matrix[0];
 	right.y = matrix[1];
 	right.z = matrix[2];
@@ -161,7 +161,7 @@ void Entity::CollisionResolution(CollisionCylinder& collidingWith)
 	//mModel->SetZ(mCollisionCylinder.GetPreviousPosition().y);
 	//
 	////Modify the direction of movement based upon the ships position relative to the collision object it collided with and the current movement vector
-	//XMVECTOR vectToOtherSphere = XMLoadFloat2(&XMFLOAT2(collidingWith.GetPosition().x - mCollisionCylinder.GetPosition().x, collidingWith.GetPosition().y - mCollisionCylinder.GetPosition().y));	//Vector between ship and collided object
+	//XMVECTOR vectToOtherSphere = XMLoadFloat2(&D3DXVECTOR2(collidingWith.GetPosition().x - mCollisionCylinder.GetPosition().x, collidingWith.GetPosition().y - mCollisionCylinder.GetPosition().y));	//Vector between ship and collided object
 	//
 	////Angle by which the vector is to be rotated (degrees) - Based upon dot product and other trigonomety
 	////angle to rotate by equals 180 - 2 * alpha where alpha is the angle between the tangent of the spheres and the movement vector
@@ -176,7 +176,7 @@ void Entity::CollisionResolution(CollisionCylinder& collidingWith)
 }
 
 // Points the model at a given position
-void Entity::LookAt(const XMFLOAT3& position)
+void Entity::LookAt(const D3DXVECTOR3& position)
 {
 	mModel->LookAt(position.x, mModel->GetY(), position.z);
 }

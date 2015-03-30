@@ -21,7 +21,7 @@ AudioSource::~AudioSource()
 // Setters
 //--------------
 // Sets the position of the audio in the scene
-void AudioSource::SetPosition(const XMFLOAT3& position)
+void AudioSource::SetPosition(const D3DXVECTOR3& position)
 {
 	ALfloat pos[] = { position.x, position.y, position.z };
 	alSourcefv(mID, AL_POSITION, pos);

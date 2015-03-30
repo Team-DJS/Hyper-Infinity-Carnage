@@ -12,7 +12,7 @@ namespace HIC
 		// Constructors/Destructors
 		//-----------------------------
 		// Default constructor for ExtraLife
-		ExtraLife(const XMFLOAT3& position, float radius, float lifeTime);
+		ExtraLife(const D3DXVECTOR3& position, float radius, float lifeTime);
 
 		// Destructor for ExtraLife
 		~ExtraLife();

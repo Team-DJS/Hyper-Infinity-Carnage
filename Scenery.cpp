@@ -10,7 +10,7 @@ using namespace HIC;
 //-----------------------------------
 
 // Default constructor for Scenery
-Scenery::Scenery(IMesh* mesh, const XMFLOAT3& position, float scale) :
+Scenery::Scenery(IMesh* mesh, const D3DXVECTOR3& position, float scale) :
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
 	mScale(scale)	
 {

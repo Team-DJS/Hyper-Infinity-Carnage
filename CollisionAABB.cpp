@@ -10,7 +10,7 @@ using namespace HIC;
 //-----------------------------------
 
 // Default constructor for CollisionAABB
-CollisionAABB::CollisionAABB(const XMFLOAT2& centre, const XMFLOAT2& minOffset, const XMFLOAT2& maxOffset) :
+CollisionAABB::CollisionAABB(const D3DXVECTOR2& centre, const D3DXVECTOR2& minOffset, const D3DXVECTOR2& maxOffset) :
 	CollisionObject(centre),
 	mMinOffset(minOffset),
 	mMaxOffset(maxOffset)
@@ -31,28 +31,28 @@ CollisionAABB::~CollisionAABB()
 //-----------------------------------
 
 // Returns the minimum offset of the AABB
-XMFLOAT2 CollisionAABB::GetMinOffset() const
+D3DXVECTOR2 CollisionAABB::GetMinOffset() const
 {
 	return mMinOffset;
 }
 
 // Returns the maximum offset of the AABB
-XMFLOAT2 CollisionAABB::GetMaxOffset() const
+D3DXVECTOR2 CollisionAABB::GetMaxOffset() const
 {
 	return mMaxOffset;
 }
 
-XMFLOAT2 CollisionAABB::GetMinPosition()
+D3DXVECTOR2 CollisionAABB::GetMinPosition()
 {
-	XMFLOAT2 pos = GetPosition();
+	D3DXVECTOR2 pos = GetPosition();
 	pos.x += mMinOffset.x;
 	pos.y += mMinOffset.y;
 	return pos;
 }
 		 
-XMFLOAT2 CollisionAABB::GetMaxPosition()
+D3DXVECTOR2 CollisionAABB::GetMaxPosition()
 {
-	XMFLOAT2 pos = GetPosition();
+	D3DXVECTOR2 pos = GetPosition();
 	pos.x += mMaxOffset.x;
 	pos.y += mMaxOffset.y;
 	return pos;

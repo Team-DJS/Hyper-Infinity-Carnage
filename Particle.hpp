@@ -8,7 +8,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for Particle
-		Particle(IMesh* mesh, const XMFLOAT3& position, const XMFLOAT3& velocity, float lifetime);
+		Particle(IMesh* mesh, const D3DXVECTOR3& position, const D3DXVECTOR3& velocity, float lifetime);
 
 		// Destructor for Particle
 		~Particle();
@@ -17,10 +17,10 @@ namespace HIC
 		bool IsLifetimeOver() const;
 
 		// Set the position of the Particle
-		void SetPosition(const XMFLOAT3& pos);
+		void SetPosition(const D3DXVECTOR3& pos);
 
 		// Set velocity of particle
-		void SetVelocity(const XMFLOAT3& vel);
+		void SetVelocity(const D3DXVECTOR3& vel);
 
 		// Hide or Show the particle
 		void SetVisibility(bool on);
@@ -33,6 +33,6 @@ namespace HIC
 	private:
 		IModel* mModel;
 		float mLifetime;
-		XMFLOAT3 mVelocity;
+		D3DXVECTOR3 mVelocity;
 	};
 }

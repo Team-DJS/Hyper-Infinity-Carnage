@@ -4,7 +4,7 @@ using namespace HIC;
 
 IMesh* Bomb::MESH = nullptr;
 
-Bomb::Bomb(const XMFLOAT3& position, float radius, float lifeTime) :
+Bomb::Bomb(const D3DXVECTOR3& position, float radius, float lifeTime) :
 	Pickup(MESH, position, radius, lifeTime)
 {
 

@@ -12,7 +12,7 @@ namespace HIC
 		// Constructors/Destructors
 		//-----------------------------
 		// Default constructor for Entity
-		Bomb(const XMFLOAT3& position, float radius, float lifeTime);
+		Bomb(const D3DXVECTOR3& position, float radius, float lifeTime);
 
 		// Destructor for Entity
 		~Bomb();

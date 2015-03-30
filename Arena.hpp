@@ -65,7 +65,7 @@ namespace HIC
 		static IMesh* ARENA_MESH;
 		static IMesh* ENEMY_MESH;
 #ifdef _DEBUG
-		static IFont* DebugHUD;
+		static tle::IFont* DebugHUD;
 #endif
 	private:
 		static const std::string SAVE_FILENAME;

@@ -15,7 +15,7 @@ IMesh* CollisionObject::MARKER_MESH = nullptr;
 //-----------------------------------
 
 // Default constructor for CollisionObject
-CollisionObject::CollisionObject(const XMFLOAT2& centre) :
+CollisionObject::CollisionObject(const D3DXVECTOR2& centre) :
 	mPosition(centre),
 	mPreviousPosition(centre)
 {
@@ -43,11 +43,11 @@ CollisionObject::~CollisionObject()
 //-----------------------------------
 
 // Sets the position of the collision object
-void CollisionObject::SetPosition(const XMFLOAT2& newPosition)
+void CollisionObject::SetPosition(const D3DXVECTOR2& newPosition)
 {
 #ifdef _DEBUG
 	//Calculate the required movement to re-centre the collision - use current centre and new centre to reposition
-	XMFLOAT2 diff = XMFLOAT2(newPosition.x - mPosition.x, newPosition.y - mPosition.y);
+	D3DXVECTOR2 diff = D3DXVECTOR2(newPosition.x - mPosition.x, newPosition.y - mPosition.y);
 
 	//If the markers exist they need to be moved alongside the centre
 	if (mMarkersExist)
@@ -68,12 +68,12 @@ void CollisionObject::SetPosition(const XMFLOAT2& newPosition)
 //-----------------------------------
 
 // Returns the position of the collision object
-XMFLOAT2 CollisionObject::GetPosition() const
+D3DXVECTOR2 CollisionObject::GetPosition() const
 {
 	return mPosition;
 }
 
-XMFLOAT2 CollisionObject::GetPreviousPosition() const
+D3DXVECTOR2 CollisionObject::GetPreviousPosition() const
 {
 	return mPreviousPosition;
 }

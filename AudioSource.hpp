@@ -20,7 +20,7 @@ namespace HIC
 		// Setters
 		//--------------
 		// Sets the position of the audio in the scene
-		void SetPosition(const XMFLOAT3& position);
+		void SetPosition(const D3DXVECTOR3& position);
 
 		// Sets the volume of the source
 		void SetVolume(float volume);

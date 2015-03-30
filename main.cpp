@@ -105,10 +105,10 @@ bool FrontEndSetup()
 	//Create menu buttons
 	gTitleCard = gEngine->CreateSprite("Title_Card.png", halfScreenWidth - (TITLE_CARD_WIDTH / 2), 20.0f, 0.0f);
 
-	gNewGameButton			= new Button("New_Game_Button.png", XMFLOAT2((float)halfScreenWidth, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gContinueButton			= new Button("Continue_Button.png", XMFLOAT2((float)halfScreenWidth, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gViewHiScoreButton		= new Button("View_Hi_Score_Button.png", XMFLOAT2((float)halfScreenWidth, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gQuitGameButton			= new Button("Quit_Game_Button.png", XMFLOAT2((float)halfScreenWidth, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gNewGameButton			= new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gContinueButton			= new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gViewHiScoreButton		= new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)halfScreenWidth, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gQuitGameButton			= new Button("Quit_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	
 	return true;
 }

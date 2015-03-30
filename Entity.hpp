@@ -13,7 +13,7 @@ namespace HIC
 		//-----------------------------
 
 		// Default constructor for Entity
-		Entity(IMesh* mesh, const XMFLOAT3& position, float radius);
+		Entity(IMesh* mesh, const D3DXVECTOR3& position, float radius);
 
 		// Destructor for Entity
 		virtual ~Entity();
@@ -39,7 +39,7 @@ namespace HIC
 		void RotateY(float degrees);
 
 		//Places the entity at the provided world position
-		void SetPosition(XMFLOAT3 newPos);
+		void SetPosition(D3DXVECTOR3 newPos);
 
 		//Resets the players health to starting health
 		void ResetHealth();
@@ -52,13 +52,13 @@ namespace HIC
 		uint32_t GetHealth() const;
 
 		// Returns the world position of the entity
-		XMFLOAT3 GetWorldPos();
+		D3DXVECTOR3 GetWorldPos();
 
 		// Returns the facing vector of the entity
-		XMFLOAT3 GetFacingVector();
+		D3DXVECTOR3 GetFacingVector();
 
 		// Returns the right vector of the entity
-		XMFLOAT3 GetRightVector();
+		D3DXVECTOR3 GetRightVector();
 
 		// Returns the model of the entity
 		IModel* GetModel();
@@ -73,7 +73,7 @@ namespace HIC
 		void CollisionResolution(CollisionCylinder& collidingWith);
 
 		// Points the model at a given position
-		void LookAt(const XMFLOAT3& position);
+		void LookAt(const D3DXVECTOR3& position);
 	public:
 		// Called to update the entity
 		virtual void Update(float frameTime) = 0;

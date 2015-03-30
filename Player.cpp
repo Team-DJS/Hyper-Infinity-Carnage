@@ -21,7 +21,7 @@ const float Player::TURN_SPEED = 200.0f;
 //-----------------------------------
 
 // Default constructor for Player
-Player::Player(const XMFLOAT3& position, float radius) :
+Player::Player(const D3DXVECTOR3& position, float radius) :
 	Entity(MESH, position, radius),
 	mLives(DEFAULT_LIVES),
 	mBombs(DEFAULT_BOMBS),
@@ -92,7 +92,7 @@ void Player::TakeLife()
 // Respawns the player inside the arena
 void Player::Respawn()
 {
-	SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	ResetHealth();
 }
 
@@ -102,19 +102,18 @@ void Player::Update(float frameTime)
 	//***** Face the player in the direction of the mouse *****// - incomplete
 
 	//Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
-	XMFLOAT2 mouseVector;
+	D3DXVECTOR2 mouseVector;
 	mouseVector.x = gEngine->GetMouseX() - (gEngine->GetWidth() / 2.0f) - 1.0f;
 	mouseVector.y = 1.0f - (gEngine->GetMouseY() - gEngine->GetHeight() / 2.0f);
 
 	////Normalise the mouse vector
-	XMStoreFloat2(&mouseVector, XMVector2Normalize(XMLoadFloat2(&mouseVector)));
+	D3DXVec2Normalize(&mouseVector, &mouseVector);
 
-	XMFLOAT3 rightVect3 = GetRightVector();	//Create and obtain the facing vector of the ship
-	XMFLOAT2 rightVect2 = XMFLOAT2(rightVect3.x, rightVect3.z);
-	XMStoreFloat2(&rightVect2, XMVector2Normalize(XMLoadFloat2(&rightVect2)));	//Normalise the facing vector
+	D3DXVECTOR3 rightVect3 = GetRightVector();	//Create and obtain the facing vector of the ship
+	D3DXVECTOR2 rightVect2;
+	D3DXVec2Normalize(&rightVect2, &D3DXVECTOR2(rightVect3.x, rightVect3.z));
 
-	float dotProd;
-	XMStoreFloat(&dotProd, XMVector2Dot(XMLoadFloat2(&rightVect2), XMLoadFloat2(&mouseVector)));
+	float dotProd = D3DXVec2Dot(&rightVect2, &mouseVector);
 
 	////Done all the maths to determine if left or right, now set the flags for turning later in the function
 	if (dotProd < 0)		// Mouse is to the right
@@ -135,10 +134,10 @@ void Player::Update(float frameTime)
 	//*********END OF WEAPON*********//
 
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
-	XMFLOAT2 thrust = XMFLOAT2(0.0f, 0.0f);	//Create thrust vector and initialise it to zero
-	XMFLOAT3 facingVect = XMFLOAT3(0.0f, 0.0f, 1.0f);//GetFacingVector();
-	XMFLOAT3 rightVect = XMFLOAT3(1.0f, 0.0f, 0.0f);//GetRightVector();
-	XMFLOAT2 drag = XMFLOAT2(0.0f, 0.0f);	//Create vector of drag (resistance to motion) of the ship
+	D3DXVECTOR2 thrust = D3DXVECTOR2(0.0f, 0.0f);	//Create thrust vector and initialise it to zero
+	D3DXVECTOR3 facingVect = D3DXVECTOR3(0.0f, 0.0f, 1.0f);//GetFacingVector();
+	D3DXVECTOR3 rightVect = D3DXVECTOR3(1.0f, 0.0f, 0.0f);//GetRightVector();
+	D3DXVECTOR2 drag = D3DXVECTOR2(0.0f, 0.0f);	//Create vector of drag (resistance to motion) of the ship
 
 	//SetPreviousPos();	/**THIS IS FOR COLLISION RESOLUTION, SETS THE POSITION THE MODEL WAS JUST IN NOT CURRENTLY IMPLEMENTED**/
 
@@ -189,7 +188,7 @@ void Player::Update(float frameTime)
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 
 	//Update collision object to meet new position
-	GetCollisionCylinder().SetPosition(XMFLOAT2(GetWorldPos().x, GetWorldPos().z));
+	GetCollisionCylinder().SetPosition(D3DXVECTOR2(GetWorldPos().x, GetWorldPos().z));
 }
 
 //-----------------------------------

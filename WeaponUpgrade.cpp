@@ -12,7 +12,7 @@ IMesh* WeaponUpgrade::mMesh = nullptr;
 //-----------------------------------
 
 // Constructor for WeaponUpgrade
-WeaponUpgrade::WeaponUpgrade(IMesh* mesh, const XMFLOAT3& position, float radius, float lifeTime, float fireRateUpAmount, uint32_t damageUpAmount) :
+WeaponUpgrade::WeaponUpgrade(IMesh* mesh, const D3DXVECTOR3& position, float radius, float lifeTime, float fireRateUpAmount, uint32_t damageUpAmount) :
 	Pickup(mesh, position, radius, lifeTime),
 	mFireRate(fireRateUpAmount),
 	mDamage(damageUpAmount)
