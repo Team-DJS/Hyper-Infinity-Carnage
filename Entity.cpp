@@ -9,6 +9,11 @@ using namespace HIC;
 const uint32_t Entity::DEFAULT_HEALTH = 100U;
 const uint32_t Entity::DEFAULT_MAX_HEALTH = 100U;
 
+// Movement Variables
+const float Entity::BASE_THRUST = 480.0f;
+const float Entity::DRAG_COEF = 5.0f;
+const float Entity::TURN_SPEED = 200.0f;
+
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
@@ -19,7 +24,8 @@ Entity::Entity(IMesh* mesh, const D3DXVECTOR3& position, float radius) :
 	mModel(mesh->CreateModel(position.x, position.y, position.z)),
 	mHealth(DEFAULT_HEALTH),
 	mMaxHealth(DEFAULT_MAX_HEALTH),
-	mCollisionCylinder(D3DXVECTOR2(position.x, position.z), radius)
+	mCollisionCylinder(D3DXVECTOR2(position.x, position.z), radius),
+	mVelocity(0.0f, 0.0f)
 {
 }
 
@@ -154,25 +160,25 @@ CollisionCylinder& Entity::GetCollisionCylinder()
 // Other
 //-----------------------------------
 
-void Entity::CollisionResolution(CollisionCylinder& collidingWith)
+void Entity::CollisionResolution(CollisionCylinder& collidingWith) 
 {
-	////Reset model position to outside of the collision
-	//mModel->SetX(mCollisionCylinder.GetPreviousPosition().x);
-	//mModel->SetZ(mCollisionCylinder.GetPreviousPosition().y);
-	//
-	////Modify the direction of movement based upon the ships position relative to the collision object it collided with and the current movement vector
-	//XMVECTOR vectToOtherSphere = XMLoadFloat2(&D3DXVECTOR2(collidingWith.GetPosition().x - mCollisionCylinder.GetPosition().x, collidingWith.GetPosition().y - mCollisionCylinder.GetPosition().y));	//Vector between ship and collided object
-	//
-	////Angle by which the vector is to be rotated (degrees) - Based upon dot product and other trigonomety
-	////angle to rotate by equals 180 - 2 * alpha where alpha is the angle between the tangent of the spheres and the movement vector
-	//XMVECTOR angleBetweenVectors = XMVector2AngleBetweenVectors(XMLoadFloat2(vectToOtherSphere), XMLoadFloat2(velocity))
-	//	
-	//float rotationAngle = 180.0f - (2.0f * (90.0f - XMConvertToDegrees())));
-	//rotationAngle = XMConvertToRadians(rotationAngle);	//Convert to radians for use with c++ trig formulae
-	//
-	////Calculate the new velocity by rotating the vector using a 2D rotation matrix (multiply components by 0.8f to make movement more realistic
-	//velocity = Vector2(velocity.GetX()*cosf(rotationAngle) - velocity.GetZ()*sinf(rotationAngle) * 0.8f,
-	//velocity.GetX()*sinf(rotationAngle) + velocity.GetZ() * cosf(rotationAngle) * 0.8f);
+	//Reset model position to outside of the collision
+	mModel->SetX(mCollisionCylinder.GetPreviousPosition().x);
+	mModel->SetZ(mCollisionCylinder.GetPreviousPosition().y);
+	
+	//Modify the direction of movement based upon the ships position relative to the collision object it collided with and the current movement vector
+	D3DXVECTOR2 vectToOtherSphere = collidingWith.GetPosition() - mCollisionCylinder.GetPosition();	//Vector between ship and collided object
+
+	//Angle by which the vector is to be rotated (degrees) - Based upon dot product and other trigonomety
+	//angle to rotate by equals 180 - 2 * alpha where alpha is the angle between the tangent of the spheres and the movement vector
+	float rotationAngle = 180.0f - (2.0f * (90.0f - AngleBetweenVectors(vectToOtherSphere, mVelocity)));
+	rotationAngle = D3DXToRadian(rotationAngle);	//Convert to radians for use with c++ trig formulae
+
+	//Calculate the new velocity by rotating the vector using a 2D rotation matrix (multiply components by 0.8f to make movement more realistic)
+	mVelocity = D3DXVECTOR2(mVelocity.x * cosf(rotationAngle) - mVelocity.y * sinf(rotationAngle) * 0.8f,
+		mVelocity.x *sinf(rotationAngle) + mVelocity.y * cosf(rotationAngle) * 0.8f);
+
+	mCollisionCylinder.SetPosition(D3DXVECTOR2(mModel->GetX(), mModel->GetZ()));
 }
 
 // Points the model at a given position

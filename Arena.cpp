@@ -171,10 +171,11 @@ void Arena::Update(float frameTime)
 	}
 
 	// Update all the enemies
+	Enemy::SetPlayerPosition(mPlayer.GetWorldPos());
+
 	for (auto& enemy : mEnemies)
 	{
 		enitityPos = enemy->GetWorldPos();
-		enemy->LookAt(mPlayer.GetWorldPos());
 		enemy->Update(frameTime);
 
 		if (!CylinderToBoxCollision(&enemy->GetCollisionCylinder(), &mCollisionBox))
@@ -182,6 +183,8 @@ void Arena::Update(float frameTime)
 			enemy->SetPosition(enitityPos);
 		}
 	}
+
+	
 
 	// Collision
 

@@ -19,6 +19,7 @@ namespace HIC
 		//--------------
 		// Setters
 		//--------------
+		static void SetPlayerPosition(D3DXVECTOR3 playerPos);
 
 		//---------------
 		// Getters
@@ -35,5 +36,7 @@ namespace HIC
 		void Update(float frameTime);
 	private:
 		uint32_t mDamage;
+
+		static D3DXVECTOR3 PLAYER_POS;
 	};
 }

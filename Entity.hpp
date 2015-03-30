@@ -86,5 +86,14 @@ namespace HIC
 		uint32_t mHealth;
 		uint32_t mMaxHealth;
 		CollisionCylinder mCollisionCylinder;
+
+	protected:
+		//Movement variables
+		D3DXVECTOR2 mVelocity; // Horizontal (x) and vertical (y) velocities
+
+		//Constant values
+		static const float BASE_THRUST;
+		static const float DRAG_COEF;
+		static const float TURN_SPEED;
 	};
 }

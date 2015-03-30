@@ -11,11 +11,6 @@ const float Player::RADIUS = 1.0f;
 const uint32_t Player::DEFAULT_LIVES = 5U;
 const uint32_t Player::DEFAULT_BOMBS = 3U;
 
-// Movement Variables
-const float Player::BASE_THRUST = 480.0f;
-const float Player::DRAG_COEF = 5.0f;
-const float Player::TURN_SPEED = 200.0f;
-
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
@@ -25,8 +20,7 @@ Player::Player(const D3DXVECTOR3& position, float radius) :
 	Entity(MESH, position, radius),
 	mLives(DEFAULT_LIVES),
 	mBombs(DEFAULT_BOMBS),
-	mWeapon(new Weapon()),
-	mVelocity(0.0f, 0.0f)
+	mWeapon(new Weapon())
 {
 	mWeapon->SetDamage(50U);
 }

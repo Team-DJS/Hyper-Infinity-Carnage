@@ -91,17 +91,11 @@ namespace HIC
 	private:
 		// Movement Variables
 		//Globals Required to allow movement to perform Correctly
-		D3DXVECTOR2 mVelocity; // Horizontal (x) and vertical (y) velocities
 		//Movement control states
 		bool mMoveForward;
 		bool mMoveBackward;
 		bool mMoveLeft;
 		bool mMoveRight;
-
-		//Constant values
-		static const float BASE_THRUST;
-		static const float DRAG_COEF;
-		static const float TURN_SPEED;
 
 	public:
 		//---------------------

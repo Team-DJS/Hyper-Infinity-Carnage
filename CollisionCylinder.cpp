@@ -77,7 +77,7 @@ void CollisionCylinder::ToggleMarkers()
 			{
 				mCollisionMarkers.push_back(MARKER_MESH->CreateModel(cosf((float)D3DXToRadian(degreeOfMarker)) * mRadius + GetPosition().x,
 					mHeight,
-					sinf((float)D3DXToRadian(degreeOfMarker)) * mRadius + GetPosition().y));	//Create marker
+					sinf((float)(D3DXToRadian(degreeOfMarker)) * mRadius + GetPosition().y)));	//Create marker
 
 				degreeOfMarker += (360.0f / NO_COLLISION_MARKERS);	//Increase angle for new marker placement
 				mCollisionMarkers.back()->Scale(MARKER_SCALE);		//Scale the markers to the correct scale so they are visible

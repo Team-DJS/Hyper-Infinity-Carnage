@@ -1,5 +1,9 @@
 #pragma once
 
+// Include DirectX Maths Headers
+#include <D3DX10math.h>
+#include <stdint.h>
+
 // Include Standard Headers
 #include <deque>
 #include <string>
@@ -8,10 +12,6 @@
 #include <exception>
 #include <unordered_map>
 #include <time.h>
-
-// Include DirectX Maths Headers
-#include <D3DX10math.h>
-#include <stdint.h>
 
 // Include TL-Engine Headers
 #include <TL-Engine.h>
@@ -40,3 +40,5 @@ inline void SafeRelease(T* &ptr)
 
 // Random number generator
 float Random(float lowBound, float highBound);
+
+float AngleBetweenVectors(const D3DXVECTOR2& vectorA, const D3DXVECTOR2& vectorB);	//Returns an angle in degrees

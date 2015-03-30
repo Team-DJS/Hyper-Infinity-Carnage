@@ -57,7 +57,7 @@ namespace HIC
 		vector<IModel*> mCollisionMarkers;			//Vector of collision markers
 	
 	public:
-		virtual void ToggleMarkers() = 0;	//Toggles whether or not this markers' mesh
+		virtual void ToggleMarkers() = 0;			//Toggles whether or not this markers' mesh
 #endif
 
 	};
