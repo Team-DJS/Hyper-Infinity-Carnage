@@ -14,6 +14,9 @@ IMesh* Arena::ENEMY_MESH = nullptr;
 
 const std::string Arena::SAVE_FILENAME = "Save.hic";
 
+const uint32_t MAX_ENEMIES_ON_SCREEN = 30U;
+const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -600);
+
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
@@ -26,6 +29,9 @@ Arena::Arena(bool loadFromFile) :
 	mScore(0U),
 	mPickupTimer(5.0f)
 {
+	// Seed random
+	srand((uint32_t)(time(0)));
+
 	// Build the scenery
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
 	D3DXVECTOR3 pos;
@@ -79,6 +85,12 @@ Arena::~Arena()
 	{
 		delete mSceneryObjects.back();
 		mSceneryObjects.pop_back();
+	}
+
+	while (!mEnemyPool.empty())
+	{
+		delete mEnemyPool.back();
+		mEnemyPool.pop_back();
 	}
 
 	delete(mArenaParticles);
@@ -150,8 +162,10 @@ void Arena::Update(float frameTime)
 	DebugHUD->Draw(hudText, 10, 34, kRed);
 	hudText = "Enemies: " + to_string(mEnemies.size());
 	DebugHUD->Draw(hudText, 10, 46, kRed);
-	hudText = "Projectiles: " + to_string(mPlayer.GetWeapon()->GetProjectiles().size());
+	hudText = "Enemy Pool: " + to_string(mEnemyPool.size());
 	DebugHUD->Draw(hudText, 10, 58, kRed);
+	hudText = "Projectiles: " + to_string(mPlayer.GetWeapon()->GetProjectiles().size());
+	DebugHUD->Draw(hudText, 10, 70, kRed);
 
 	hudText = "Score: " + to_string(mScore);
 	DebugHUD->Draw(hudText, gEngine->GetWidth() - 200, 10, kRed);
@@ -235,9 +249,11 @@ void Arena::Update(float frameTime)
 			hitEnemy = true;
 		}
 
+		// ENEMY IS HIT
 		if (hitEnemy)
 		{
-			delete mEnemies[i];
+			mEnemies[i]->SetPosition(OFF_SCREEN_POS);
+			mEnemyPool.push_back(mEnemies[i]);
 			mEnemies.erase(mEnemies.begin() + i);
 			i--;
 		}
@@ -304,6 +320,16 @@ void Arena::Update(float frameTime)
 		LoadStage(mCurrentStage);
 	}
 
+	// check if there should be an enemy spawned
+	if (mEnemies.size() < MAX_ENEMIES_ON_SCREEN)
+	{
+		while (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
+		{
+			mNoOfEnemies--;
+			SpawnEnemy();
+		}
+	}
+
 	// check if there are no more enemies on the field
 	if (mEnemies.size() <= 0)
 	{
@@ -325,10 +351,10 @@ void Arena::LoadStage(uint32_t stageNumber)
 
 
 	// Determne number of enemies to defeat this stage
-	uint32_t noOfEnemies = static_cast<uint32_t>((mCurrentStage + 10U) * 1.5f);
+	mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 10U) * 1.5f);
 
 	// Create that many enemies
-	SpawnEnemies(noOfEnemies);
+	CreateEnemies();
 
 	//this->Clear();
 }
@@ -380,9 +406,8 @@ void Arena::Clear()
 {
 	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
-		delete mEnemies[i];
-	}
-	
+		mEnemyPool.push_back(mEnemies[i]);
+	}	
 	mEnemies.clear();
 
 	for (auto remove : mPickups)
@@ -401,12 +426,24 @@ void Arena::TargetCamera(ICamera* camera)
 	camera->LookAt(mPlayer.GetModel());
 }
 
-void Arena::SpawnEnemies(uint32_t noOfEnemies)
+void Arena::SpawnEnemy()
 {
-	srand((uint32_t)(time(0)));
-	for (uint32_t i = 0; i < noOfEnemies; i++)
+	Enemy* enemy = mEnemyPool.back();
+	mEnemyPool.pop_back();
+
+	enemy->ResetHealth();
+	enemy->SetPosition(D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
+		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15)));
+
+	mEnemies.push_back(enemy);
+}
+
+// Creates a pool of enemies (never creates more than is necessary for the stage)
+void Arena::CreateEnemies()
+{
+	uint32_t poolsize = mNoOfEnemies - mEnemyPool.size();
+	for (uint32_t i = 0; i < poolsize; i++)
 	{
-		mEnemies.push_back(new Enemy(ENEMY_MESH, D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f, 
-									 Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15)), 15.0f, 10U));
+		mEnemyPool.push_back(new Enemy(ENEMY_MESH, OFF_SCREEN_POS, 15.0f, 10U));
 	}
 }

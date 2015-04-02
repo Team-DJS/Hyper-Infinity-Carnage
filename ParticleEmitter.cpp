@@ -8,7 +8,7 @@ ParticleEmitter::ParticleEmitter(IMesh* mesh, D3DXVECTOR3 position, float emissi
 	mLifetime(lifetime),
 	mNextEmissionTimer(emissionRate)
 {
-	for (uint32_t i = 0; i < 200; i++)
+	for (uint32_t i = 0; i < 20; i++)
 	{
 		Particle* particle = new Particle(mesh, position, position, lifetime);
 		particle->SetVisibility(false);

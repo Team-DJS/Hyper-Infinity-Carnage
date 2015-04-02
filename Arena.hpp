@@ -55,11 +55,14 @@ namespace HIC
 		// Removes all entities from the arena
 		void Clear();
 
-		//Target the camera at the desired item
+		// Target the camera at the desired item
 		void TargetCamera(ICamera* camera);	//Point the camera at the current focal point
 
-		//Spawn a group of enemies (TO DO: Create parameters for the rules of spawning enemies)
-		void SpawnEnemies(uint32_t noOfEnemies);
+		// Spawn an enemy on to arena (TO DO: Create parameters for the rules of spawning enemies)
+		void SpawnEnemy();
+
+		// Create enemy pool
+		void CreateEnemies();
 
 	public:
 		static IMesh* ARENA_MESH;
@@ -78,6 +81,12 @@ namespace HIC
 
 		// Vector of enemies
 		std::vector<Enemy*> mEnemies;
+
+		// Vector of a pool of enemies
+		std::vector<Enemy*> mEnemyPool;
+
+		// Number of enemies to defeat this stage
+		uint32_t mNoOfEnemies;
 
 		// Vector of pickups
 		std::vector<Pickup*> mPickups;
