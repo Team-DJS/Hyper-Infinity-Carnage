@@ -47,7 +47,7 @@ namespace HIC
 		uint32_t GetDamage();
 
 		//Returns the projectiles for collision
-		vector<Projectile*> GetProjectiles();
+		deque<Projectile*> GetProjectiles();
 
 		//--------------
 		// Other
@@ -56,8 +56,9 @@ namespace HIC
 		// Called to update the weapon
 		void Update(float frameTime, const D3DXVECTOR3 playerPosition, const D3DXVECTOR3 playerFacingVector);
 
-
+		// Removes a projectile from the arena
 		void RemoveProjectile(uint32_t i);
+
 		// Called to clear all projectiles currently alive
 		void Clear();
 
@@ -90,7 +91,8 @@ namespace HIC
 		float mFireRate;					//Length of time between bullet fires
 		uint32_t mDamage;					//Amount of damage a bullet deals upon contact
 		uint32_t mNoBarrels;				//Number of barrels the ship fires at once
-		vector <Projectile*> mProjectiles;	//Vector of projectiles that this weapon has fired (clear a projectile when it hits something)
+		deque <Projectile*> mProjectiles;	//Vector of projectiles that this weapon has fired
+		vector <Projectile*> mProjectilePool; // Vector of projectiles that the weapon can fire
 		Timer mFireTimer;
 		bool mTryFire;						//Whether or not the weapon should try to fire a round this frame
 	};

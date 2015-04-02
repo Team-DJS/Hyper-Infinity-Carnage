@@ -5,6 +5,8 @@ using namespace HIC;
 // Static Initialisations
 //-----------------------------------
 
+const uint32_t MAX_PROJECTILES = 30;
+
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
@@ -17,6 +19,10 @@ Weapon::Weapon(float fireRate, uint32_t damage, uint32_t noBarrels) :
 	mTryFire(false),
 	mFireTimer(fireRate)
 {
+	for (uint32_t i = 0; i < MAX_PROJECTILES; i++)
+	{
+		mProjectilePool.push_back(new Projectile(D3DXVECTOR3(0, 0, -800), D3DXVECTOR2(0, 0)));
+	}
 }
 
 // Destructor for Weapon
@@ -75,7 +81,7 @@ uint32_t Weapon::GetDamage()
 }
 
 
-vector<Projectile*> Weapon::GetProjectiles()
+deque<Projectile*> Weapon::GetProjectiles()
 {
 	return mProjectiles;
 }
@@ -114,7 +120,8 @@ void Weapon::Update(float frameTime, const D3DXVECTOR3 playerPosition, const D3D
 
 void Weapon::RemoveProjectile(uint32_t i)
 {
-	delete mProjectiles[i];
+	mProjectiles[i]->SetPosOffscreen();
+	mProjectilePool.push_back(mProjectiles[i]);
 	mProjectiles.erase(mProjectiles.begin() + i);
 }
 
@@ -122,7 +129,8 @@ void Weapon::Clear()
 {
 	for (uint32_t i = 0; i < mProjectiles.size(); i++)
 	{
-		delete mProjectiles[i];
+		RemoveProjectile(i);
+		i--;
 	}
 	mProjectiles.clear();
 }
@@ -131,8 +139,21 @@ void Weapon::Clear()
 void Weapon::Shoot(const D3DXVECTOR3& playerPosition, const D3DXVECTOR3 playerFacingVector)
 {
 	//**%**
-	//Create new projectiles moving in the provided direction (use an angle offset for additional barrels)
-	Projectile* newProjectile = new Projectile(playerPosition, D3DXVECTOR2(-playerFacingVector.x * 8, -playerFacingVector.z * 8), mDamage);
-	mProjectiles.push_back(newProjectile);
+	// Create new projectiles moving in the provided direction (use an angle offset for additional barrels)
+	Projectile* projectile;
+	if (mProjectilePool.size() > 0)
+	{
+		projectile = mProjectilePool.back();
+		mProjectilePool.pop_back();
+	}
+	else
+	{
+		projectile = mProjectiles.front();
+		mProjectiles.pop_front();
+	}
+	projectile->SetPos(playerPosition);
+	projectile->SetVelocity(D3DXVECTOR2(-playerFacingVector.x * 8, -playerFacingVector.z * 8));
+	projectile->SetDamage(mDamage);
+	mProjectiles.push_back(projectile);
 	mFireTimer.Reset();
 }
