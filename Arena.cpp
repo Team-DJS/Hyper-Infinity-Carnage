@@ -15,7 +15,7 @@ IMesh* Arena::ENEMY_MESH = nullptr;
 const std::string Arena::SAVE_FILENAME = "Save.hic";
 
 const uint32_t MAX_ENEMIES_ON_SCREEN = 30U;
-const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -600);
+const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -800);
 
 //-----------------------------------
 // Constructors / Destructors
@@ -179,6 +179,7 @@ void Arena::Update(float frameTime)
 	// Update the player
 	mPlayer.Update(frameTime);
 
+	// check if player is colliding with arena
 	if (!CollisionDetect(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
 	{
 		mPlayer.SetPosition(enitityPos);
@@ -202,23 +203,25 @@ void Arena::Update(float frameTime)
 
 	// Collision
 
-	// check if player is colliding with arena
-
-
-	// check if projectiles are colliding with arena
-	for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
+	// Check which enemies to do collision for
+	// True is the second half, false is the first half
+	uint32_t end;
+	uint32_t beginning;
+	mCollisionSwitch = !mCollisionSwitch;
+	if (mCollisionSwitch)
 	{
-		if (!CollisionDetect(&mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject(), &mCollisionBox))
-		{
-			mPlayer.GetWeapon()->RemoveProjectile(j);
-			j--;
-		}
+		beginning = mEnemies.size() / 2;
+		end = mEnemies.size();
 	}
-
+	else
+	{
+		beginning = 0;
+		end = mEnemies.size() / 2;
+	}
 	bool hitEnemy;
 	uint32_t damage = 0;
 	// Check enemy - player collision
-	for (uint32_t i = 0; i < mEnemies.size(); i++)
+	for (uint32_t i = beginning; i < end; i++)
 	{
 		hitEnemy = false;
 		// get a temp cylinder so you dont need to get it again for each collision
@@ -227,8 +230,16 @@ void Arena::Update(float frameTime)
 		// Check whether colliding with a projectile
 		for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
 		{
+			// temp cylinder for the projectile
+			CollisionCylinder currentProjectile = mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject();
 
-			if (CollisionDetect(&currentEnemy, &mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject()))
+			// check if projectiles are colliding with arena
+			if (!CollisionDetect(&currentProjectile, &mCollisionBox))
+			{
+				mPlayer.GetWeapon()->RemoveProjectile(j);
+				j--;
+			}
+			else if (CollisionDetect(&currentEnemy, &currentProjectile))
 			{
 				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
 				if (mEnemies[i]->TakeHealth(damage))
@@ -257,13 +268,22 @@ void Arena::Update(float frameTime)
 			mEnemies.erase(mEnemies.begin() + i);
 			i--;
 		}
+		
+		if (mCollisionSwitch)
+		{
+			end = mEnemies.size();
+		}
+		else
+		{
+			end = mEnemies.size() / 2;
+		}
 	}
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
 	if (mPickupTimer.IsComplete())
 	{
-		int pickupType = static_cast<int>(Random(0.0f, 3.0f));
+		int pickupType = 0;//static_cast<int>(Random(0.0f, 3.0f));
 		D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
 			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
 		float lifetime = Random(5.0f, 9.2f);

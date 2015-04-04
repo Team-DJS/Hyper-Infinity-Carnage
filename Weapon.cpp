@@ -6,7 +6,7 @@ using namespace HIC;
 //-----------------------------------
 
 const uint32_t MAX_PROJECTILES = 30;
-
+const float MAX_FIRE_RATE = 0.05f;
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
@@ -42,14 +42,16 @@ Weapon::~Weapon()
 // Increases the fire rate of the weapon by the given amount - (make the bullets faster)
 void Weapon::SetFireRate(float bulletsPerSecond)
 {
-	mFireRate = bulletsPerSecond;
+	mFireRate -= bulletsPerSecond;
+	if (mFireRate < 0.0f)
+		mFireRate = MAX_FIRE_RATE;
 	mFireTimer.Reset(mFireRate);
 }
 
 // Increases the damage of the weapon by the given amount
 void Weapon::SetDamage(uint32_t damage)
 {
-	mDamage = damage;
+	mDamage += damage;
 }
 
 // Gives the weapon another barrel

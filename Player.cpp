@@ -22,7 +22,7 @@ Player::Player(const D3DXVECTOR3& position, float radius) :
 	mBombs(DEFAULT_BOMBS),
 	mWeapon(new Weapon())
 {
-	mWeapon->SetDamage(50U);
+	//mWeapon->SetDamage(50U);
 }
 
 // Destructor for Player
