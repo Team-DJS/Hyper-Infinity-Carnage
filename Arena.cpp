@@ -59,7 +59,8 @@ Arena::Arena(bool loadFromFile) :
 
 	IMesh* particleMesh = gEngine->LoadMesh("Sphere.x");
 	mArenaParticles = new ParticleEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
-	mArenaParticles->StartEmission();
+	//mArenaParticles->StartEmission();
+	mArenaParticles->StopEmission();
 
 
 #ifdef _DEBUG
@@ -151,6 +152,15 @@ void Arena::Update(float frameTime)
 			mEnemies[i]->GetCollisionCylinder().ToggleMarkers();
 		}
 		mCollisionBox.ToggleMarkers();
+	}
+
+	if (gEngine->KeyHit(Key_J))
+	{
+		mArenaParticles->StartEmission();
+	}
+	if (gEngine->KeyHit(Key_K))
+	{
+		mArenaParticles->StopEmission();
 	}
 
 	// Debug HUD
@@ -452,8 +462,16 @@ void Arena::SpawnEnemy()
 	mEnemyPool.pop_back();
 
 	enemy->ResetHealth();
-	enemy->SetPosition(D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
-		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15)));
+
+	do
+	{
+		D3DXVECTOR3 newPosition;
+		newPosition.x = Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15);
+		newPosition.y = 7.0f;
+		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
+
+		enemy->SetPosition(newPosition);
+	} while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
 
 	mEnemies.push_back(enemy);
 }
