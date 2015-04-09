@@ -31,6 +31,16 @@ const float MENU_BUTTON_WIDTH = 192U;
 const float MENU_BUTTON_HEIGHT = 64U;
 const float TITLE_CARD_WIDTH = 800U;
 const float TITLE_CARD_HEIGHT = 256;
+
+
+//------------------------
+// InGame HUD Data
+//------------------------
+
+ISprite* gHUDTopBar = nullptr;
+
+const float HUD_TOP_BAR_WIDTH = 1280U;
+
 //-------------------------------------------
 // Program
 //-------------------------------------------
@@ -42,6 +52,7 @@ bool ProgramSetup()
 	// Initialise the TL-Engine
 	gEngine = New3DEngine(kTLX);
 	gEngine->StartWindowed();
+	//gEngine->StartFullscreen();
 	gEngine->SetWindowCaption("Hyper Infinity Carnage");
 
 	// Add default folder for meshes and other media
@@ -153,6 +164,10 @@ bool GameSetup()
 	Arena::ENEMY_MESH = gEngine->LoadMesh("Enemy.x");
 	Projectile::MESH = gEngine->LoadMesh("Sphere.x");
 
+
+	// HUD Setup
+	gHUDTopBar = gEngine->CreateSprite("HUD_Top_Bar.png", gEngine->GetWidth() / 2 - (HUD_TOP_BAR_WIDTH / 2), 0.0f, 0.0f);
+
 #ifdef _DEBUG
 	CollisionObject::MARKER_MESH = gEngine->LoadMesh("dummy.x");
 #endif
@@ -200,6 +215,11 @@ bool GameShutdown()
 	//Delete the enemy mesh
 	gEngine->RemoveMesh(Arena::ENEMY_MESH);
 	Arena::ENEMY_MESH = nullptr;
+
+	// Delete HUD
+	gEngine->RemoveSprite(gHUDTopBar);
+	gHUDTopBar = nullptr;
+
 #ifdef _DEBUG
 	//Delete the collision object mesh
 	gEngine->RemoveMesh(CollisionObject::MARKER_MESH);

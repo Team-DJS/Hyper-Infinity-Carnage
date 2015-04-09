@@ -57,7 +57,7 @@ Arena::Arena(bool loadFromFile) :
 	HealthPack::MESH = gEngine->LoadMesh("CardboardBox.x");
 	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
 
-	IMesh* particleMesh = gEngine->LoadMesh("Sphere.x");
+	IMesh* particleMesh = gEngine->LoadMesh("Portal.x");
 	mArenaParticles = new ParticleEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
 	//mArenaParticles->StartEmission();
 	mArenaParticles->StopEmission();
@@ -86,6 +86,12 @@ Arena::~Arena()
 	{
 		delete mSceneryObjects.back();
 		mSceneryObjects.pop_back();
+	}
+
+	while (!mEnemies.empty())
+	{
+		delete mEnemies.back();
+		mEnemies.pop_back();
 	}
 
 	while (!mEnemyPool.empty())
@@ -364,6 +370,9 @@ void Arena::Update(float frameTime)
 	if (mEnemies.size() <= 0)
 	{
 		LoadStage(mCurrentStage + 1);
+
+		// Save the game after loading the next state
+		SaveToFile();
 	}
 
 	mArenaParticles->Update(frameTime);
@@ -372,9 +381,6 @@ void Arena::Update(float frameTime)
 // Proceeds to the next stage
 void Arena::LoadStage(uint32_t stageNumber)
 {
-	// Save the game before loading the next state
-	SaveToFile();
-
 	mPlayer.GetWeapon()->Clear();
 	// Get current stage and add one
 	mCurrentStage = stageNumber;
