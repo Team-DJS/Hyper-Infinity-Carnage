@@ -27,7 +27,9 @@ Arena::Arena(bool loadFromFile) :
 	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
 	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
 	mScore(0U),
-	mPickupTimer(5.0f)
+	mPickupTimer(5.0f),
+	mBombExplosionTimer(0.0f),
+	mBombCollisionCylinder(D3DXVECTOR2(0.0f,0.0f),0.0f)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
@@ -56,12 +58,17 @@ Arena::Arena(bool loadFromFile) :
 	WeaponUpgrade::mMesh = gEngine->LoadMesh("CardboardBox.x");
 	HealthPack::MESH = gEngine->LoadMesh("CardboardBox.x");
 	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
+	Bomb::MESH = gEngine->LoadMesh("CardBoardBox.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("Portal.x");
-	mArenaParticles = new ParticleEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
+	mArenaParticles = new ExplosionEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
 	//mArenaParticles->StartEmission();
 	mArenaParticles->StopEmission();
 
+	IMesh* bombMesh = gEngine->LoadMesh("Portal.x");
+	mBombModel = bombMesh->CreateModel();
+	mBombModel->RotateLocalX(90.0f);
+	mBombModel->SetSkin("Fire_tlxmul2.jpg");
 
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
@@ -101,6 +108,7 @@ Arena::~Arena()
 	}
 
 	delete(mArenaParticles);
+	mBombModel->GetMesh()->RemoveModel(mBombModel);
 
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
@@ -169,6 +177,25 @@ void Arena::Update(float frameTime)
 		mArenaParticles->StopEmission();
 	}
 
+	mBombExplosionTimer.Update(frameTime);
+
+	if (mBombExplosionTimer.IsComplete())
+	{
+		mBombSwitch = false;
+		mBombModel->ResetScale();
+		mBombModel->SetPosition(OFF_SCREEN_POS.x, OFF_SCREEN_POS.y, OFF_SCREEN_POS.z);
+	}
+
+	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() && mPlayer.GetBombs() > 0)
+	{
+		mBombSwitch = true;
+		mBombExplosionTimer.Reset(3.0f);
+		mBombCollisionCylinder.SetRadius(0.0);
+		mBombCollisionCylinder.SetPosition(D3DXVECTOR2(mPlayer.GetWorldPos().x, mPlayer.GetWorldPos().z));
+		mBombModel->SetPosition(mPlayer.GetWorldPos().x,7.0f, mPlayer.GetWorldPos().z);
+		mPlayer.TakeBomb();
+	}
+
 	// Debug HUD
 	string hudText = "Stage: " + to_string(mCurrentStage);
 	DebugHUD->Draw(hudText, 10, 10, kRed);
@@ -180,7 +207,7 @@ void Arena::Update(float frameTime)
 	DebugHUD->Draw(hudText, 10, 46, kRed);
 	hudText = "Enemy Pool: " + to_string(mEnemyPool.size());
 	DebugHUD->Draw(hudText, 10, 58, kRed);
-	hudText = "Projectiles: " + to_string(mPlayer.GetWeapon()->GetProjectiles().size());
+	hudText = "Bombs: " + to_string(mPlayer.GetBombs());
 	DebugHUD->Draw(hudText, 10, 70, kRed);
 
 	hudText = "Score: " + to_string(mScore);
@@ -218,6 +245,13 @@ void Arena::Update(float frameTime)
 	
 
 	// Collision
+	// Bomb Collision Radius increase
+	if (mBombSwitch)
+	{
+		mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + 100 * frameTime);
+		mBombModel->ResetScale();
+		mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.07);
+	}
 
 	// Check which enemies to do collision for
 	// True is the second half, false is the first half
@@ -255,7 +289,7 @@ void Arena::Update(float frameTime)
 				mPlayer.GetWeapon()->RemoveProjectile(j);
 				j--;
 			}
-			else if (CollisionDetect(&currentEnemy, &currentProjectile))
+			else if (CollisionDetect(&currentEnemy, &currentProjectile)) // Else check if colliding with enemy
 			{
 				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
 				if (mEnemies[i]->TakeHealth(damage))
@@ -274,6 +308,15 @@ void Arena::Update(float frameTime)
 		{
 			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
 			hitEnemy = true;
+		}
+
+		if (mBombSwitch)
+		{
+			if (CollisionDetect(&mBombCollisionCylinder, &currentEnemy))
+			{
+				hitEnemy = true;
+				damage = 100;
+			}
 		}
 
 		// ENEMY IS HIT
@@ -299,7 +342,7 @@ void Arena::Update(float frameTime)
 	mPickupTimer.Update(frameTime);
 	if (mPickupTimer.IsComplete())
 	{
-		int pickupType = 0;//static_cast<int>(Random(0.0f, 3.0f));
+		int pickupType = static_cast<int>(Random(0.0f, 4.0f));
 		D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
 			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
 		float lifetime = Random(5.0f, 9.2f);
@@ -321,11 +364,16 @@ void Arena::Update(float frameTime)
 				mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
 				break;
 			}
+			case 3:
+			{
+				mPickups.push_back(new Bomb(position, 3.0f, lifetime));
+				break;
+			}
 			default: break;
 		}
 		mPickups.back()->GetModel()->Scale(15.0f);
 
-		mPickupTimer.Reset(Random(8.6f, 12.2f));
+		mPickupTimer.Reset(Random(0.6f, 1.2f));
 	}
 
 	bool deletePickup;
@@ -443,7 +491,7 @@ void Arena::Clear()
 	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
 		mEnemyPool.push_back(mEnemies[i]);
-	}	
+	}
 	mEnemies.clear();
 
 	for (auto remove : mPickups)

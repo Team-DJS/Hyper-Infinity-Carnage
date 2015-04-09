@@ -32,6 +32,9 @@ namespace HIC
 		// Takes a life from the player
 		void TakeLife();
 
+		// Takes a bomb from the player
+		void TakeBomb();
+
 		//---------------
 		// Getters
 		//---------------

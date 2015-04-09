@@ -78,6 +78,10 @@ void Player::TakeLife()
 	mLives--;
 }
 
+void Player::TakeBomb()
+{
+	mBombs--;
+}
 
 //-----------------------------------
 // Other

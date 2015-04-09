@@ -7,9 +7,11 @@
 #include "WeaponUpgrade.hpp"
 #include "ExtraLife.hpp"
 #include "HealthPack.hpp"
+#include "Bomb.hpp"
 #include "CollisionFunctions.hpp"
 #include "AudioManager.hpp"
 #include "ParticleEmitter.hpp"
+#include "ExplosionEmitter.hpp"
 
 namespace HIC
 {
@@ -85,6 +87,11 @@ namespace HIC
 		// switch to decide which enemies to do collision on each frame
 		bool mCollisionSwitch = false;
 
+		// Switch for the Bomb radius
+		bool mBombSwitch = false;
+		Timer mBombExplosionTimer;
+		IModel* mBombModel;
+
 		// Vector of a pool of enemies
 		std::vector<Enemy*> mEnemyPool;
 
@@ -108,6 +115,7 @@ namespace HIC
 		uint32_t mCurrentStage;
 
 		CollisionAABB mCollisionBox;
+		CollisionCylinder mBombCollisionCylinder;
 
 		AudioSource* mGameMusic;
 	};
