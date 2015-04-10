@@ -60,11 +60,14 @@ namespace HIC
 		// Target the camera at the desired item
 		void TargetCamera(ICamera* camera);	//Point the camera at the current focal point
 
+	private:
 		// Spawn an enemy on to arena (TO DO: Create parameters for the rules of spawning enemies)
 		void SpawnEnemy();
 
 		// Create enemy pool
 		void CreateEnemies();
+
+		void CreateNewPickup();
 
 	public:
 		static IMesh* ARENA_MESH;
@@ -80,6 +83,7 @@ namespace HIC
 		// The player character
 		Player mPlayer;
 		uint32_t mScore;
+		uint32_t mCurrentScore;
 
 		// Vector of enemies
 		std::vector<Enemy*> mEnemies;

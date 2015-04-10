@@ -84,6 +84,7 @@ Arena::Arena(bool loadFromFile) :
 		// Load the first stage
 		LoadStage(1);
 	}
+	mCurrentScore = mScore;
 }
 
 // Destructor for Arena
@@ -210,7 +211,7 @@ void Arena::Update(float frameTime)
 	hudText = "Bombs: " + to_string(mPlayer.GetBombs());
 	DebugHUD->Draw(hudText, 10, 70, kRed);
 
-	hudText = "Score: " + to_string(mScore);
+	hudText = "Score: " + to_string(mCurrentScore);
 	DebugHUD->Draw(hudText, gEngine->GetWidth() - 200, 10, kRed);
 
 #endif
@@ -295,7 +296,7 @@ void Arena::Update(float frameTime)
 				if (mEnemies[i]->TakeHealth(damage))
 				{
 					hitEnemy = true;
-					mScore += mEnemies[i]->GetDamage();
+					mCurrentScore += mEnemies[i]->GetDamage();
 				}
 				mPlayer.GetWeapon()->RemoveProjectile(j);
 				j--;
@@ -340,47 +341,15 @@ void Arena::Update(float frameTime)
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
-	if (mPickupTimer.IsComplete())
+	if (mPickupTimer.IsComplete() && mNoOfEnemies > MAX_ENEMIES_ON_SCREEN)
 	{
-		int pickupType = static_cast<int>(Random(0.0f, 4.0f));
-		D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
-			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
-		float lifetime = Random(5.0f, 9.2f);
-
-		switch (pickupType)
-		{
-			case 0:
-			{
-				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01,0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
-				break;
-			}
-			case 1:
-			{
-				mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
-				break;
-			}
-			case 2:
-			{
-				mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
-				break;
-			}
-			case 3:
-			{
-				mPickups.push_back(new Bomb(position, 3.0f, lifetime));
-				break;
-			}
-			default: break;
-		}
-		mPickups.back()->GetModel()->Scale(15.0f);
-
-		mPickupTimer.Reset(Random(0.6f, 1.2f));
+		CreateNewPickup();
 	}
 
-	bool deletePickup;
 	// Update pickups and check to see if they collide with player or have run out of time
 	for (size_t i = 0; i < mPickups.size(); i++)
 	{
-		deletePickup = false;
+		bool deletePickup = false;
 		mPickups[i]->Update(frameTime);
 		if (CollisionDetect(&mPickups[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
 		{
@@ -402,6 +371,7 @@ void Arena::Update(float frameTime)
 		mPlayer.TakeLife();
 		this->Clear();
 		LoadStage(mCurrentStage);
+		mCurrentScore = mScore;
 	}
 
 	// check if there should be an enemy spawned
@@ -419,6 +389,7 @@ void Arena::Update(float frameTime)
 	{
 		LoadStage(mCurrentStage + 1);
 
+		mScore = mCurrentScore;
 		// Save the game after loading the next state
 		SaveToFile();
 	}
@@ -538,4 +509,40 @@ void Arena::CreateEnemies()
 	{
 		mEnemyPool.push_back(new Enemy(ENEMY_MESH, OFF_SCREEN_POS, 15.0f, 10U));
 	}
+}
+
+void Arena::CreateNewPickup()
+{
+	int pickupType = static_cast<int>(Random(0.0f, 4.0f));
+	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
+		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
+	float lifetime = Random(5.0f, 9.2f);
+
+	switch (pickupType)
+	{
+	case 0:
+	{
+		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
+		break;
+	}
+	case 1:
+	{
+		mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
+		break;
+	}
+	case 2:
+	{
+		mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
+		break;
+	}
+	case 3:
+	{
+		mPickups.push_back(new Bomb(position, 3.0f, lifetime));
+		break;
+	}
+	default: break;
+	}
+	mPickups.back()->GetModel()->Scale(15.0f);
+
+	mPickupTimer.Reset(Random(8.6f, 12.2f));
 }
