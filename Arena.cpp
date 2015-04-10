@@ -61,7 +61,7 @@ Arena::Arena(bool loadFromFile) :
 	Bomb::MESH = gEngine->LoadMesh("CardBoardBox.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("Portal.x");
-	mArenaParticles = new ExplosionEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
+	mArenaParticles = new ParticleEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
 	//mArenaParticles->StartEmission();
 	mArenaParticles->StopEmission();
 
