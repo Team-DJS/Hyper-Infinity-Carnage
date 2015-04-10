@@ -67,6 +67,7 @@ namespace HIC
 		// Create enemy pool
 		void CreateEnemies();
 
+		// Create a new pickup with random type
 		void CreateNewPickup();
 
 	public:

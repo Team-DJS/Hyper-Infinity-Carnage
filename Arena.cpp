@@ -85,6 +85,8 @@ Arena::Arena(bool loadFromFile) :
 		LoadStage(1);
 	}
 	mCurrentScore = mScore;
+
+	CreateEnemies();
 }
 
 // Destructor for Arena
@@ -408,9 +410,6 @@ void Arena::LoadStage(uint32_t stageNumber)
 	// Determne number of enemies to defeat this stage
 	mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 10U) * 1.5f);
 
-	// Create that many enemies
-	CreateEnemies();
-
 	//this->Clear();
 }
 
@@ -501,16 +500,16 @@ void Arena::SpawnEnemy()
 	mEnemies.push_back(enemy);
 }
 
-// Creates a pool of enemies (never creates more than is necessary for the stage)
+// Creates a pool of enemies (never creates more than double the max on screen)
 void Arena::CreateEnemies()
 {
-	uint32_t poolsize = mNoOfEnemies - mEnemyPool.size();
-	for (uint32_t i = 0; i < poolsize; i++)
+	for (uint32_t i = 0; i < MAX_ENEMIES_ON_SCREEN * 2; i++)
 	{
 		mEnemyPool.push_back(new Enemy(ENEMY_MESH, OFF_SCREEN_POS, 15.0f, 10U));
 	}
 }
 
+// Create a new pickup with random type
 void Arena::CreateNewPickup()
 {
 	int pickupType = static_cast<int>(Random(0.0f, 4.0f));
