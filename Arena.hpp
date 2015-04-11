@@ -97,8 +97,6 @@ namespace HIC
 		Timer mBombExplosionTimer;
 		IModel* mBombModel;
 
-		uint32_t mBombPhase;
-
 		// Vector of a pool of enemies
 		std::vector<Enemy*> mEnemyPool;
 

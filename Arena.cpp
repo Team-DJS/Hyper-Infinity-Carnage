@@ -83,9 +83,10 @@ Arena::Arena(bool loadFromFile) :
 	IMesh* bombMesh = gEngine->LoadMesh("Portal.x");
 	mBombModel = bombMesh->CreateModel();
 	mBombModel->RotateLocalX(90.0f);
-	mBombModel->ScaleX(19.0f);
-	mBombModel->ScaleY(24.0f);
-	mBombPhase = 0;
+	mBombModel->SetSkin("PlasmaRing_0039_tlxadd.tga");
+	//mBombModel->ScaleX(19.0f);
+	//mBombModel->ScaleY(24.0f);
+	//mBombPhase = 0;
 	mBombSwitch = true;
 
 #ifdef _DEBUG
@@ -187,8 +188,9 @@ void Arena::Update(float frameTime)
 	if (mBombSwitch && mBombExplosionTimer.IsComplete())
 	{
 		mBombSwitch = false;
+		mBombModel->ResetScale();
 		mBombModel->SetPosition(OFF_SCREEN_POS.x, OFF_SCREEN_POS.y, OFF_SCREEN_POS.z);
-		mBombPhase = 0;
+
 	}
 
 	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() /* && mPlayer.GetBombs() > 0*/)
@@ -283,12 +285,14 @@ void Arena::Update(float frameTime)
 	if (mBombSwitch)
 	{
 		mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + 300 * frameTime);
+		mBombModel->ResetScale();
+		mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.1);
 
-		mBombPhase++;
-		if (mBombPhase > 9)
-			mBombModel->SetSkin("PlasmaRing_00" + to_string(mBombPhase) + "_tlxadd.tga");
-		else
-			mBombModel->SetSkin("PlasmaRing_000" + to_string(mBombPhase) + "_tlxadd.tga");
+		//mBombPhase++;
+		//if (mBombPhase > 9)
+		//	mBombModel->SetSkin("PlasmaRing_00" + to_string(mBombPhase) + "_tlxadd.tga");
+		//else
+		//	mBombModel->SetSkin("PlasmaRing_000" + to_string(mBombPhase) + "_tlxadd.tga");
 	}
 
 	// Check which enemies to do collision for
