@@ -7,9 +7,11 @@
 #include "WeaponUpgrade.hpp"
 #include "ExtraLife.hpp"
 #include "HealthPack.hpp"
+#include "Bomb.hpp"
 #include "CollisionFunctions.hpp"
 #include "AudioManager.hpp"
 #include "ParticleEmitter.hpp"
+#include "ExplosionEmitter.hpp"
 
 namespace HIC
 {
@@ -58,11 +60,15 @@ namespace HIC
 		// Target the camera at the desired item
 		void TargetCamera(ICamera* camera);	//Point the camera at the current focal point
 
+	private:
 		// Spawn an enemy on to arena (TO DO: Create parameters for the rules of spawning enemies)
 		void SpawnEnemy();
 
 		// Create enemy pool
 		void CreateEnemies();
+
+		// Create a new pickup with random type
+		void CreateNewPickup();
 
 	public:
 		static IMesh* ARENA_MESH;
@@ -78,12 +84,20 @@ namespace HIC
 		// The player character
 		Player mPlayer;
 		uint32_t mScore;
+		uint32_t mCurrentScore;
 
 		// Vector of enemies
 		std::vector<Enemy*> mEnemies;
 
 		// switch to decide which enemies to do collision on each frame
 		bool mCollisionSwitch;
+
+		// Switch for the Bomb radius
+		bool mBombSwitch = false;
+		Timer mBombExplosionTimer;
+		IModel* mBombModel;
+
+		uint32_t mBombPhase;
 
 		// Vector of a pool of enemies
 		std::vector<Enemy*> mEnemyPool;
@@ -99,7 +113,7 @@ namespace HIC
 		Scenery mArenaModel;
 
 		// Particle effects for the arena
-		ParticleEmitter* mArenaParticles;
+		std::vector<ParticleEmitter*> mArenaParticles;
 
 		// Vector of scenery (non-interactive) items
 		std::vector<Scenery*> mSceneryObjects;
@@ -108,6 +122,7 @@ namespace HIC
 		uint32_t mCurrentStage;
 
 		CollisionAABB mCollisionBox;
+		CollisionCylinder mBombCollisionCylinder;
 
 		AudioSource* mGameMusic;
 	};

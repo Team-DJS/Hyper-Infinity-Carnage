@@ -23,12 +23,13 @@ const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -800);
 
 // Default constructor for Arena
 Arena::Arena(bool loadFromFile) :
-	mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
-	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
-	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
-	mScore(0U),
-	mPickupTimer(5.0f),
-	mCollisionSwitch(false)
+mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
+mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
+mScore(0U),
+mPickupTimer(5.0f),
+mBombExplosionTimer(0.0f),
+mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
@@ -57,11 +58,33 @@ Arena::Arena(bool loadFromFile) :
 	WeaponUpgrade::mMesh = gEngine->LoadMesh("CardboardBox.x");
 	HealthPack::MESH = gEngine->LoadMesh("CardboardBox.x");
 	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
+	Bomb::MESH = gEngine->LoadMesh("CardBoardBox.x");
 
-	IMesh* particleMesh = gEngine->LoadMesh("Sphere.x");
-	mArenaParticles = new ParticleEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
-	mArenaParticles->StartEmission();
+	IMesh* particleMesh = gEngine->LoadMesh("Portal.x");
+	int arenaEdge = mCollisionBox.GetMaxOffset().x;
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, 0), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, -arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(0, 0, arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(0, 0, -arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, 0), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, -arenaEdge), 0.1f, 2.0f));
 
+	for (auto iter : mArenaParticles)
+	{
+		//iter->StartEmission();
+		iter->StopEmission();
+	}
+	
+	// Load the bomb explosion model
+	IMesh* bombMesh = gEngine->LoadMesh("Portal.x");
+	mBombModel = bombMesh->CreateModel();
+	mBombModel->RotateLocalX(90.0f);
+	mBombModel->ScaleX(19.0f);
+	mBombModel->ScaleY(24.0f);
+	mBombPhase = 0;
+	mBombSwitch = true;
 
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
@@ -77,6 +100,9 @@ Arena::Arena(bool loadFromFile) :
 		// Load the first stage
 		LoadStage(1);
 	}
+	mCurrentScore = mScore;
+
+	CreateEnemies();
 }
 
 // Destructor for Arena
@@ -88,13 +114,24 @@ Arena::~Arena()
 		mSceneryObjects.pop_back();
 	}
 
+	while (!mEnemies.empty())
+	{
+		delete mEnemies.back();
+		mEnemies.pop_back();
+	}
+
 	while (!mEnemyPool.empty())
 	{
 		delete mEnemyPool.back();
 		mEnemyPool.pop_back();
 	}
 
-	delete(mArenaParticles);
+	while (!mArenaParticles.empty())
+	{
+		delete mArenaParticles.back();
+		mArenaParticles.pop_back();
+	}
+	mBombModel->GetMesh()->RemoveModel(mBombModel);
 
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
@@ -143,6 +180,25 @@ void Arena::Update(float frameTime)
 		mPlayer.SetTryFire();
 	}
 
+	mBombExplosionTimer.Update(frameTime);
+
+	if (mBombSwitch && mBombExplosionTimer.IsComplete())
+	{
+		mBombSwitch = false;
+		mBombModel->SetPosition(OFF_SCREEN_POS.x, OFF_SCREEN_POS.y, OFF_SCREEN_POS.z);
+		mBombPhase = 0;
+	}
+
+	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() /* && mPlayer.GetBombs() > 0*/)
+	{
+		mBombSwitch = true;
+		mBombExplosionTimer.Reset(0.9f);
+		mBombCollisionCylinder.SetRadius(0.0);
+		mBombCollisionCylinder.SetPosition(D3DXVECTOR2(mPlayer.GetWorldPos().x, mPlayer.GetWorldPos().z));
+		mBombModel->SetPosition(mPlayer.GetWorldPos().x, 7.0f, mPlayer.GetWorldPos().z);
+		mPlayer.TakeBomb();
+	}
+
 #ifdef _DEBUG
 	if (gEngine->KeyHit(Key_M))
 	{
@@ -152,6 +208,22 @@ void Arena::Update(float frameTime)
 			mEnemies[i]->GetCollisionCylinder().ToggleMarkers();
 		}
 		mCollisionBox.ToggleMarkers();
+	}
+
+	// turn on and off the particles for the arena
+	if (gEngine->KeyHit(Key_J))
+	{
+		for (auto iter : mArenaParticles)
+		{
+			iter->StartEmission();
+		}
+	}
+	if (gEngine->KeyHit(Key_K))
+	{
+		for (auto iter : mArenaParticles)
+		{
+			iter->StopEmission();
+		}
 	}
 
 	// Debug HUD
@@ -165,11 +237,13 @@ void Arena::Update(float frameTime)
 	DebugHUD->Draw(hudText, 10, 46, kRed);
 	hudText = "Enemy Pool: " + to_string(mEnemyPool.size());
 	DebugHUD->Draw(hudText, 10, 58, kRed);
-	hudText = "Projectiles: " + to_string(mPlayer.GetWeapon()->GetProjectiles().size());
+	hudText = "Bombs: " + to_string(mPlayer.GetBombs());
 	DebugHUD->Draw(hudText, 10, 70, kRed);
 
-	hudText = "Score: " + to_string(mScore);
+	hudText = "Score: " + to_string(mCurrentScore);
 	DebugHUD->Draw(hudText, gEngine->GetWidth() - 200, 10, kRed);
+
+	gEngine->SetWindowCaption(to_string(1 / frameTime));
 
 #endif
 
@@ -203,6 +277,17 @@ void Arena::Update(float frameTime)
 	
 
 	// Collision
+	// Bomb Collision Radius increase
+	if (mBombSwitch)
+	{
+		mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + 300 * frameTime);
+
+		mBombPhase++;
+		if (mBombPhase > 9)
+			mBombModel->SetSkin("PlasmaRing_00" + to_string(mBombPhase) + "_tlxadd.tga");
+		else
+			mBombModel->SetSkin("PlasmaRing_000" + to_string(mBombPhase) + "_tlxadd.tga");
+	}
 
 	// Check which enemies to do collision for
 	// True is the second half, false is the first half
@@ -240,13 +325,13 @@ void Arena::Update(float frameTime)
 				mPlayer.GetWeapon()->RemoveProjectile(j);
 				j--;
 			}
-			else if (CollisionDetect(&currentEnemy, &currentProjectile))
+			else if (CollisionDetect(&currentEnemy, &currentProjectile)) // Else check if colliding with enemy
 			{
 				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
 				if (mEnemies[i]->TakeHealth(damage))
 				{
 					hitEnemy = true;
-					mScore += mEnemies[i]->GetDamage();
+					mCurrentScore += mEnemies[i]->GetDamage();
 				}
 				mPlayer.GetWeapon()->RemoveProjectile(j);
 				j--;
@@ -259,6 +344,15 @@ void Arena::Update(float frameTime)
 		{
 			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
 			hitEnemy = true;
+		}
+
+		if (mBombSwitch)
+		{
+			if (CollisionDetect(&mBombCollisionCylinder, &currentEnemy))
+			{
+				hitEnemy = true;
+				damage = 100;
+			}
 		}
 
 		// ENEMY IS HIT
@@ -282,42 +376,15 @@ void Arena::Update(float frameTime)
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
-	if (mPickupTimer.IsComplete())
+	if (mPickupTimer.IsComplete() && mNoOfEnemies > MAX_ENEMIES_ON_SCREEN)
 	{
-		int pickupType = 0;//static_cast<int>(Random(0.0f, 3.0f));
-		D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
-			Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
-		float lifetime = Random(5.0f, 9.2f);
-
-		switch (pickupType)
-		{
-			case 0:
-			{
-				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01,0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
-				break;
-			}
-			case 1:
-			{
-				mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
-				break;
-			}
-			case 2:
-			{
-				mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
-				break;
-			}
-			default: break;
-		}
-		mPickups.back()->GetModel()->Scale(15.0f);
-
-		mPickupTimer.Reset(Random(8.6f, 12.2f));
+		CreateNewPickup();
 	}
 
-	bool deletePickup;
 	// Update pickups and check to see if they collide with player or have run out of time
 	for (size_t i = 0; i < mPickups.size(); i++)
 	{
-		deletePickup = false;
+		bool deletePickup = false;
 		mPickups[i]->Update(frameTime);
 		if (CollisionDetect(&mPickups[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
 		{
@@ -339,6 +406,7 @@ void Arena::Update(float frameTime)
 		mPlayer.TakeLife();
 		this->Clear();
 		LoadStage(mCurrentStage);
+		mCurrentScore = mScore;
 	}
 
 	// check if there should be an enemy spawned
@@ -355,17 +423,22 @@ void Arena::Update(float frameTime)
 	if (mEnemies.size() <= 0)
 	{
 		LoadStage(mCurrentStage + 1);
+
+		mScore = mCurrentScore;
+		// Save the game after loading the next state
+		SaveToFile();
 	}
 
-	mArenaParticles->Update(frameTime);
+	for (auto iter : mArenaParticles)
+	{
+		//iter->StartEmission();
+		iter->Update(frameTime);
+	}
 }
 
 // Proceeds to the next stage
 void Arena::LoadStage(uint32_t stageNumber)
 {
-	// Save the game before loading the next state
-	SaveToFile();
-
 	mPlayer.GetWeapon()->Clear();
 	// Get current stage and add one
 	mCurrentStage = stageNumber;
@@ -373,9 +446,6 @@ void Arena::LoadStage(uint32_t stageNumber)
 
 	// Determne number of enemies to defeat this stage
 	mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 10U) * 1.5f);
-
-	// Create that many enemies
-	CreateEnemies();
 
 	//this->Clear();
 }
@@ -428,7 +498,7 @@ void Arena::Clear()
 	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
 		mEnemyPool.push_back(mEnemies[i]);
-	}	
+	}
 	mEnemies.clear();
 
 	for (auto remove : mPickups)
@@ -453,18 +523,62 @@ void Arena::SpawnEnemy()
 	mEnemyPool.pop_back();
 
 	enemy->ResetHealth();
-	enemy->SetPosition(D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
-		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15)));
+
+	do
+	{
+		D3DXVECTOR3 newPosition;
+		newPosition.x = Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15);
+		newPosition.y = 7.0f;
+		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
+
+		enemy->SetPosition(newPosition);
+	} while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
 
 	mEnemies.push_back(enemy);
 }
 
-// Creates a pool of enemies (never creates more than is necessary for the stage)
+// Creates a pool of enemies (never creates more than double the max on screen)
 void Arena::CreateEnemies()
 {
-	uint32_t poolsize = mNoOfEnemies - mEnemyPool.size();
-	for (uint32_t i = 0; i < poolsize; i++)
+	for (uint32_t i = 0; i < MAX_ENEMIES_ON_SCREEN * 2; i++)
 	{
 		mEnemyPool.push_back(new Enemy(ENEMY_MESH, OFF_SCREEN_POS, 15.0f, 10U));
 	}
+}
+
+// Create a new pickup with random type
+void Arena::CreateNewPickup()
+{
+	int pickupType = static_cast<int>(Random(0.0f, 4.0f));
+	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
+		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
+	float lifetime = Random(5.0f, 9.2f);
+
+	switch (pickupType)
+	{
+	case 0:
+	{
+		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
+		break;
+	}
+	case 1:
+	{
+		mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
+		break;
+	}
+	case 2:
+	{
+		mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
+		break;
+	}
+	case 3:
+	{
+		mPickups.push_back(new Bomb(position, 3.0f, lifetime));
+		break;
+	}
+	default: break;
+	}
+	mPickups.back()->GetModel()->Scale(15.0f);
+
+	mPickupTimer.Reset(Random(8.6f, 12.2f));
 }

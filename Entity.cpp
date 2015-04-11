@@ -100,6 +100,7 @@ void Entity::RotateY(float degrees)
 void Entity::SetPosition(D3DXVECTOR3 newPosition)
 {
 	mModel->SetPosition(newPosition.x, newPosition.y, newPosition.z);
+	mCollisionCylinder.SetPosition(D3DXVECTOR2(GetWorldPos().x, GetWorldPos().z));
 }
 
 void Entity::ResetHealth()

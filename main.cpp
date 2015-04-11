@@ -26,11 +26,22 @@ Button* gNewGameButton		= nullptr;
 Button* gContinueButton		= nullptr;
 Button* gViewHiScoreButton	= nullptr;
 Button* gQuitGameButton		= nullptr;
+IModel* gFrontEndPlayer		= nullptr;
 
 const float MENU_BUTTON_WIDTH = 192U;
 const float MENU_BUTTON_HEIGHT = 64U;
 const float TITLE_CARD_WIDTH = 800U;
 const float TITLE_CARD_HEIGHT = 256;
+
+
+//------------------------
+// InGame HUD Data
+//------------------------
+
+ISprite* gHUDTopBar = nullptr;
+
+const float HUD_TOP_BAR_WIDTH = 1280U;
+
 //-------------------------------------------
 // Program
 //-------------------------------------------
@@ -42,6 +53,7 @@ bool ProgramSetup()
 	// Initialise the TL-Engine
 	gEngine = New3DEngine(kTLX);
 	gEngine->StartWindowed();
+	//gEngine->StartFullscreen();
 	gEngine->SetWindowCaption("Hyper Infinity Carnage");
 
 	// Add default folder for meshes and other media
@@ -61,6 +73,8 @@ bool ProgramSetup()
 	// Load the gameplay audio
 	gAudioManager->LoadAudio("GameplayMusic", "Media\\GameplayTheme.wav");
 	
+	Player::MESH = gEngine->LoadMesh("Player.x");
+
 	return true;
 }
 
@@ -68,6 +82,10 @@ bool ProgramSetup()
 // Returns true on success, false on failure
 bool ProgramShutdown()
 {
+	// Remove player mesh
+	gEngine->RemoveMesh(Player::MESH);
+	Player::MESH = nullptr;
+
 	// Release the gameplay audio
 	gAudioManager->ReleaseAudio("GameplayMusic");
 	// Release the audio manager
@@ -81,10 +99,12 @@ bool ProgramShutdown()
 	gEngine->RemoveCamera(gDebugCamera);
 	gDebugCamera = nullptr;
 #endif
-
+		
 	// Shutdown the TL-Engine
 	gEngine->Delete();
 	gEngine = nullptr;
+
+
 
 	return true;
 }
@@ -105,11 +125,17 @@ bool FrontEndSetup()
 	//Create menu buttons
 	gTitleCard = gEngine->CreateSprite("Title_Card.png", halfScreenWidth - (TITLE_CARD_WIDTH / 2), 20.0f, 0.0f);
 
-	gNewGameButton			= new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gContinueButton			= new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gViewHiScoreButton		= new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)halfScreenWidth, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gQuitGameButton			= new Button("Quit_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gNewGameButton			= new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gContinueButton			= new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gViewHiScoreButton		= new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gQuitGameButton			= new Button("Quit_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	
+	// Load player model for front end display
+	gFrontEndPlayer = Player::MESH->CreateModel(200,0,0);
+	gFrontEndPlayer->Scale(5.0f);
+
+	gCamera->LookAt(0, 150, 0);
+
 	return true;
 }
 
@@ -117,6 +143,7 @@ bool FrontEndSetup()
 // Returns true on success, false on failure
 bool FrontEndUpdate(float frameTime)
 {
+	gFrontEndPlayer->RotateLocalY(30 * frameTime);
 	return true;
 }
 
@@ -136,6 +163,9 @@ bool FrontEndShutdown()
 		gTitleCard = nullptr;
 	}
 
+	gFrontEndPlayer->GetMesh()->RemoveModel(gFrontEndPlayer);
+	gFrontEndPlayer = nullptr;
+
 	return true;
 }
 
@@ -147,11 +177,14 @@ bool FrontEndShutdown()
 // Returns true on success, false on failure
 bool GameSetup()
 {
-	// Load the player mesh
-	Player::MESH = gEngine->LoadMesh("Player.x");
+	// Load the player mesh - now loaded in ProgramSetup!
+	// Load arena enemy and projectile meshes	
 	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
 	Arena::ENEMY_MESH = gEngine->LoadMesh("Enemy.x");
 	Projectile::MESH = gEngine->LoadMesh("Sphere.x");
+
+	// HUD Setup
+	gHUDTopBar = gEngine->CreateSprite("HUD_Top_Bar.png", gEngine->GetWidth() / 2 - (HUD_TOP_BAR_WIDTH / 2), 0.0f, 0.0f);
 
 #ifdef _DEBUG
 	CollisionObject::MARKER_MESH = gEngine->LoadMesh("dummy.x");
@@ -191,15 +224,19 @@ bool GameShutdown()
 	// Delete the arena
 	SafeRelease(gArena);
 
-	// Delete the player mesh
-	gEngine->RemoveMesh(Player::MESH);
-	Player::MESH = nullptr;
+	// Delete the player mesh - now done in ProgramShutdown
+
 	//Delete the arena mesh
 	gEngine->RemoveMesh(Arena::ARENA_MESH);
 	Arena::ARENA_MESH = nullptr;
 	//Delete the enemy mesh
 	gEngine->RemoveMesh(Arena::ENEMY_MESH);
 	Arena::ENEMY_MESH = nullptr;
+
+	// Delete HUD
+	gEngine->RemoveSprite(gHUDTopBar);
+	gHUDTopBar = nullptr;
+
 #ifdef _DEBUG
 	//Delete the collision object mesh
 	gEngine->RemoveMesh(CollisionObject::MARKER_MESH);
