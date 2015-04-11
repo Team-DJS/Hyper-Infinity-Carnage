@@ -11,7 +11,7 @@
 #include "CollisionFunctions.hpp"
 #include "AudioManager.hpp"
 #include "ParticleEmitter.hpp"
-#include "ExplosionEmitter.hpp"
+//#include "ExplosionEmitter.hpp"
 
 namespace HIC
 {
