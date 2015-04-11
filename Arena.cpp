@@ -23,13 +23,13 @@ const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -800);
 
 // Default constructor for Arena
 Arena::Arena(bool loadFromFile) :
-	mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
-	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
-	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
-	mScore(0U),
-	mPickupTimer(5.0f),
-	mBombExplosionTimer(0.0f),
-	mBombCollisionCylinder(D3DXVECTOR2(0.0f,0.0f),0.0f)
+mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
+mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
+mScore(0U),
+mPickupTimer(5.0f),
+mBombExplosionTimer(0.0f),
+mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
@@ -61,14 +61,30 @@ Arena::Arena(bool loadFromFile) :
 	Bomb::MESH = gEngine->LoadMesh("CardBoardBox.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("Portal.x");
-	mArenaParticles = new ParticleEmitter(particleMesh, D3DXVECTOR3(30,40,0), 0.1f, 2.0f);
-	//mArenaParticles->StartEmission();
-	mArenaParticles->StopEmission();
+	int arenaEdge = mCollisionBox.GetMaxOffset().x;
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, 0), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, -arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(0, 0, arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(0, 0, -arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, arenaEdge), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, 0), 0.1f, 2.0f));
+	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, -arenaEdge), 0.1f, 2.0f));
 
+	for (auto iter : mArenaParticles)
+	{
+		//iter->StartEmission();
+		iter->StopEmission();
+	}
+	
+	// Load the bomb explosion model
 	IMesh* bombMesh = gEngine->LoadMesh("Portal.x");
 	mBombModel = bombMesh->CreateModel();
 	mBombModel->RotateLocalX(90.0f);
-	mBombModel->SetSkin("Fire_tlxmul2.jpg");
+	mBombModel->ScaleX(19.0f);
+	mBombModel->ScaleY(24.0f);
+	mBombPhase = 0;
+	mBombSwitch = true;
 
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
@@ -110,7 +126,11 @@ Arena::~Arena()
 		mEnemyPool.pop_back();
 	}
 
-	delete(mArenaParticles);
+	while (!mArenaParticles.empty())
+	{
+		delete mArenaParticles.back();
+		mArenaParticles.pop_back();
+	}
 	mBombModel->GetMesh()->RemoveModel(mBombModel);
 
 	mGameMusic->Stop();
@@ -160,6 +180,25 @@ void Arena::Update(float frameTime)
 		mPlayer.SetTryFire();
 	}
 
+	mBombExplosionTimer.Update(frameTime);
+
+	if (mBombSwitch && mBombExplosionTimer.IsComplete())
+	{
+		mBombSwitch = false;
+		mBombModel->SetPosition(OFF_SCREEN_POS.x, OFF_SCREEN_POS.y, OFF_SCREEN_POS.z);
+		mBombPhase = 0;
+	}
+
+	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() /* && mPlayer.GetBombs() > 0*/)
+	{
+		mBombSwitch = true;
+		mBombExplosionTimer.Reset(0.9f);
+		mBombCollisionCylinder.SetRadius(0.0);
+		mBombCollisionCylinder.SetPosition(D3DXVECTOR2(mPlayer.GetWorldPos().x, mPlayer.GetWorldPos().z));
+		mBombModel->SetPosition(mPlayer.GetWorldPos().x, 7.0f, mPlayer.GetWorldPos().z);
+		mPlayer.TakeBomb();
+	}
+
 #ifdef _DEBUG
 	if (gEngine->KeyHit(Key_M))
 	{
@@ -171,32 +210,20 @@ void Arena::Update(float frameTime)
 		mCollisionBox.ToggleMarkers();
 	}
 
+	// turn on and off the particles for the arena
 	if (gEngine->KeyHit(Key_J))
 	{
-		mArenaParticles->StartEmission();
+		for (auto iter : mArenaParticles)
+		{
+			iter->StartEmission();
+		}
 	}
 	if (gEngine->KeyHit(Key_K))
 	{
-		mArenaParticles->StopEmission();
-	}
-
-	mBombExplosionTimer.Update(frameTime);
-
-	if (mBombExplosionTimer.IsComplete())
-	{
-		mBombSwitch = false;
-		mBombModel->ResetScale();
-		mBombModel->SetPosition(OFF_SCREEN_POS.x, OFF_SCREEN_POS.y, OFF_SCREEN_POS.z);
-	}
-
-	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() && mPlayer.GetBombs() > 0)
-	{
-		mBombSwitch = true;
-		mBombExplosionTimer.Reset(3.0f);
-		mBombCollisionCylinder.SetRadius(0.0);
-		mBombCollisionCylinder.SetPosition(D3DXVECTOR2(mPlayer.GetWorldPos().x, mPlayer.GetWorldPos().z));
-		mBombModel->SetPosition(mPlayer.GetWorldPos().x,7.0f, mPlayer.GetWorldPos().z);
-		mPlayer.TakeBomb();
+		for (auto iter : mArenaParticles)
+		{
+			iter->StopEmission();
+		}
 	}
 
 	// Debug HUD
@@ -215,6 +242,8 @@ void Arena::Update(float frameTime)
 
 	hudText = "Score: " + to_string(mCurrentScore);
 	DebugHUD->Draw(hudText, gEngine->GetWidth() - 200, 10, kRed);
+
+	gEngine->SetWindowCaption(to_string(1 / frameTime));
 
 #endif
 
@@ -251,9 +280,13 @@ void Arena::Update(float frameTime)
 	// Bomb Collision Radius increase
 	if (mBombSwitch)
 	{
-		mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + 100 * frameTime);
-		mBombModel->ResetScale();
-		mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.07);
+		mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + 300 * frameTime);
+
+		mBombPhase++;
+		if (mBombPhase > 9)
+			mBombModel->SetSkin("PlasmaRing_00" + to_string(mBombPhase) + "_tlxadd.tga");
+		else
+			mBombModel->SetSkin("PlasmaRing_000" + to_string(mBombPhase) + "_tlxadd.tga");
 	}
 
 	// Check which enemies to do collision for
@@ -396,7 +429,11 @@ void Arena::Update(float frameTime)
 		SaveToFile();
 	}
 
-	mArenaParticles->Update(frameTime);
+	for (auto iter : mArenaParticles)
+	{
+		//iter->StartEmission();
+		iter->Update(frameTime);
+	}
 }
 
 // Proceeds to the next stage

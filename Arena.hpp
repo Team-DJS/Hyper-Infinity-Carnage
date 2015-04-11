@@ -97,6 +97,8 @@ namespace HIC
 		Timer mBombExplosionTimer;
 		IModel* mBombModel;
 
+		uint32_t mBombPhase;
+
 		// Vector of a pool of enemies
 		std::vector<Enemy*> mEnemyPool;
 
@@ -111,7 +113,7 @@ namespace HIC
 		Scenery mArenaModel;
 
 		// Particle effects for the arena
-		ParticleEmitter* mArenaParticles;
+		std::vector<ParticleEmitter*> mArenaParticles;
 
 		// Vector of scenery (non-interactive) items
 		std::vector<Scenery*> mSceneryObjects;
