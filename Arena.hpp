@@ -93,7 +93,7 @@ namespace HIC
 		bool mCollisionSwitch;
 
 		// Switch for the Bomb radius
-		bool mBombSwitch = false;
+		bool mBombSwitch;
 		Timer mBombExplosionTimer;
 		IModel* mBombModel;
 
