@@ -88,6 +88,8 @@ Arena::Arena(bool loadFromFile) :
 	//mBombModel->ScaleY(24.0f);
 	//mBombPhase = 0;
 	mBombSwitch = true;
+	mBombSound = gAudioManager->CreateSource("BombExplosion", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	mBombSound->SetLooping(false);
 
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
@@ -138,6 +140,7 @@ Arena::~Arena()
 
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
+	gAudioManager->ReleaseSource(mBombSound);
 }
 
 //-----------------------------------
@@ -190,7 +193,7 @@ void Arena::Update(float frameTime)
 		mBombSwitch = false;
 		mBombModel->ResetScale();
 		mBombModel->SetPosition(OFF_SCREEN_POS.x, OFF_SCREEN_POS.y, OFF_SCREEN_POS.z);
-
+		mBombSound->Stop();
 	}
 
 	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() /* && mPlayer.GetBombs() > 0*/)
@@ -201,6 +204,7 @@ void Arena::Update(float frameTime)
 		mBombCollisionCylinder.SetPosition(D3DXVECTOR2(mPlayer.GetWorldPos().x, mPlayer.GetWorldPos().z));
 		mBombModel->SetPosition(mPlayer.GetWorldPos().x, 7.0f, mPlayer.GetWorldPos().z);
 		mPlayer.TakeBomb();
+		mBombSound->Play();
 	}
 
 #ifdef _DEBUG

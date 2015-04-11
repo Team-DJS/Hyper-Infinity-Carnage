@@ -94,8 +94,10 @@ namespace HIC
 
 		// Switch for the Bomb radius
 		bool mBombSwitch;
+
 		Timer mBombExplosionTimer;
 		IModel* mBombModel;
+		AudioSource* mBombSound;
 
 		// Vector of a pool of enemies
 		std::vector<Enemy*> mEnemyPool;
