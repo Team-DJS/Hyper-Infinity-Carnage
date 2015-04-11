@@ -27,7 +27,8 @@ Arena::Arena(bool loadFromFile) :
 	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
 	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
 	mScore(0U),
-	mPickupTimer(5.0f)
+	mPickupTimer(5.0f),
+	mCollisionSwitch(false)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));

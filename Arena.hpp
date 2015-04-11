@@ -83,7 +83,7 @@ namespace HIC
 		std::vector<Enemy*> mEnemies;
 
 		// switch to decide which enemies to do collision on each frame
-		bool mCollisionSwitch = false;
+		bool mCollisionSwitch;
 
 		// Vector of a pool of enemies
 		std::vector<Enemy*> mEnemyPool;

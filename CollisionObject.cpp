@@ -30,10 +30,13 @@ CollisionObject::~CollisionObject()
 {
 #ifdef _DEBUG
 	//Remove models from memory
-	while (!mCollisionMarkers.empty())
+	if (mMarkersExist)
 	{
-		MARKER_MESH->RemoveModel(mCollisionMarkers.back());
-		mCollisionMarkers.pop_back();
+		while (!mCollisionMarkers.empty())
+		{
+			MARKER_MESH->RemoveModel(mCollisionMarkers.back());
+			mCollisionMarkers.pop_back();
+		}
 	}
 #endif
 }
