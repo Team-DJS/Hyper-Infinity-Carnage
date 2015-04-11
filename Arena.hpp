@@ -90,7 +90,7 @@ namespace HIC
 		std::vector<Enemy*> mEnemies;
 
 		// switch to decide which enemies to do collision on each frame
-		bool mCollisionSwitch = false;
+		bool mCollisionSwitch;
 
 		// Switch for the Bomb radius
 		bool mBombSwitch = false;
