@@ -260,7 +260,7 @@ void Arena::Update(float frameTime)
 	DebugHUD->Draw(hudText, 10, 22, kRed);
 	hudText = "Health: " + to_string(mPlayer.GetHealth());
 	DebugHUD->Draw(hudText, 10, 34, kRed);
-	hudText = "Enemies: " + to_string(mEnemies.size());
+	hudText = "Enemies: " + to_string(mNoOfEnemies + mEnemies.size());
 	DebugHUD->Draw(hudText, 10, 46, kRed);
 	hudText = "Enemy Pool: " + to_string(mEnemyPool.size());
 	DebugHUD->Draw(hudText, 10, 58, kRed);
@@ -405,7 +405,7 @@ void Arena::Update(float frameTime)
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
-	if (mPickupTimer.IsComplete() && mNoOfEnemies > MAX_ENEMIES_ON_SCREEN)
+	if (mPickupTimer.IsComplete() && mNoOfEnemies > 15)
 	{
 		CreateNewPickup();
 	}
@@ -439,13 +439,13 @@ void Arena::Update(float frameTime)
 	}
 
 	// check if there should be an enemy spawned
-	if (mEnemies.size() < MAX_ENEMIES_ON_SCREEN)
+	if (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
 	{
-		while (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
-		{
+		//while (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
+		//{
 			mNoOfEnemies--;
 			SpawnEnemy();
-		}
+		//}
 	}
 
 	// check if there are no more enemies on the field
