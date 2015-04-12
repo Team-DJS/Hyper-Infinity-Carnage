@@ -12,6 +12,7 @@
 #include "AudioManager.hpp"
 #include "ParticleEmitter.hpp"
 //#include "ExplosionEmitter.hpp"
+#include "SpawnTunnel.hpp"
 
 namespace HIC
 {
@@ -92,12 +93,15 @@ namespace HIC
 		// switch to decide which enemies to do collision on each frame
 		bool mCollisionSwitch;
 
-		// Switch for the Bomb radius
+		// Switch for the Bomb
 		bool mBombSwitch;
-
 		Timer mBombExplosionTimer;
 		IModel* mBombModel;
 		AudioSource* mBombSound;
+
+		// Enemy Spawn Models
+		std::vector<SpawnTunnel*> mSpawnTunnelsPool;
+		std::vector<SpawnTunnel*> mActiveSpawnTunnels;
 
 		// Vector of a pool of enemies
 		std::vector<Enemy*> mEnemyPool;

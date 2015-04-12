@@ -78,7 +78,14 @@ Arena::Arena(bool loadFromFile) :
 		//iter->StartEmission();
 		iter->StopEmission();
 	}
-	
+
+	SpawnTunnel::SPAWN_TUNNEL_MESH = gEngine->LoadMesh("BombPortal.x");
+	for (int i = 0; i < MAX_ENEMIES_ON_SCREEN * 2; i++)
+	{
+		mSpawnTunnelsPool.push_back(new SpawnTunnel(OFF_SCREEN_POS));
+	}
+
+
 	// Load the bomb explosion model
 	IMesh* bombMesh = gEngine->LoadMesh("BombPortal.x");
 	mBombModel = bombMesh->CreateModel();
@@ -137,6 +144,18 @@ Arena::~Arena()
 		mArenaParticles.pop_back();
 	}
 	mBombModel->GetMesh()->RemoveModel(mBombModel);
+
+	while (!mActiveSpawnTunnels.empty())
+	{
+		delete mActiveSpawnTunnels.back();
+		mActiveSpawnTunnels.pop_back();
+	}
+
+	while (!mSpawnTunnelsPool.empty())
+	{
+		delete mSpawnTunnelsPool.back();
+		mSpawnTunnelsPool.pop_back();
+	}
 
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
@@ -439,6 +458,17 @@ void Arena::Update(float frameTime)
 		SaveToFile();
 	}
 
+	for (uint32_t i = 0; i < mActiveSpawnTunnels.size(); i++)
+	{
+		if (mActiveSpawnTunnels[i]->Update(frameTime))
+		{
+			mActiveSpawnTunnels[i]->SetPosition(OFF_SCREEN_POS);
+			mSpawnTunnelsPool.push_back(mActiveSpawnTunnels[i]);
+			mActiveSpawnTunnels.erase(mActiveSpawnTunnels.begin() + i);
+			i--;
+		}
+	}
+
 	for (auto iter : mArenaParticles)
 	{
 		//iter->StartEmission();
@@ -457,6 +487,7 @@ void Arena::LoadStage(uint32_t stageNumber)
 	// Determne number of enemies to defeat this stage
 	mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 10U) * 1.5f);
 
+	mBombExplosionTimer.Update(20.0f);
 	//this->Clear();
 }
 
@@ -520,6 +551,7 @@ void Arena::Clear()
 	mPlayer.Clear();
 	mPlayer.Respawn();
 
+	mBombExplosionTimer.Update(20.0f);
 }
 
 void Arena::TargetCamera(ICamera* camera)
@@ -543,6 +575,10 @@ void Arena::SpawnEnemy()
 
 		enemy->SetPosition(newPosition);
 	} while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
+
+	mActiveSpawnTunnels.push_back(mSpawnTunnelsPool.back());
+	mSpawnTunnelsPool.pop_back();
+	mActiveSpawnTunnels.back()->SetPosition(enemy->GetWorldPos());
 
 	mEnemies.push_back(enemy);
 }
