@@ -2,9 +2,11 @@
 
 
 #ifndef BUTTON_H	//Header Guard
-#define BUTTON_H	
+#define BUTTON_H
 
 #include "CollisionAABB.hpp"
+#include "AudioManager.hpp"
+
 namespace HIC
 {
 	class Button
@@ -19,7 +21,6 @@ namespace HIC
 
 		// Destructor for Button
 		~Button();
-
 	public:
 		//--------------
 		// Setters
@@ -30,16 +31,17 @@ namespace HIC
 		//--------------
 
 		//Returns whether or not the mouse is pointing at a position on the sprite
-		bool MouseIsOver();			
+		bool MouseIsOver();
 
 		//--------------
 		// Other
 		//--------------
-
+	public:
+		static AudioSource* BUTTON_OVER_SOUND;
 	private:
 		ISprite* mSprite;			//The sprite that the button will appear as
 		CollisionAABB mCollision;	//The collision box of the button
-
+		bool mIsOver;
 	};
 }
 
