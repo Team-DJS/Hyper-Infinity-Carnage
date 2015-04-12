@@ -9,7 +9,7 @@ IMesh* Arena::ARENA_MESH = nullptr;
 IMesh* Arena::ENEMY_MESH = nullptr;
 
 #ifdef _DEBUG
-	tle::IFont* Arena::DebugHUD = nullptr;
+tle::IFont* Arena::DebugHUD = nullptr;
 #endif
 
 const std::string Arena::SAVE_FILENAME = "Save.hic";
@@ -215,7 +215,7 @@ void Arena::Update(float frameTime)
 		mBombSound->Stop();
 	}
 
-	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() /* && mPlayer.GetBombs() > 0*/)
+	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() && mPlayer.GetBombs() > 0)
 	{
 		mBombSwitch = true;
 		mBombExplosionTimer.Reset(0.9f);
@@ -301,7 +301,7 @@ void Arena::Update(float frameTime)
 		}
 	}
 
-	
+
 
 	// Collision
 	// Bomb Collision Radius increase
@@ -392,7 +392,7 @@ void Arena::Update(float frameTime)
 			mEnemies.erase(mEnemies.begin() + i);
 			i--;
 		}
-		
+
 		if (mCollisionSwitch)
 		{
 			end = mEnemies.size();
@@ -443,8 +443,8 @@ void Arena::Update(float frameTime)
 	{
 		//while (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
 		//{
-			mNoOfEnemies--;
-			SpawnEnemy();
+		mNoOfEnemies--;
+		SpawnEnemy();
 		//}
 	}
 
@@ -574,7 +574,8 @@ void Arena::SpawnEnemy()
 		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
 
 		enemy->SetPosition(newPosition);
-	} while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
+	}
+	while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
 
 	mActiveSpawnTunnels.push_back(mSpawnTunnelsPool.back());
 	mSpawnTunnelsPool.pop_back();
@@ -597,32 +598,33 @@ void Arena::CreateNewPickup()
 {
 	int pickupType = static_cast<int>(Random(0.0f, 4.0f));
 	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
-		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
+									   Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
 	float lifetime = Random(5.0f, 9.2f);
 
 	switch (pickupType)
 	{
-	case 0:
-	{
-		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
-		break;
-	}
-	case 1:
-	{
-		mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
-		break;
-	}
-	case 2:
-	{
-		mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
-		break;
-	}
-	case 3:
-	{
-		mPickups.push_back(new Bomb(position, 3.0f, lifetime));
-		break;
-	}
-	default: break;
+		case 0:
+			{
+				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
+				break;
+			}
+		case 1:
+			{
+				mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
+				break;
+			}
+		case 2:
+			{
+				mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
+				break;
+			}
+		case 3:
+			{
+				mPickups.push_back(new Bomb(position, 3.0f, lifetime));
+				break;
+			}
+		default:
+			break;
 	}
 	mPickups.back()->GetModel()->Scale(15.0f);
 
