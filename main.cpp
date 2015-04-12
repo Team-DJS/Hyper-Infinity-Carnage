@@ -170,9 +170,6 @@ bool FrontEndShutdown()
 	gFrontEndPlayer->GetMesh()->RemoveModel(gFrontEndPlayer);
 	gFrontEndPlayer = nullptr;
 
-	// This should be done here but it causes an access violation crash
-	//gAudioManager->ReleaseAudio("ButtonOver");
-
 	return true;
 }
 
@@ -254,7 +251,7 @@ bool GameShutdown()
 	gCamera = gGameCamera;
 #endif
 
-	gAudioManager->ReleaseAudio("BombExplosion");
+
 	return true;
 }
 
