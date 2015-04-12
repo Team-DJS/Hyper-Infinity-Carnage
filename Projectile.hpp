@@ -31,7 +31,7 @@ namespace HIC
 		// Set the models position
 		void SetPos(D3DXVECTOR3 pos)
 		{
-			mModel->SetPosition(pos.x, pos.y, pos.z);
+			mModel->SetPosition(pos.x, pos.y + 2.0f, pos.z);
 		}
 
 		// Set projectiles velocity

@@ -62,7 +62,7 @@ Arena::Arena(bool loadFromFile) :
 	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
 	Bomb::MESH = gEngine->LoadMesh("CardBoardBox.x");
 
-	IMesh* particleMesh = gEngine->LoadMesh("Portal.x");
+	IMesh* particleMesh = gEngine->LoadMesh("FirePortal.x");
 	int arenaEdge = mCollisionBox.GetMaxOffset().x;
 	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, arenaEdge), 0.1f, 2.0f));
 	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, 0), 0.1f, 2.0f));
@@ -80,7 +80,7 @@ Arena::Arena(bool loadFromFile) :
 	}
 	
 	// Load the bomb explosion model
-	IMesh* bombMesh = gEngine->LoadMesh("Portal.x");
+	IMesh* bombMesh = gEngine->LoadMesh("BombPortal.x");
 	mBombModel = bombMesh->CreateModel();
 	mBombModel->RotateLocalX(90.0f);
 	mBombModel->SetSkin("PlasmaRing_0039_tlxadd.tga");

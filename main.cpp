@@ -181,7 +181,7 @@ bool GameSetup()
 	// Load arena enemy and projectile meshes	
 	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
 	Arena::ENEMY_MESH = gEngine->LoadMesh("Enemy.x");
-	Projectile::MESH = gEngine->LoadMesh("Sphere.x");
+	Projectile::MESH = gEngine->LoadMesh("ProjectilePortal.x");
 
 	// HUD Setup
 	gHUDTopBar = gEngine->CreateSprite("HUD_Top_Bar.png", gEngine->GetWidth() / 2 - (HUD_TOP_BAR_WIDTH / 2), 0.0f, 0.0f);
