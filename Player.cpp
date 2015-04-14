@@ -99,19 +99,27 @@ void Player::Update(float frameTime)
 {
 	//***** Face the player in the direction of the mouse *****// - incomplete
 
-	//Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
-	D3DXVECTOR2 mouseVector;
-	mouseVector.x = gEngine->GetMouseX() - (gEngine->GetWidth() / 2.0f) - 1.0f;
-	mouseVector.y = 1.0f - (gEngine->GetMouseY() - gEngine->GetHeight() / 2.0f);
+	////Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
+	//D3DXVECTOR2 mouseVector;
+	//mouseVector.x = gEngine->GetMouseX() - (gEngine->GetWidth() / 2.0f) - 1.0f;
+	//mouseVector.y = 1.0f - (gEngine->GetMouseY() - gEngine->GetHeight() / 2.0f);
 
-	////Normalise the mouse vector
-	D3DXVec2Normalize(&mouseVector, &mouseVector);
+	//////Normalise the mouse vector
+	//D3DXVec2Normalize(&mouseVector, &mouseVector);
 
-	D3DXVECTOR3 rightVect3 = GetRightVector();	//Create and obtain the facing vector of the ship
+	D3DXVECTOR3 rightVect3 = GetRightVector();	//Create and obtain the right vector of the ship
 	D3DXVECTOR2 rightVect2;
 	D3DXVec2Normalize(&rightVect2, &D3DXVECTOR2(rightVect3.x, rightVect3.z));
 
-	float dotProd = D3DXVec2Dot(&rightVect2, &mouseVector);
+	D3DXVECTOR3 rayPosition3 = WorldPosFromPixel();
+	D3DXVECTOR2 rayPosition2 = D3DXVECTOR2(rayPosition3.x, rayPosition3.z);
+
+	D3DXVECTOR2 playerWorldPos2 = D3DXVECTOR2(this->GetWorldPos().x, this->GetWorldPos().z);
+
+	D3DXVECTOR2 rayVector2 = playerWorldPos2 - rayPosition2;
+	D3DXVec2Normalize(&rayVector2, &rayVector2);
+
+	float dotProd = D3DXVec2Dot(&rightVect2, &rayVector2);
 
 	////Done all the maths to determine if left or right, now set the flags for turning later in the function
 	if (dotProd < 0)		// Mouse is to the right
@@ -122,7 +130,7 @@ void Player::Update(float frameTime)
 	{
 		RotateY(-TURN_SPEED * frameTime);	//Turn left
 	}
-
+	//this->GetModel()->LookAt(foo.x, 0.0f, foo.z);
 	//******* End of direct the player *********//
 
 	//************WEAPON*************//

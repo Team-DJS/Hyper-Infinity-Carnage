@@ -22,6 +22,12 @@ using namespace tle;
 
 extern I3DEngine* gEngine;
 
+
+const float gNearClip = 2.0f;
+const float gFarClip = 30000.0f;
+extern ICamera* gGameCamera;
+
+
 // Helper function to safely delete a pointer
 template<class T>
 inline void SafeRelease(T*& ptr)
@@ -42,3 +48,5 @@ inline void SafeRelease(T*& ptr)
 float Random(float lowBound, float highBound);
 
 float AngleBetweenVectors(const D3DXVECTOR2& vectorA, const D3DXVECTOR2& vectorB);	//Returns an angle in degrees
+
+D3DXVECTOR3 WorldPosFromPixel();

@@ -35,3 +35,48 @@ float AngleBetweenVectors(const D3DXVECTOR2& vectorA, const D3DXVECTOR2& vectorB
 
 
 }
+
+D3DXVECTOR3 WorldPosFromPixel()
+{
+	D3DXVECTOR4 q;
+	D3DXVECTOR2 pixelPt = D3DXVECTOR2(gEngine->GetMouseX(), gEngine->GetMouseY());
+
+	//Convert to a -1 to 1 coord system from pixel position
+	q.x = pixelPt.x / (gEngine->GetWidth() / 2) - 1;
+	q.y = 1 - pixelPt.y / (gEngine->GetHeight() / 2);
+
+	q.w = gNearClip;	//Near clip distance
+	q.z = 0;			//Closest depth buffer value
+
+	//Undo perspective
+	q.x *= q.w;
+	q.y *= q.w;
+	q.z *= q.w;
+
+	D3DXMATRIX worldMatrix;
+	gGameCamera->GetMatrix(worldMatrix);
+
+	D3DXMATRIX viewMatrix;
+
+	D3DXMatrixInverse(&viewMatrix, NULL, &worldMatrix);
+
+	D3DXMATRIX projectionMatrix;
+	float aspect = (float)gEngine->GetWidth() / gEngine->GetHeight();
+	D3DXMatrixPerspectiveFovLH(&projectionMatrix, D3DX_PI / 3.4f, aspect, gNearClip, gFarClip);
+
+	//Multiply by inverse viewprojmatrix to convert from camera space to world space
+	D3DXMATRIX viewProj = viewMatrix * projectionMatrix;
+	D3DXMatrixInverse(&viewProj, 0, &viewProj);	//Inverse the viewproj matrix
+	D3DXVec4Transform(&q, &q, &viewProj);
+	
+	//Create floor plane at origin
+	D3DXPLANE floor;
+	D3DXPlaneFromPointNormal(&floor, &D3DXVECTOR3(0.0f, 0.0f, 0.0f), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+		
+	//Calculate the position on the plane that the ray was cast to
+	D3DXVECTOR3 rayPos;
+	D3DXPlaneIntersectLine(&rayPos, &floor, &D3DXVECTOR3(q), &D3DXVECTOR3(gGameCamera->GetX(), gGameCamera->GetY(), gGameCamera->GetZ()));
+	
+
+	return rayPos; //Returns the position on the plane that the ray was cast to
+}
