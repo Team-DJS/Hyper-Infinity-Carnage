@@ -116,19 +116,22 @@ void Player::Update(float frameTime)
 
 	D3DXVECTOR2 playerWorldPos2 = D3DXVECTOR2(this->GetWorldPos().x, this->GetWorldPos().z);
 
-	D3DXVECTOR2 rayVector2 = playerWorldPos2 - rayPosition2;
+	D3DXVECTOR2 rayVector2 = rayPosition2 - playerWorldPos2;
 	D3DXVec2Normalize(&rayVector2, &rayVector2);
 
 	float dotProd = D3DXVec2Dot(&rightVect2, &rayVector2);
 
 	////Done all the maths to determine if left or right, now set the flags for turning later in the function
-	if (dotProd < 0)		// Mouse is to the right
+	if (dotProd >= 0.1f || dotProd <= -0.1f)	//Fudge factor to prevent the player shaking left and right
 	{
-		RotateY(TURN_SPEED * frameTime);	//Turn right
-	}
-	else if (dotProd > 0)	//Mouse is to the left
-	{
-		RotateY(-TURN_SPEED * frameTime);	//Turn left
+		if (dotProd < 0)		// Mouse is to the right
+		{
+			RotateY(TURN_SPEED * frameTime);	//Turn right
+		}
+		else if (dotProd > 0)	//Mouse is to the left
+		{
+			RotateY(-TURN_SPEED * frameTime);	//Turn left
+		}
 	}
 	//this->GetModel()->LookAt(foo.x, 0.0f, foo.z);
 	//******* End of direct the player *********//
