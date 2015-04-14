@@ -33,6 +33,11 @@ const float MENU_BUTTON_HEIGHT = 64U;
 const float TITLE_CARD_WIDTH = 800U;
 const float TITLE_CARD_HEIGHT = 256;
 
+//------------------------
+// Loading screen data
+//------------------------
+
+ISprite* gLoadingScreen = nullptr;
 
 //------------------------
 // InGame HUD Data
@@ -170,6 +175,36 @@ bool FrontEndShutdown()
 	gFrontEndPlayer->GetMesh()->RemoveModel(gFrontEndPlayer);
 	gFrontEndPlayer = nullptr;
 
+	return true;
+}
+
+//-------------------------------------------
+// Loading Screen
+//-------------------------------------------
+
+bool LoadingSreenSetup(bool loadSaveGame)
+{
+	if (!loadSaveGame)
+	{
+		// do insert name stuff
+	}
+	
+	// display loading screen
+	gLoadingScreen = gEngine->CreateSprite("Loading_Screen_Temp.png", 0.0f, 0.0f, 0.0f);
+
+	return true;
+}
+
+bool LoadingScreenUpdate()
+{
+	gEngine->DrawScene();
+	return true;
+}
+
+bool LoadingScreenShutdown()
+{
+	gEngine->RemoveSprite(gLoadingScreen);
+	gLoadingScreen = nullptr;
 	return true;
 }
 
@@ -344,8 +379,9 @@ int main(int argc, char* argv[])
 
 
 		// TODO: Loading Screen
-
-
+		LoadingSreenSetup(loadSaveGame);
+		LoadingScreenUpdate();
+		LoadingScreenShutdown();
 
 		///////////////////////////////////
 		// Game Enter
