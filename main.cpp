@@ -240,9 +240,6 @@ bool GameSetup()
 	// HUD Setup
 	gHUDTopBar = gEngine->CreateSprite("HUD_Top_Bar.png", gEngine->GetWidth() / 2 - (HUD_TOP_BAR_WIDTH / 2), 0.0f, 0.0f);
 
-	// Load the bomb explosion audio
-	gAudioManager->LoadAudio("BombExplosion", "Media\\Audio\\BombExplosion.wav");
-
 #ifdef _DEBUG
 	CollisionObject::MARKER_MESH = gEngine->LoadMesh("dummy.x");
 #endif

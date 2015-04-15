@@ -23,15 +23,15 @@ const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -800);
 
 // Default constructor for Arena
 Arena::Arena(bool loadFromFile) :
-	mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
-	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
-	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
-	mScore(0U),
-	mPickupTimer(5.0f),
-	mBombExplosionTimer(0.0f),
-	mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
-	mCollisionSwitch(false),
-	mBombSwitch(false)
+mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
+mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
+mScore(0U),
+mPickupTimer(5.0f),
+mBombExplosionTimer(0.0f),
+mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
+mCollisionSwitch(false),
+mBombSwitch(false)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
@@ -51,9 +51,20 @@ Arena::Arena(bool loadFromFile) :
 		}
 	}
 
-	mGameMusic = gAudioManager->CreateSource("GameplayMusic", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	// Create the gameplay music audio source
+	mGameMusic = gAudioManager->CreateSource("GameplayMusic", { 0.0f, 0.0f, 0.0f });
 	mGameMusic->SetLooping(true);
 	mGameMusic->Play();
+
+	// Load and create the bomb audio source
+	gAudioManager->LoadAudio("BombExplosion", "Media\\Audio\\BombExplosion.wav");
+	mBombSound = gAudioManager->CreateSource("BombExplosion", { 0.0f, 0.0f, 0.0f });
+	mBombSound->SetLooping(false);
+
+	// Load and create the enemy spawn audio source
+	gAudioManager->LoadAudio("EnemySpawn", "Media\\Audio\\EnemySpawn.wav");
+	mEnemySpawnSound = gAudioManager->CreateSource("EnemySpawn", { 0.0f, 0.0f, 0.0f });
+	mEnemySpawnSound->SetLooping(false);
 
 
 	// Initialise the Mesh for the pickups
@@ -95,10 +106,6 @@ Arena::Arena(bool loadFromFile) :
 	//mBombModel->ScaleY(24.0f);
 	//mBombPhase = 0;
 	mBombSwitch = true;
-
-	// Create the bomb audio source
-	mBombSound = gAudioManager->CreateSource("BombExplosion", { 0.0f, 0.0f, 0.0f });
-	mBombSound->SetLooping(false);
 
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
@@ -162,6 +169,7 @@ Arena::~Arena()
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
 	gAudioManager->ReleaseSource(mBombSound);
+	gAudioManager->ReleaseSource(mEnemySpawnSound);
 }
 
 //-----------------------------------
@@ -576,14 +584,16 @@ void Arena::SpawnEnemy()
 		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
 
 		enemy->SetPosition(newPosition);
-	}
-	while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
+	} while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
 
 	mActiveSpawnTunnels.push_back(mSpawnTunnelsPool.back());
 	mSpawnTunnelsPool.pop_back();
 	mActiveSpawnTunnels.back()->SetPosition(enemy->GetWorldPos());
 
 	mEnemies.push_back(enemy);
+
+	// Play the enemy spawn sound
+	mEnemySpawnSound->Play();
 }
 
 // Creates a pool of enemies (never creates more than double the max on screen)
@@ -600,31 +610,31 @@ void Arena::CreateNewPickup()
 {
 	int pickupType = static_cast<int>(Random(0.0f, 4.0f));
 	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
-									   Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
+		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
 	float lifetime = Random(5.0f, 9.2f);
 
 	switch (pickupType)
 	{
 		case 0:
-			{
-				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
-				break;
-			}
+		{
+			mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
+			break;
+		}
 		case 1:
-			{
-				mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
-				break;
-			}
+		{
+			mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
+			break;
+		}
 		case 2:
-			{
-				mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
-				break;
-			}
+		{
+			mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
+			break;
+		}
 		case 3:
-			{
-				mPickups.push_back(new Bomb(position, 3.0f, lifetime));
-				break;
-			}
+		{
+			mPickups.push_back(new Bomb(position, 3.0f, lifetime));
+			break;
+		}
 		default:
 			break;
 	}
