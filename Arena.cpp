@@ -574,6 +574,9 @@ void Arena::TargetCamera(ICamera* camera)
 
 void Arena::SpawnEnemy()
 {
+	// Play the enemy spawn sound
+	mEnemySpawnSound->Play();
+
 	Enemy* enemy = mEnemyPool.back();
 	mEnemyPool.pop_back();
 
@@ -594,9 +597,6 @@ void Arena::SpawnEnemy()
 	mActiveSpawnTunnels.back()->SetPosition(enemy->GetWorldPos());
 
 	mEnemies.push_back(enemy);
-
-	// Play the enemy spawn sound
-	mEnemySpawnSound->Play();
 }
 
 // Creates a pool of enemies (never creates more than double the max on screen)
