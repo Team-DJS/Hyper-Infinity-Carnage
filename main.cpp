@@ -21,12 +21,12 @@ Arena* gArena = nullptr;
 // Front End Data
 //------------------------
 
-ISprite* gTitleCard			= nullptr;
-Button* gNewGameButton		= nullptr;
-Button* gContinueButton		= nullptr;
-Button* gViewHiScoreButton	= nullptr;
-Button* gQuitGameButton		= nullptr;
-IModel* gFrontEndPlayer		= nullptr;
+ISprite* gTitleCard = nullptr;
+Button* gNewGameButton = nullptr;
+Button* gContinueButton = nullptr;
+Button* gViewHiScoreButton = nullptr;
+Button* gQuitGameButton = nullptr;
+IModel* gFrontEndPlayer = nullptr;
 
 const float MENU_BUTTON_WIDTH = 192U;
 const float MENU_BUTTON_HEIGHT = 64U;
@@ -84,6 +84,12 @@ bool ProgramSetup()
 	// Load the button over sound
 	gAudioManager->LoadAudio("ButtonOver", "Media\\Audio\\ButtonOver.wav");
 	Button::BUTTON_OVER_SOUND = gAudioManager->CreateSource("ButtonOver", { 0.0f, 0.0f, 0.0f });
+	Button::BUTTON_OVER_SOUND->SetLooping(false);
+
+	// Load the weapon shoot sound
+	gAudioManager->LoadAudio("WeaponShoot", "Media\\Audio\\WeaponShoot.wav");
+	Weapon::SHOOT_SOUND = gAudioManager->CreateSource("WeaponShoot", { 0.0f, 0.0f, 0.0f });
+	Weapon::SHOOT_SOUND->SetLooping(false);
 
 	Player::MESH = gEngine->LoadMesh("Player.x");
 
@@ -104,6 +110,7 @@ bool ProgramShutdown()
 
 	// Release any loaded audio
 	gAudioManager->ReleaseAudio("ButtonOver");
+	gAudioManager->ReleaseAudio("WeaponShoot");
 	gAudioManager->ReleaseAudio("GameplayMusic");
 	// Release the audio manager
 	SafeRelease(gAudioManager);
@@ -142,10 +149,10 @@ bool FrontEndSetup()
 	//Create menu buttons
 	gTitleCard = gEngine->CreateSprite("Title_Card.png", halfScreenWidth - (TITLE_CARD_WIDTH / 2), 20.0f, 0.0f);
 
-	gNewGameButton			= new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gContinueButton			= new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gViewHiScoreButton		= new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gQuitGameButton			= new Button("Quit_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gNewGameButton = new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gContinueButton = new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gViewHiScoreButton = new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gQuitGameButton = new Button("Quit_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 
 	// Load player model for front end display
 	gFrontEndPlayer = Player::MESH->CreateModel(200, 0, 0);
@@ -196,7 +203,7 @@ bool LoadingSreenSetup(bool loadSaveGame)
 	{
 		// do insert name stuff
 	}
-	
+
 	// display loading screen
 	gLoadingScreen = gEngine->CreateSprite("Loading_Screen_Temp.png", 0.0f, 0.0f, 0.0f);
 
