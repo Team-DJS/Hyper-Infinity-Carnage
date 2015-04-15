@@ -182,6 +182,11 @@ void Entity::CollisionResolution(CollisionCylinder& collidingWith)
 	mCollisionCylinder.SetPosition(D3DXVECTOR2(mModel->GetX(), mModel->GetZ()));
 }
 
+void Entity::CollisionResolution(CollisionAABB& collidingWith)
+{
+	//Needs Body
+}
+
 // Points the model at a given position
 void Entity::LookAt(const D3DXVECTOR3& position)
 {

@@ -134,7 +134,10 @@ bool FrontEndSetup()
 
 	// Load the button over sound
 	gAudioManager->LoadAudio("ButtonOver", "Media\\Audio\\ButtonOver.wav");
+	gAudioManager->LoadAudio("ButtonClick", "Media\\Audio\\ButtonClick.wav");
 	Button::BUTTON_OVER_SOUND = gAudioManager->CreateSource("ButtonOver", D3DXVECTOR3( 0.0f, 0.0f, 0.0f ));
+	Button::BUTTON_CLICK_SOUND = gAudioManager->CreateSource("ButtonClick", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
 
 	gNewGameButton			= new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	gContinueButton			= new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
@@ -152,9 +155,64 @@ bool FrontEndSetup()
 
 // Updates the front end menu
 // Returns true on success, false on failure
-bool FrontEndUpdate(float frameTime)
+bool FrontEndUpdate(float frameTime, bool& quitProgram, bool& playNewGame, bool& playSavedGame)
 {
 	gFrontEndPlayer->RotateLocalY(30 * frameTime);
+	// Draw the scene
+	gEngine->DrawScene(gCamera);
+
+	//-----------------------------
+	// State checks
+	//-----------------------------
+
+	quitProgram = false;
+	playNewGame = false;
+	playSavedGame = false;
+
+	if (gEngine->KeyHit(Key_P))
+	{
+		playNewGame = true;
+		return true;
+	}
+
+	bool isMouseDown = gEngine->KeyHit(Mouse_LButton);
+
+	if (isMouseDown)
+	{
+		//Click new game
+		if (gNewGameButton->MouseIsOver())
+		{
+			playNewGame = true;
+			return true;
+		}
+		//Click continue
+		else if (gContinueButton->MouseIsOver())
+		{
+			playSavedGame = true;
+			return true;
+		}
+		//Click view high scores
+		else if (gViewHiScoreButton->MouseIsOver())
+		{
+			//TODO: Load high scores
+		}
+		//Click quit game
+		else if (gQuitGameButton->MouseIsOver())
+		{
+			quitProgram = true;
+			return true;
+		}
+
+	}
+
+	// Exit the program if the exit key/button is pressed
+	if (gEngine->KeyHit(Key_Q) || !gEngine->IsRunning())
+	{
+		quitProgram = true;
+		return true;
+	}
+
+
 	return true;
 }
 
@@ -193,6 +251,7 @@ bool LoadingSreenSetup(bool loadSaveGame)
 	
 	// display loading screen
 	gLoadingScreen = gEngine->CreateSprite("Loading_Screen_Temp.png", 0.0f, 0.0f, 0.0f);
+
 
 	return true;
 }
@@ -320,54 +379,33 @@ int main(int argc, char* argv[])
 		}
 
 		bool quitFrontend = false;
+		bool playNewGame = false;
 		bool loadSaveGame = false;
+		bool quitGame = false;
 
 		// Update the front-end until the exit key is pressed
 		while (!quitFrontend)
 		{
-			if (gEngine->KeyHit(Key_P))
+			if (!FrontEndUpdate(gEngine->Timer(), quitGame, playNewGame, loadSaveGame))
 			{
-				quitFrontend = true;
+				return EXIT_FAILURE;
 			}
 
-			bool isMouseDown = gEngine->KeyHit(Mouse_LButton);
+			// React to front end flags
 
-			if (gNewGameButton->MouseIsOver() && isMouseDown)
-			{
-				quitFrontend = true;
-				loadSaveGame = false;
-			}
-			else if (gContinueButton->MouseIsOver() && isMouseDown)
-			{
-				quitFrontend = true;
-				loadSaveGame = true;
-			}
-			else if (gViewHiScoreButton->MouseIsOver() && isMouseDown)
-			{
-				//TODO: Load high scores
-			}
-			else if (gQuitGameButton->MouseIsOver() && isMouseDown)
+			if (quitGame)
 			{
 				// Quit the program
 				FrontEndShutdown();
 				ProgramShutdown();
 				return EXIT_SUCCESS;
-			}
 
-			// Exit the program if the exit key/button is pressed
-			if (gEngine->KeyHit(Key_Q) || !gEngine->IsRunning())
+			}
+			if (playNewGame || loadSaveGame)
 			{
-				FrontEndShutdown();
-				ProgramShutdown();
-				return EXIT_SUCCESS;
+				quitFrontend = true;
 			}
 
-			// Update the front end
-			float frameTime = gEngine->Timer();
-			FrontEndUpdate(frameTime);
-
-			// Draw the scene
-			gEngine->DrawScene(gCamera);
 		}
 
 		if (!FrontEndShutdown())
@@ -379,9 +417,6 @@ int main(int argc, char* argv[])
 		// Front End Exit
 		///////////////////////////////////
 
-
-
-		// TODO: Loading Screen
 		LoadingSreenSetup(loadSaveGame);
 		LoadingScreenUpdate();
 		LoadingScreenShutdown();
