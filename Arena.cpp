@@ -31,7 +31,8 @@ Arena::Arena(bool loadFromFile) :
 	mBombExplosionTimer(0.0f),
 	mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
 	mCollisionSwitch(false),
-	mBombSwitch(false)
+	mBombSwitch(false),
+	mPlayerStatus(true)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));

@@ -37,6 +37,11 @@ namespace HIC
 		// Getters
 		//---------------
 
+		bool GetPlayerStatus()
+		{
+			return mPlayerStatus;
+		}
+
 		//--------------
 		// Other
 		//--------------
@@ -83,6 +88,8 @@ namespace HIC
 
 		// The player character
 		Player mPlayer;
+		bool mPlayerStatus;
+
 		uint32_t mScore;
 		uint32_t mCurrentScore;
 
