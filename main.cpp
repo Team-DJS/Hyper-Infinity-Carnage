@@ -85,6 +85,9 @@ bool ProgramSetup()
 	gAudioManager->LoadAudio("ButtonOver", "Media\\Audio\\ButtonOver.wav");
 	Button::BUTTON_OVER_SOUND = gAudioManager->CreateSource("ButtonOver", { 0.0f, 0.0f, 0.0f });
 	Button::BUTTON_OVER_SOUND->SetLooping(false);
+	gAudioManager->LoadAudio("ButtonClick", "Media\\Audio\\ButtonClick.wav");
+	Button::BUTTON_CLICK_SOUND = gAudioManager->CreateSource("ButtonClick", { 0.0f, 0.0f, 0.0f });
+	Button::BUTTON_CLICK_SOUND->SetLooping(false);
 
 	// Load the weapon shoot sound
 	gAudioManager->LoadAudio("WeaponShoot", "Media\\Audio\\WeaponShoot.wav");
