@@ -7,6 +7,9 @@ using namespace HIC;
 
 const uint32_t MAX_PROJECTILES = 30;
 const float MAX_FIRE_RATE = 0.05f;
+
+AudioSource* Weapon::SHOOT_SOUND = nullptr;
+
 //-----------------------------------
 // Constructors / Destructors
 //-----------------------------------
@@ -44,7 +47,9 @@ void Weapon::SetFireRate(float bulletsPerSecond)
 {
 	mFireRate -= bulletsPerSecond;
 	if (mFireRate < 0.0f)
+	{
 		mFireRate = MAX_FIRE_RATE;
+	}
 	mFireTimer.Reset(mFireRate);
 }
 
@@ -95,20 +100,14 @@ deque<Projectile*> Weapon::GetProjectiles()
 // Called to update the weapon
 void Weapon::Update(float frameTime, const D3DXVECTOR3 playerPosition, const D3DXVECTOR3 playerFacingVector)
 {
-	//**%**
-
 	//Update fire timer
 	mFireTimer.Update(frameTime);
 
 	//Check if trying to fire this frame
-	if (mTryFire)
-	{		//- Perform fire action if timer allows
-		if (mFireTimer.IsComplete())
-		{
-			Shoot(playerPosition, playerFacingVector);
-		}
+	if (mTryFire && mFireTimer.IsComplete())
+	{
+		Shoot(playerPosition, playerFacingVector);
 	}
-
 
 	//Update all projectiles
 	for (size_t i = 0; i < mProjectiles.size(); i++)
@@ -140,10 +139,9 @@ void Weapon::Clear()
 // Shoots a new projectile in a direction
 void Weapon::Shoot(const D3DXVECTOR3& playerPosition, const D3DXVECTOR3 playerFacingVector)
 {
-	//**%**
 	// Create new projectiles moving in the provided direction (use an angle offset for additional barrels)
-	Projectile* projectile;
-	if (mProjectilePool.size() > 0)
+	Projectile* projectile = nullptr;
+	if (!mProjectilePool.empty())
 	{
 		projectile = mProjectilePool.back();
 		mProjectilePool.pop_back();
@@ -153,9 +151,14 @@ void Weapon::Shoot(const D3DXVECTOR3& playerPosition, const D3DXVECTOR3 playerFa
 		projectile = mProjectiles.front();
 		mProjectiles.pop_front();
 	}
+
+	// Set the projectile data
 	projectile->SetPos(playerPosition);
-	projectile->SetVelocity(D3DXVECTOR2(-playerFacingVector.x * 8, -playerFacingVector.z * 8));
+	projectile->SetVelocity({ -playerFacingVector.x * 8.0f, -playerFacingVector.z * 8.0f });
 	projectile->SetDamage(mDamage);
 	mProjectiles.push_back(projectile);
 	mFireTimer.Reset();
+
+	// Play the shooting audio clip
+	SHOOT_SOUND->Play();
 }

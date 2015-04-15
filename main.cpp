@@ -21,12 +21,12 @@ Arena* gArena = nullptr;
 // Front End Data
 //------------------------
 
-ISprite* gTitleCard			= nullptr;
-Button* gNewGameButton		= nullptr;
-Button* gContinueButton		= nullptr;
-Button* gViewHiScoreButton	= nullptr;
-Button* gQuitGameButton		= nullptr;
-IModel* gFrontEndPlayer		= nullptr;
+ISprite* gTitleCard = nullptr;
+Button* gNewGameButton = nullptr;
+Button* gContinueButton = nullptr;
+Button* gViewHiScoreButton = nullptr;
+Button* gQuitGameButton = nullptr;
+IModel* gFrontEndPlayer = nullptr;
 
 const float MENU_BUTTON_WIDTH = 192U;
 const float MENU_BUTTON_HEIGHT = 64U;
@@ -77,8 +77,19 @@ bool ProgramSetup()
 
 	// Initialise the AudioManager
 	gAudioManager = new AudioManager();
+
 	// Load the gameplay audio
 	gAudioManager->LoadAudio("GameplayMusic", "Media\\Audio\\GameplayTheme.wav");
+
+	// Load the button over sound
+	gAudioManager->LoadAudio("ButtonOver", "Media\\Audio\\ButtonOver.wav");
+	Button::BUTTON_OVER_SOUND = gAudioManager->CreateSource("ButtonOver", { 0.0f, 0.0f, 0.0f });
+	Button::BUTTON_OVER_SOUND->SetLooping(false);
+
+	// Load the weapon shoot sound
+	gAudioManager->LoadAudio("WeaponShoot", "Media\\Audio\\WeaponShoot.wav");
+	Weapon::SHOOT_SOUND = gAudioManager->CreateSource("WeaponShoot", { 0.0f, 0.0f, 0.0f });
+	Weapon::SHOOT_SOUND->SetLooping(false);
 
 	Player::MESH = gEngine->LoadMesh("Player.x");
 
@@ -93,7 +104,13 @@ bool ProgramShutdown()
 	gEngine->RemoveMesh(Player::MESH);
 	Player::MESH = nullptr;
 
-	// Release the gameplay audio
+	// Release the button over source
+	gAudioManager->ReleaseSource(Button::BUTTON_OVER_SOUND);
+	Button::BUTTON_OVER_SOUND = nullptr;
+
+	// Release any loaded audio
+	gAudioManager->ReleaseAudio("ButtonOver");
+	gAudioManager->ReleaseAudio("WeaponShoot");
 	gAudioManager->ReleaseAudio("GameplayMusic");
 	// Release the audio manager
 	SafeRelease(gAudioManager);
@@ -132,17 +149,10 @@ bool FrontEndSetup()
 	//Create menu buttons
 	gTitleCard = gEngine->CreateSprite("Title_Card.png", halfScreenWidth - (TITLE_CARD_WIDTH / 2), 20.0f, 0.0f);
 
-	// Load the button over sound
-	gAudioManager->LoadAudio("ButtonOver", "Media\\Audio\\ButtonOver.wav");
-	gAudioManager->LoadAudio("ButtonClick", "Media\\Audio\\ButtonClick.wav");
-	Button::BUTTON_OVER_SOUND = gAudioManager->CreateSource("ButtonOver", D3DXVECTOR3( 0.0f, 0.0f, 0.0f ));
-	Button::BUTTON_CLICK_SOUND = gAudioManager->CreateSource("ButtonClick", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-
-	gNewGameButton			= new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gContinueButton			= new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gViewHiScoreButton		= new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gQuitGameButton			= new Button("Quit_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gNewGameButton = new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gContinueButton = new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gViewHiScoreButton = new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gQuitGameButton = new Button("Quit_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 
 	// Load player model for front end display
 	gFrontEndPlayer = Player::MESH->CreateModel(200, 0, 0);
@@ -200,8 +210,8 @@ bool FrontEndUpdate(float frameTime, bool& quitProgram, bool& playNewGame, bool&
 		else if (gQuitGameButton->MouseIsOver())
 		{
 			quitProgram = true;
-			return true;
-		}
+	return true;
+}
 
 	}
 
@@ -286,6 +296,7 @@ bool GameSetup()
 	// HUD Setup
 	gHUDTopBar = gEngine->CreateSprite("HUD_Top_Bar.png", gEngine->GetWidth() / 2 - (HUD_TOP_BAR_WIDTH / 2), 0.0f, 0.0f);
 
+	// Load the bomb explosion audio
 	gAudioManager->LoadAudio("BombExplosion", "Media\\Audio\\BombExplosion.wav");
 
 #ifdef _DEBUG
@@ -326,8 +337,6 @@ bool GameShutdown()
 
 	// Delete the arena
 	SafeRelease(gArena);
-
-	// Delete the player mesh - now done in ProgramShutdown
 
 	//Delete the arena mesh
 	gEngine->RemoveMesh(Arena::ARENA_MESH);

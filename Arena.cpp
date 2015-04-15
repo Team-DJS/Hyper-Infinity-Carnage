@@ -95,7 +95,9 @@ Arena::Arena(bool loadFromFile) :
 	//mBombModel->ScaleY(24.0f);
 	//mBombPhase = 0;
 	mBombSwitch = true;
-	mBombSound = gAudioManager->CreateSource("BombExplosion", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	// Create the bomb audio source
+	mBombSound = gAudioManager->CreateSource("BombExplosion", { 0.0f, 0.0f, 0.0f });
 	mBombSound->SetLooping(false);
 
 #ifdef _DEBUG
