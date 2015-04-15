@@ -77,15 +77,17 @@ Arena::Arena(bool loadFromFile) :
 	Bomb::MESH = gEngine->LoadMesh("CardBoardBox.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("FirePortal.x");
-	int arenaEdge = mCollisionBox.GetMaxOffset().x;
-	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, arenaEdge), 0.1f, 2.0f));
-	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, 0), 0.1f, 2.0f));
-	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(arenaEdge, 0, -arenaEdge), 0.1f, 2.0f));
-	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(0, 0, arenaEdge), 0.1f, 2.0f));
-	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(0, 0, -arenaEdge), 0.1f, 2.0f));
-	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, arenaEdge), 0.1f, 2.0f));
-	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, 0), 0.1f, 2.0f));
-	mArenaParticles.push_back(new ParticleEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, -arenaEdge), 0.1f, 2.0f));
+	const float arenaEdge = mCollisionBox.GetMaxOffset().x;
+	const float emissionRate = 0.0125f;
+	const float lifetime = 2.0f;
+	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(arenaEdge,  0,  arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(arenaEdge,  0,			0), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(arenaEdge,  0, -arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(		0,  0,  arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(		0,  0, -arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0,  arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0,			0), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, -arenaEdge), emissionRate, lifetime));
 
 	for (auto iter : mArenaParticles)
 	{
@@ -261,6 +263,12 @@ void Arena::Update(float frameTime)
 		}
 	}
 
+	// Update all arena particle emitter
+	for (auto iter : mArenaParticles)
+	{
+		iter->Update(frameTime);
+	}
+
 	// Debug HUD
 	string hudText = "Stage: " + to_string(mCurrentStage);
 	DebugHUD->Draw(hudText, 10, 10, kRed);
@@ -317,7 +325,7 @@ void Arena::Update(float frameTime)
 	{
 		mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + 300 * frameTime);
 		mBombModel->ResetScale();
-		mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.1);
+		mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.1f);
 
 		//mBombPhase++;
 		//if (mBombPhase > 9)
@@ -474,12 +482,6 @@ void Arena::Update(float frameTime)
 			mSpawnTunnels.erase(mSpawnTunnels.begin() + i);
 			i--;
 		}
-	}
-
-	for (auto iter : mArenaParticles)
-	{
-		//iter->StartEmission();
-		iter->Update(frameTime);
 	}
 }
 

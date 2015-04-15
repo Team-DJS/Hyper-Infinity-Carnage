@@ -10,8 +10,7 @@
 #include "Bomb.hpp"
 #include "CollisionFunctions.hpp"
 #include "AudioManager.hpp"
-#include "ParticleEmitter.hpp"
-//#include "ExplosionEmitter.hpp"
+#include "FountainEmitter.hpp"
 #include "SpawnTunnel.hpp"
 
 namespace HIC
