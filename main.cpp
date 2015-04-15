@@ -49,9 +49,14 @@ ISprite* gPauseBackground = nullptr;
 // InGame HUD Data
 //------------------------
 
-ISprite* gHUDTopBar = nullptr;
+ISprite* gHUDScore = nullptr;
+ISprite* gHUDHealth = nullptr;
+ISprite* gHUDLives = nullptr;
+ISprite* gHUDStage = nullptr;
+ISprite* gHUDBombs = nullptr;
 
-const float HUD_TOP_BAR_WIDTH = 1280U;
+const float HUD_WIDTH = 350U;
+const float HUD_HEIGHT = 94U;
 
 //-------------------------------------------
 // Program
@@ -303,7 +308,11 @@ bool GameSetup()
 	Projectile::MESH = gEngine->LoadMesh("ProjectilePortal.x");
 
 	// HUD Setup
-	gHUDTopBar = gEngine->CreateSprite("HUD_Top_Bar.png", gEngine->GetWidth() / 2 - (HUD_TOP_BAR_WIDTH / 2), 0.0f, 0.0f);
+	gHUDScore = gEngine->CreateSprite("HUD_Score.png", gEngine->GetWidth() / 2 - (HUD_WIDTH / 2), 0.0f, 0.0f);
+	gHUDHealth = gEngine->CreateSprite("HUD_Health.png", 0.0f, 0.0f, 0.0f);
+	gHUDStage = gEngine->CreateSprite("HUD_Stage.png", gEngine->GetWidth() - HUD_WIDTH, 0.0f, 0.0f);
+	gHUDLives = gEngine->CreateSprite("HUD_Lives.png", 0.0f, gEngine->GetHeight() - HUD_HEIGHT, 0.0f);
+	gHUDBombs = gEngine->CreateSprite("HUD_Bombs.png", gEngine->GetWidth() - HUD_WIDTH, gEngine->GetHeight() - HUD_HEIGHT, 0.0f);
 
 	// Load the bomb explosion audio
 	gAudioManager->LoadAudio("BombExplosion", "Media\\Audio\\BombExplosion.wav");
@@ -354,8 +363,12 @@ bool GameShutdown()
 	Arena::ENEMY_MESH = nullptr;
 
 	// Delete HUD
-	gEngine->RemoveSprite(gHUDTopBar);
-	gHUDTopBar = nullptr;
+	gEngine->RemoveSprite(gHUDScore);
+	gEngine->RemoveSprite(gHUDHealth);
+	gEngine->RemoveSprite(gHUDStage);
+	gEngine->RemoveSprite(gHUDLives);
+	gEngine->RemoveSprite(gHUDBombs);
+	gHUDScore = nullptr;
 
 #ifdef _DEBUG
 	//Delete the collision object mesh
