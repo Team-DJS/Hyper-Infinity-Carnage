@@ -54,9 +54,20 @@ Arena::Arena(bool loadFromFile) :
 	//	}
 	//}
 
-	mGameMusic = gAudioManager->CreateSource("GameplayMusic", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	// Create the gameplay music audio source
+	mGameMusic = gAudioManager->CreateSource("GameplayMusic", { 0.0f, 0.0f, 0.0f });
 	mGameMusic->SetLooping(true);
 	mGameMusic->Play();
+
+	// Load and create the bomb audio source
+	gAudioManager->LoadAudio("BombExplosion", "Media\\Audio\\BombExplosion.wav");
+	mBombSound = gAudioManager->CreateSource("BombExplosion", { 0.0f, 0.0f, 0.0f });
+	mBombSound->SetLooping(false);
+
+	// Load and create the enemy spawn audio source
+	gAudioManager->LoadAudio("EnemySpawn", "Media\\Audio\\EnemySpawn.wav");
+	mEnemySpawnSound = gAudioManager->CreateSource("EnemySpawn", { 0.0f, 0.0f, 0.0f });
+	mEnemySpawnSound->SetLooping(false);
 
 
 	// Initialise the Mesh for the pickups
@@ -98,10 +109,6 @@ Arena::Arena(bool loadFromFile) :
 	//mBombModel->ScaleY(24.0f);
 	//mBombPhase = 0;
 	mBombSwitch = true;
-
-	// Create the bomb audio source
-	mBombSound = gAudioManager->CreateSource("BombExplosion", D3DXVECTOR3( 0.0f, 0.0f, 0.0f ));
-	mBombSound->SetLooping(false);
 
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
@@ -165,6 +172,7 @@ Arena::~Arena()
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
 	gAudioManager->ReleaseSource(mBombSound);
+	gAudioManager->ReleaseSource(mEnemySpawnSound);
 }
 
 //-----------------------------------
@@ -579,14 +587,16 @@ void Arena::SpawnEnemy()
 		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
 
 		enemy->SetPosition(newPosition);
-	}
-	while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
+	} while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
 
 	mActiveSpawnTunnels.push_back(mSpawnTunnelsPool.back());
 	mSpawnTunnelsPool.pop_back();
 	mActiveSpawnTunnels.back()->SetPosition(enemy->GetWorldPos());
 
 	mEnemies.push_back(enemy);
+
+	// Play the enemy spawn sound
+	mEnemySpawnSound->Play();
 }
 
 // Creates a pool of enemies (never creates more than double the max on screen)

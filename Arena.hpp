@@ -129,5 +129,6 @@ namespace HIC
 		CollisionCylinder mBombCollisionCylinder;
 
 		AudioSource* mGameMusic;
+		AudioSource* mEnemySpawnSound;
 	};
 }
