@@ -108,6 +108,8 @@ bool ProgramShutdown()
 	// Release the button over source
 	gAudioManager->ReleaseSource(Button::BUTTON_OVER_SOUND);
 	Button::BUTTON_OVER_SOUND = nullptr;
+	gAudioManager->ReleaseSource(Button::BUTTON_CLICK_SOUND);
+	Button::BUTTON_CLICK_SOUND = nullptr;
 
 	// Release any loaded audio
 	gAudioManager->ReleaseAudio("ButtonOver");
@@ -188,32 +190,32 @@ bool FrontEndUpdate(float frameTime, bool& quitProgram, bool& playNewGame, bool&
 
 	bool isMouseDown = gEngine->KeyHit(Mouse_LButton);
 
-	if (isMouseDown)
+	//Click new game
+	if (gNewGameButton->MouseIsOver() && isMouseDown)
 	{
-		//Click new game
-		if (gNewGameButton->MouseIsOver())
-		{
-			playNewGame = true;
-			return true;
-		}
-		//Click continue
-		else if (gContinueButton->MouseIsOver())
-		{
-			playSavedGame = true;
-	return true;
-}
-		//Click view high scores
-		else if (gViewHiScoreButton->MouseIsOver())
-		{
-			//TODO: Load high scores
-		}
-		//Click quit game
-		else if (gQuitGameButton->MouseIsOver())
-		{
-			quitProgram = true;
-	return true;
-}
-
+		Button::BUTTON_CLICK_SOUND->Play();
+		playNewGame = true;
+		return true;
+	}
+	//Click continue
+	else if (gContinueButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		playSavedGame = true;
+		return true;
+	}
+	//Click view high scores
+	else if (gViewHiScoreButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		//TODO: Load high scores
+	}
+	//Click quit game
+	else if (gQuitGameButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		quitProgram = true;
+		return true;
 	}
 
 	// Exit the program if the exit key/button is pressed
