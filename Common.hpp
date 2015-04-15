@@ -14,7 +14,7 @@
 #include <AL\alut.h>
 
 // Include DirectX Maths Headers
-#include <D3DX10math.h>
+#include <d3dx9math.h>
 
 // Include TL-Engine Headers
 #include <TL-Engine.h>

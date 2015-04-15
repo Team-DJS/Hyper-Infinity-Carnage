@@ -39,7 +39,9 @@ float AngleBetweenVectors(const D3DXVECTOR2& vectorA, const D3DXVECTOR2& vectorB
 D3DXVECTOR3 WorldPosFromPixel()
 {
 	D3DXVECTOR4 q;
-	D3DXVECTOR2 pixelPt = D3DXVECTOR2(gEngine->GetMouseX(), gEngine->GetMouseY());
+	D3DXVECTOR2 pixelPt;
+	pixelPt.x = static_cast<float>(gEngine->GetMouseX());
+	pixelPt.y = static_cast<float>(gEngine->GetMouseY());
 
 	//Convert to a -1 to 1 coord system from pixel position
 	q.x = pixelPt.x / (gEngine->GetWidth() / 2) - 1;
