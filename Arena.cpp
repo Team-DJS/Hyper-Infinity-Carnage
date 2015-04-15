@@ -23,33 +23,36 @@ const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -800);
 
 // Default constructor for Arena
 Arena::Arena(bool loadFromFile) :
-mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
-mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
-mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
-mScore(0U),
-mPickupTimer(5.0f),
-mBombExplosionTimer(0.0f),
-mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
-mCollisionSwitch(false),
-mBombSwitch(false)
+	mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
+	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
+	mScore(0U),
+	mPickupTimer(5.0f),
+	mBombExplosionTimer(0.0f),
+	mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
+	mCollisionSwitch(false),
+	mBombSwitch(false)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
 
 	// Build the scenery
-	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
-	D3DXVECTOR3 pos;
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			pos.x = -1170.0f + 1170.0f * j;
-			pos.y = -700.0f;
-			pos.z = 1170.0f * i;
-			Scenery* sceneryTemp = new Scenery(buildingsMesh, pos, 200.0f);
-			mSceneryObjects.push_back(sceneryTemp);
-		}
-	}
+	IMesh* skyboxMesh = gEngine->LoadMesh("Skybox.x");
+	mSceneryObjects.push_back(new Scenery(skyboxMesh, D3DXVECTOR3(0, -1000.0f, 0), 1.0f));
+
+	//IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
+	//D3DXVECTOR3 pos;
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		pos.x = -1170.0f + 1170.0f * j;
+	//		pos.y = -700.0f;
+	//		pos.z = 1170.0f * i;
+	//		Scenery* sceneryTemp = new Scenery(buildingsMesh, pos, 200.0f);
+	//		mSceneryObjects.push_back(sceneryTemp);
+	//	}
+	//}
 
 	// Create the gameplay music audio source
 	mGameMusic = gAudioManager->CreateSource("GameplayMusic", { 0.0f, 0.0f, 0.0f });
@@ -610,31 +613,31 @@ void Arena::CreateNewPickup()
 {
 	int pickupType = static_cast<int>(Random(0.0f, 4.0f));
 	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
-		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
+									   Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
 	float lifetime = Random(5.0f, 9.2f);
 
 	switch (pickupType)
 	{
 		case 0:
-		{
-			mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
-			break;
-		}
+			{
+				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
+				break;
+			}
 		case 1:
-		{
-			mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
-			break;
-		}
+			{
+				mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
+				break;
+			}
 		case 2:
-		{
-			mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
-			break;
-		}
+			{
+				mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
+				break;
+			}
 		case 3:
-		{
-			mPickups.push_back(new Bomb(position, 3.0f, lifetime));
-			break;
-		}
+			{
+				mPickups.push_back(new Bomb(position, 3.0f, lifetime));
+				break;
+			}
 		default:
 			break;
 	}
