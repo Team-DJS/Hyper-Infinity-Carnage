@@ -2,6 +2,7 @@
 
 #include "Common.hpp"
 #include "Projectile.hpp"
+#include "AudioSource.hpp"
 #include "Timer.hpp"
 
 namespace HIC
@@ -83,6 +84,8 @@ namespace HIC
 
 			return stream;
 		}
+	public:
+		static AudioSource* SHOOT_SOUND;
 	private:
 		// Shoots a projectile in a direction
 		void Shoot(const D3DXVECTOR3& direction, const D3DXVECTOR3 playerFacingVector);

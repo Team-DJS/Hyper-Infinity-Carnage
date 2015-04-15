@@ -6,6 +6,7 @@
 //-----------------------------------
 
 AudioSource* Button::BUTTON_OVER_SOUND = nullptr;
+AudioSource* Button::BUTTON_CLICK_SOUND = nullptr;
 
 //-----------------------------------
 // Constructors / Destructors
