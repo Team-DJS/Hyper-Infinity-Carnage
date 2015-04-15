@@ -377,7 +377,7 @@ bool PauseMenuSetup()
 	return true;
 }
 
-void PauseMenuUpdate(bool &quitProgram)
+void PauseMenuUpdate(bool &quitGame)
 {
 	bool isMouseDown = gEngine->KeyHit(Mouse_LButton);
 
@@ -391,7 +391,7 @@ void PauseMenuUpdate(bool &quitProgram)
 	else if (gQuitGameButton->MouseIsOver() && isMouseDown)
 	{
 		Button::BUTTON_CLICK_SOUND->Play();
-		quitProgram = true;
+		quitGame = true;
 	}
 }
 
@@ -485,15 +485,19 @@ int main(int argc, char* argv[])
 
 		// Load the arena
 		gArena = new Arena(loadSaveGame);
-		bool quitProgram = false;
 		// Continue in game loop until exited
-		while (!quitProgram)
+		while (!quitGame)
 		{
 			// Update the game
 			float frameTime = gEngine->Timer();
 			GameUpdate(frameTime);
 
-			if (gEngine->KeyHit(Key_Escape) && !quitProgram)
+			if (!gArena->GetPlayerStatus())
+			{
+				quitGame = true;
+			}
+
+			if (gEngine->KeyHit(Key_Escape))
 			{
 
 				if (!PauseMenuSetup())
@@ -501,9 +505,9 @@ int main(int argc, char* argv[])
 					ProgramShutdown();
 					return EXIT_FAILURE;
 				}
-				while (!gEngine->KeyHit(Key_Escape) && gEngine->IsRunning() && !quitProgram)
+				while (!gEngine->KeyHit(Key_Escape) && gEngine->IsRunning() && !quitGame)
 				{
-					PauseMenuUpdate(quitProgram);
+					PauseMenuUpdate(quitGame);
 					gEngine->DrawScene(gCamera);
 
 					if (!gEngine->IsRunning())
