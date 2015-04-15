@@ -97,7 +97,7 @@ Arena::Arena(bool loadFromFile) :
 	mBombSwitch = true;
 
 	// Create the bomb audio source
-	mBombSound = gAudioManager->CreateSource("BombExplosion", { 0.0f, 0.0f, 0.0f });
+	mBombSound = gAudioManager->CreateSource("BombExplosion", D3DXVECTOR3( 0.0f, 0.0f, 0.0f ));
 	mBombSound->SetLooping(false);
 
 #ifdef _DEBUG
