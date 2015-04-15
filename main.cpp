@@ -66,8 +66,6 @@ bool ProgramSetup()
 
 	// Initialise the camera
 	gGameCamera = gEngine->CreateCamera(kManual, 0.0f, 500.0f, -700.0f);
-	gGameCamera->SetNearClip(gNearClip);
-	gGameCamera->SetFarClip(gFarClip);
 #ifdef _DEBUG
 	gDebugCamera = gEngine->CreateCamera(kFPS, 0.0f, 500.0f, -700.0f);
 	gDebugCamera->SetMovementSpeed(200.0f);
@@ -134,7 +132,7 @@ bool FrontEndSetup()
 
 	// Load the button over sound
 	gAudioManager->LoadAudio("ButtonOver", "Media\\Audio\\ButtonOver.wav");
-	Button::BUTTON_OVER_SOUND = gAudioManager->CreateSource("ButtonOver", D3DXVECTOR3( 0.0f, 0.0f, 0.0f ));
+	Button::BUTTON_OVER_SOUND = gAudioManager->CreateSource("ButtonOver", { 0.0f, 0.0f, 0.0f });
 
 	gNewGameButton			= new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	gContinueButton			= new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
@@ -255,7 +253,6 @@ void GameUpdate(float frameTime)
 		}
 	}
 #endif
-
 }
 
 // Updates the main game
@@ -378,8 +375,6 @@ int main(int argc, char* argv[])
 
 		// Front End Exit
 		///////////////////////////////////
-
-
 
 		// TODO: Loading Screen
 		LoadingSreenSetup(loadSaveGame);
