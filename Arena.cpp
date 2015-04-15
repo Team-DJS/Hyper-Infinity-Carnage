@@ -77,7 +77,7 @@ Arena::Arena(bool loadFromFile) :
 	Bomb::MESH = gEngine->LoadMesh("CardBoardBox.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("FirePortal.x");
-	const int arenaEdge = mCollisionBox.GetMaxOffset().x;
+	const float arenaEdge = mCollisionBox.GetMaxOffset().x;
 	const float emissionRate = 0.0125f;
 	const float lifetime = 2.0f;
 	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(arenaEdge,  0,  arenaEdge), emissionRate, lifetime));
@@ -325,7 +325,7 @@ void Arena::Update(float frameTime)
 	{
 		mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + 300 * frameTime);
 		mBombModel->ResetScale();
-		mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.1);
+		mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.1f);
 
 		//mBombPhase++;
 		//if (mBombPhase > 9)
