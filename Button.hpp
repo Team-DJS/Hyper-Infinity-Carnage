@@ -38,8 +38,6 @@ namespace HIC
 		//--------------
 	public:
 		static AudioSource* BUTTON_OVER_SOUND;
-		static AudioSource* BUTTON_CLICK_SOUND;
-
 	private:
 		ISprite* mSprite;			//The sprite that the button will appear as
 		CollisionAABB mCollision;	//The collision box of the button

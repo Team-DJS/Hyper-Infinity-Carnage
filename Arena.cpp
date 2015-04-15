@@ -37,19 +37,22 @@ Arena::Arena(bool loadFromFile) :
 	srand((uint32_t)(time(0)));
 
 	// Build the scenery
-	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
-	D3DXVECTOR3 pos;
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			pos.x = -1170.0f + 1170.0f * j;
-			pos.y = -700.0f;
-			pos.z = 1170.0f * i;
-			Scenery* sceneryTemp = new Scenery(buildingsMesh, pos, 200.0f);
-			mSceneryObjects.push_back(sceneryTemp);
-		}
-	}
+	IMesh* skyboxMesh = gEngine->LoadMesh("Skybox.x");
+	mSceneryObjects.push_back(new Scenery(skyboxMesh, D3DXVECTOR3(0, -1000.0f, 0), 1.0f));
+
+	//IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
+	//D3DXVECTOR3 pos;
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		pos.x = -1170.0f + 1170.0f * j;
+	//		pos.y = -700.0f;
+	//		pos.z = 1170.0f * i;
+	//		Scenery* sceneryTemp = new Scenery(buildingsMesh, pos, 200.0f);
+	//		mSceneryObjects.push_back(sceneryTemp);
+	//	}
+	//}
 
 	mGameMusic = gAudioManager->CreateSource("GameplayMusic", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	mGameMusic->SetLooping(true);
@@ -95,9 +98,7 @@ Arena::Arena(bool loadFromFile) :
 	//mBombModel->ScaleY(24.0f);
 	//mBombPhase = 0;
 	mBombSwitch = true;
-
-	// Create the bomb audio source
-	mBombSound = gAudioManager->CreateSource("BombExplosion", D3DXVECTOR3( 0.0f, 0.0f, 0.0f ));
+	mBombSound = gAudioManager->CreateSource("BombExplosion", D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	mBombSound->SetLooping(false);
 
 #ifdef _DEBUG

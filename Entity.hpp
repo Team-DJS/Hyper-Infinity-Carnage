@@ -2,7 +2,6 @@
 
 #include "Common.hpp"
 #include "CollisionCylinder.hpp"
-#include "CollisionAABB.hpp"
 
 namespace HIC
 {
@@ -72,7 +71,6 @@ namespace HIC
 		//--------------
 
 		void CollisionResolution(CollisionCylinder& collidingWith);
-		void CollisionResolution(CollisionAABB& collidingWith);
 
 		// Points the model at a given position
 		void LookAt(const D3DXVECTOR3& position);
