@@ -65,13 +65,16 @@ void Enemy::Update(float frameTime)
 	float dotProd = D3DXVec2Dot(&rightVect2, &playerVector);
 
 	//Done all the maths to determine if left or right, now set the flags for turning later in the function
-	if (dotProd < 0)		// Player is to the right
+	if (dotProd >= 0.1f || dotProd <= -0.1f)	//Fudge factor to prevent the enemy shaking left and right
 	{
-		RotateY(TURN_SPEED * frameTime);	//Turn right
-	}
-	else if (dotProd > 0)	//Player is to the left
-	{
-		RotateY(-TURN_SPEED * frameTime);	//Turn left
+		if (dotProd < 0)		// Player is to the right
+		{
+			RotateY(TURN_SPEED * frameTime);	//Turn right
+		}
+		else if (dotProd > 0)	//Player is to the left
+		{
+			RotateY(-TURN_SPEED * frameTime);	//Turn left
+		}
 	}
 
 	//Decide whether to move forward (and how fast)
