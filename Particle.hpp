@@ -8,7 +8,7 @@ namespace HIC
 	{
 	public:
 		// Default constructor for Particle
-		Particle(IMesh* mesh, const D3DXVECTOR3& position, const D3DXVECTOR3& velocity, float lifetime);
+		Particle(IMesh* mesh, float lifetime);
 
 		// Destructor for Particle
 		~Particle();

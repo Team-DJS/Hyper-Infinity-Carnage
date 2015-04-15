@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Common.hpp"
-#include "Timer.hpp"
 #include "Particle.hpp"
 
 namespace HIC
@@ -10,30 +9,31 @@ namespace HIC
 	{
 	public:
 		// Default Constructor for ParticleEmitter
-		ParticleEmitter(IMesh* mesh, D3DXVECTOR3 position, float emissionRate, float lifetime);
+		ParticleEmitter(IMesh* mesh, D3DXVECTOR3 position);
 
 		// Default Destructor for ParticleEmitter
-		~ParticleEmitter();
+		virtual ~ParticleEmitter() = default;
 	public:
+		// Returns the position of the emitter
+		D3DXVECTOR3 GetPosition() const;
+
+		// Sets the position of the emitter
+		void SetPosition(const D3DXVECTOR3& position);
+
 		// Starts the emission of the particle
 		void StartEmission();
 
 		// Stops the emission of the particle
 		void StopEmission();
 
-		// Sets the position of the ParticleEmitter
-		void SetPosition(const D3DXVECTOR3& position);
+		// Returns true if the particle emitter is emitting particles
+		bool IsEmitting() const;
 
-		// Called to update the ParticleEmitter
-		void Update(float frameTime);
+		// Updates the emitter and all its particles
+		virtual void Update(float frameTime) = 0;
 	private:
 		IMesh* mMesh;
-		float mLifetime;
 		bool mIsEmitting;
 		D3DXVECTOR3 mPosition;
-		Timer mNextEmissionTimer;
-		std::vector<Particle*> mParticlePool;
-		std::vector<Particle*> mActiveParticles;
-
 	};
 }
