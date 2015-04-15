@@ -38,9 +38,9 @@ Arena::Arena(bool loadFromFile) :
 
 	// Build the scenery
 	IMesh* skyboxMesh = gEngine->LoadMesh("Skybox.x");
-	mSceneryObjects.push_back(new Scenery(skyboxMesh, D3DXVECTOR3(0, -1000.0f, 0), 1.0f));
+	mSceneryObjects.push_back(new Scenery(skyboxMesh, D3DXVECTOR3(0, -2400.0f, 0), 2.0f));
 
-	//IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
+	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
 	//D3DXVECTOR3 pos;
 	//for (int i = 0; i < 3; i++)
 	//{
@@ -49,8 +49,8 @@ Arena::Arena(bool loadFromFile) :
 	//		pos.x = -1170.0f + 1170.0f * j;
 	//		pos.y = -700.0f;
 	//		pos.z = 1170.0f * i;
-	//		Scenery* sceneryTemp = new Scenery(buildingsMesh, pos, 200.0f);
-	//		mSceneryObjects.push_back(sceneryTemp);
+			Scenery* sceneryTemp = new Scenery(buildingsMesh, D3DXVECTOR3(0,-1805,-50), 800.0f);
+			mSceneryObjects.push_back(sceneryTemp);
 	//	}
 	//}
 
@@ -96,10 +96,10 @@ Arena::Arena(bool loadFromFile) :
 	}
 
 	SpawnTunnel::SPAWN_TUNNEL_MESH = gEngine->LoadMesh("BombPortal.x");
-	for (int i = 0; i < MAX_ENEMIES_ON_SCREEN * 2; i++)
-	{
-		mSpawnTunnelsPool.push_back(new SpawnTunnel(OFF_SCREEN_POS));
-	}
+	//for (int i = 0; i < MAX_ENEMIES_ON_SCREEN * 2; i++)
+	//{
+	//	mSpawnTunnels.push_back(new SpawnTunnel(OFF_SCREEN_POS));
+	//}
 
 
 	// Load the bomb explosion model
@@ -159,17 +159,12 @@ Arena::~Arena()
 	}
 	mBombModel->GetMesh()->RemoveModel(mBombModel);
 
-	while (!mActiveSpawnTunnels.empty())
+	while (!mSpawnTunnels.empty())
 	{
-		delete mActiveSpawnTunnels.back();
-		mActiveSpawnTunnels.pop_back();
+		delete mSpawnTunnels.back();
+		mSpawnTunnels.pop_back();
 	}
 
-	while (!mSpawnTunnelsPool.empty())
-	{
-		delete mSpawnTunnelsPool.back();
-		mSpawnTunnelsPool.pop_back();
-	}
 
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
@@ -479,13 +474,12 @@ void Arena::Update(float frameTime)
 		SaveToFile();
 	}
 
-	for (uint32_t i = 0; i < mActiveSpawnTunnels.size(); i++)
+	for (uint32_t i = 0; i < mSpawnTunnels.size(); i++)
 	{
-		if (mActiveSpawnTunnels[i]->Update(frameTime))
+		if (mSpawnTunnels[i]->Update(frameTime))
 		{
-			mActiveSpawnTunnels[i]->SetPosition(OFF_SCREEN_POS);
-			mSpawnTunnelsPool.push_back(mActiveSpawnTunnels[i]);
-			mActiveSpawnTunnels.erase(mActiveSpawnTunnels.begin() + i);
+			delete mSpawnTunnels[i];
+			mSpawnTunnels.erase(mSpawnTunnels.begin() + i);
 			i--;
 		}
 	}
@@ -594,9 +588,8 @@ void Arena::SpawnEnemy()
 		enemy->SetPosition(newPosition);
 	} while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
 
-	mActiveSpawnTunnels.push_back(mSpawnTunnelsPool.back());
-	mSpawnTunnelsPool.pop_back();
-	mActiveSpawnTunnels.back()->SetPosition(enemy->GetWorldPos());
+	mSpawnTunnels.push_back(new SpawnTunnel(enemy->GetWorldPos()));
+	mSpawnTunnels.back()->SetPosition(enemy->GetWorldPos());
 
 	mEnemies.push_back(enemy);
 }
@@ -604,7 +597,7 @@ void Arena::SpawnEnemy()
 // Creates a pool of enemies (never creates more than double the max on screen)
 void Arena::CreateEnemies()
 {
-	for (uint32_t i = 0; i < MAX_ENEMIES_ON_SCREEN * 2; i++)
+	for (uint32_t i = 0; i < MAX_ENEMIES_ON_SCREEN + 3; i++)
 	{
 		mEnemyPool.push_back(new Enemy(ENEMY_MESH, OFF_SCREEN_POS, 15.0f, 10U));
 	}

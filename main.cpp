@@ -40,6 +40,12 @@ const float TITLE_CARD_HEIGHT = 256;
 ISprite* gLoadingScreen = nullptr;
 
 //------------------------
+// Pause Screen data
+//------------------------
+
+ISprite* gPauseBackground = nullptr;
+
+//------------------------
 // InGame HUD Data
 //------------------------
 
@@ -108,6 +114,8 @@ bool ProgramShutdown()
 	// Release the button over source
 	gAudioManager->ReleaseSource(Button::BUTTON_OVER_SOUND);
 	Button::BUTTON_OVER_SOUND = nullptr;
+	gAudioManager->ReleaseSource(Button::BUTTON_CLICK_SOUND);
+	Button::BUTTON_CLICK_SOUND = nullptr;
 
 	// Release any loaded audio
 	gAudioManager->ReleaseAudio("ButtonOver");
@@ -188,32 +196,32 @@ bool FrontEndUpdate(float frameTime, bool& quitProgram, bool& playNewGame, bool&
 
 	bool isMouseDown = gEngine->KeyHit(Mouse_LButton);
 
-	if (isMouseDown)
+	//Click new game
+	if (gNewGameButton->MouseIsOver() && isMouseDown)
 	{
-		//Click new game
-		if (gNewGameButton->MouseIsOver())
-		{
-			playNewGame = true;
-			return true;
-		}
-		//Click continue
-		else if (gContinueButton->MouseIsOver())
-		{
-			playSavedGame = true;
-	return true;
-}
-		//Click view high scores
-		else if (gViewHiScoreButton->MouseIsOver())
-		{
-			//TODO: Load high scores
-		}
-		//Click quit game
-		else if (gQuitGameButton->MouseIsOver())
-		{
-			quitProgram = true;
-	return true;
-}
-
+		Button::BUTTON_CLICK_SOUND->Play();
+		playNewGame = true;
+		return true;
+	}
+	//Click continue
+	else if (gContinueButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		playSavedGame = true;
+		return true;
+	}
+	//Click view high scores
+	else if (gViewHiScoreButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		//TODO: Load high scores
+	}
+	//Click quit game
+	else if (gQuitGameButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		quitProgram = true;
+		return true;
 	}
 
 	// Exit the program if the exit key/button is pressed
@@ -361,6 +369,41 @@ bool GameShutdown()
 	return true;
 }
 
+bool PauseMenuSetup()
+{
+	gPauseBackground = gEngine->CreateSprite("PauseBackground.tga", 0.0f, 0.0f, 0.1f);
+	gViewHiScoreButton = new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gQuitGameButton = new Button("Quit_Game_Button.png", D3DXVECTOR2((float)TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	return true;
+}
+
+void PauseMenuUpdate(bool &quitProgram)
+{
+	bool isMouseDown = gEngine->KeyHit(Mouse_LButton);
+
+	//Click view high scores
+	if (gViewHiScoreButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		//TODO: Load high scores
+	}
+	//Click quit game
+	else if (gQuitGameButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		quitProgram = true;
+	}
+}
+
+bool PauseMenuShutdown()
+{
+	SafeRelease(gViewHiScoreButton);
+	SafeRelease(gQuitGameButton);
+	gEngine->RemoveSprite(gPauseBackground);
+	gPauseBackground = nullptr;
+	return true;
+}
+
 //-------------------------------------------
 // Main
 //-------------------------------------------
@@ -442,13 +485,43 @@ int main(int argc, char* argv[])
 
 		// Load the arena
 		gArena = new Arena(loadSaveGame);
-
+		bool quitProgram = false;
 		// Continue in game loop until exited
-		while (!gEngine->KeyHit(Key_Escape))
+		while (!quitProgram)
 		{
 			// Update the game
 			float frameTime = gEngine->Timer();
 			GameUpdate(frameTime);
+
+			if (gEngine->KeyHit(Key_Escape) && !quitProgram)
+			{
+
+				if (!PauseMenuSetup())
+				{
+					ProgramShutdown();
+					return EXIT_FAILURE;
+				}
+				while (!gEngine->KeyHit(Key_Escape) && gEngine->IsRunning() && !quitProgram)
+				{
+					PauseMenuUpdate(quitProgram);
+					gEngine->DrawScene(gCamera);
+
+					if (!gEngine->IsRunning())
+					{
+						ProgramShutdown();
+						return EXIT_SUCCESS;
+					}
+				}
+
+				if (!PauseMenuShutdown())
+				{
+					ProgramShutdown();
+					return EXIT_FAILURE;
+				}
+
+				frameTime = gEngine->Timer();
+				frameTime = 0;
+			}
 
 			// Immediate program exit required (User closed window or pressed Alt-F4)
 			if (!gEngine->IsRunning())

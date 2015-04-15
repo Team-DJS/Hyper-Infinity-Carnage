@@ -99,8 +99,7 @@ namespace HIC
 		AudioSource* mBombSound;
 
 		// Enemy Spawn Models
-		std::vector<SpawnTunnel*> mSpawnTunnelsPool;
-		std::vector<SpawnTunnel*> mActiveSpawnTunnels;
+		std::vector<SpawnTunnel*> mSpawnTunnels;
 
 		// Vector of a pool of enemies
 		std::vector<Enemy*> mEnemyPool;
