@@ -77,7 +77,7 @@ Arena::Arena(bool loadFromFile) :
 	ExtraLife::MESH = gEngine->LoadMesh("LifePickup.x");
 	Bomb::MESH = gEngine->LoadMesh("BombPickup.x");
 
-	IMesh* particleMesh = gEngine->LoadMesh("FirePortal.x");
+	IMesh* particleMesh = gEngine->LoadMesh("quad_multiplicative.x");
 	const float arenaEdge = mCollisionBox.GetMaxOffset().x;
 	const float emissionRate = 0.0125f;
 	const float lifetime = 2.0f;
@@ -104,7 +104,7 @@ Arena::Arena(bool loadFromFile) :
 
 
 	// Load the bomb explosion model
-	IMesh* bombMesh = gEngine->LoadMesh("quad.x");
+	IMesh* bombMesh = gEngine->LoadMesh("quad_additive.x");
 	mBombModel = bombMesh->CreateModel(0.0f, 1.0f, 0.0f);
 	mBombModel->RotateLocalX(90.0f);
 	mBombSwitch = true;

@@ -19,7 +19,7 @@ Projectile::Projectile(const D3DXVECTOR3& position, const D3DXVECTOR2& velocity,
 	mVelocity(velocity),
 	mCollisionCylinder(D3DXVECTOR2(position.x, position.z), RADIUS)
 {
-	//mModel->SetSkin("001_tlxadd.tga");
+	mModel->SetSkin("001_tlxadd.tga");
 	mModel->RotateLocalX(90);
 }
 

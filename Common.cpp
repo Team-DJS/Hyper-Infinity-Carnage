@@ -56,7 +56,7 @@ D3DXVECTOR3 WorldPosFromPixel()
 	q.z *= q.w;
 
 	D3DXMATRIX worldMatrix;
-	gGameCamera->GetMatrix(worldMatrix);
+	gCamera->GetMatrix(worldMatrix);
 
 	D3DXMATRIX viewMatrix;
 
@@ -77,7 +77,7 @@ D3DXVECTOR3 WorldPosFromPixel()
 		
 	//Calculate the position on the plane that the ray was cast to
 	D3DXVECTOR3 rayPos;
-	D3DXPlaneIntersectLine(&rayPos, &floor, &D3DXVECTOR3(q), &D3DXVECTOR3(gGameCamera->GetX(), gGameCamera->GetY(), gGameCamera->GetZ()));
+	D3DXPlaneIntersectLine(&rayPos, &floor, &D3DXVECTOR3(q), &D3DXVECTOR3(gCamera->GetX(), gCamera->GetY(), gCamera->GetZ()));
 	
 
 	return rayPos; //Returns the position on the plane that the ray was cast to

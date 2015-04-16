@@ -25,7 +25,7 @@ extern I3DEngine* gEngine;
 
 const float gNearClip = 2.0f;
 const float gFarClip = 30000.0f;
-extern ICamera* gGameCamera;
+extern ICamera* gCamera;
 
 
 // Helper function to safely delete a pointer

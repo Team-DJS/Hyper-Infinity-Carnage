@@ -56,4 +56,5 @@ void Particle::Update(float frameTime)
 {
 	mLifetime -= frameTime;
 	mModel->Move(mVelocity.x * frameTime, mVelocity.y * frameTime, mVelocity.z * frameTime);
+	mModel->LookAt(gCamera);
 }
