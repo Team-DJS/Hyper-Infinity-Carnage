@@ -49,9 +49,15 @@ namespace HIC
 		virtual void OnPickup(Player* collectingPlayer) = 0;
 
 	private:
+		static const float ROTATION_SPEED;
+		static const float HOVER_SPEED;
+
+	private:
 		IModel* mModel;
 		Timer mTimer;
 		CollisionCylinder mCollisionObject;
+
+		float mHoverCounter;
 		//Particle emitter
 	};
 }

@@ -74,7 +74,7 @@ Arena::Arena(bool loadFromFile) :
 	// Initialise the Mesh for the pickups
 	WeaponUpgrade::mMesh = gEngine->LoadMesh("WeaponPickup.x");
 	HealthPack::MESH = gEngine->LoadMesh("HealthPickup.x");
-	ExtraLife::MESH = gEngine->LoadMesh("HealthPickup.x");
+	ExtraLife::MESH = gEngine->LoadMesh("LifePickup.x");
 	Bomb::MESH = gEngine->LoadMesh("BombPickup.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("FirePortal.x");
