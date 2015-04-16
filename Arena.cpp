@@ -72,10 +72,10 @@ Arena::Arena(bool loadFromFile) :
 
 
 	// Initialise the Mesh for the pickups
-	WeaponUpgrade::mMesh = gEngine->LoadMesh("CardboardBox.x");
-	HealthPack::MESH = gEngine->LoadMesh("CardboardBox.x");
-	ExtraLife::MESH = gEngine->LoadMesh("CardboardBox.x");
-	Bomb::MESH = gEngine->LoadMesh("CardBoardBox.x");
+	WeaponUpgrade::mMesh = gEngine->LoadMesh("WeaponPickup.x");
+	HealthPack::MESH = gEngine->LoadMesh("HealthPickup.x");
+	ExtraLife::MESH = gEngine->LoadMesh("HealthPickup.x");
+	Bomb::MESH = gEngine->LoadMesh("BombPickup.x");
 
 	IMesh* particleMesh = gEngine->LoadMesh("FirePortal.x");
 	const float arenaEdge = mCollisionBox.GetMaxOffset().x;

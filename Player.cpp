@@ -122,7 +122,7 @@ void Player::Update(float frameTime)
 	float dotProd = D3DXVec2Dot(&rightVect2, &rayVector2);
 
 	////Done all the maths to determine if left or right, now set the flags for turning later in the function
-	if (dotProd >= 0.1f || dotProd <= -0.1f)	//Fudge factor to prevent the player shaking left and right
+	if (dotProd >= 0.015f || dotProd <= -0.015f)	//Fudge factor to prevent the player shaking left and right
 	{
 		if (dotProd < 0)		// Mouse is to the right
 		{
