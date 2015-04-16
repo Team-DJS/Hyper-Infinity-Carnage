@@ -104,13 +104,9 @@ Arena::Arena(bool loadFromFile) :
 
 
 	// Load the bomb explosion model
-	IMesh* bombMesh = gEngine->LoadMesh("BombPortal.x");
-	mBombModel = bombMesh->CreateModel();
+	IMesh* bombMesh = gEngine->LoadMesh("quad.x");
+	mBombModel = bombMesh->CreateModel(0.0f, 1.0f, 0.0f);
 	mBombModel->RotateLocalX(90.0f);
-	mBombModel->SetSkin("PlasmaRing_0039_tlxadd.tga");
-	//mBombModel->ScaleX(19.0f);
-	//mBombModel->ScaleY(24.0f);
-	//mBombPhase = 0;
 	mBombSwitch = true;
 
 #ifdef _DEBUG

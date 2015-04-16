@@ -33,6 +33,15 @@ CollisionCylinder::~CollisionCylinder()
 void CollisionCylinder::SetRadius(float radius)
 {
 	mRadius = radius;
+
+#ifdef _DEBUG
+	if (mMarkersExist)
+	{
+		this->ToggleMarkers();
+		this->ToggleMarkers();
+		//Toggle the markers on and off so they appear at the correct scale
+	}
+#endif
 }
 
 //-----------------------------------
