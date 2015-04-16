@@ -50,13 +50,14 @@ namespace HIC
 
 	private:
 		static const float ROTATION_SPEED;
+		static const float HOVER_RANGE;
 		static const float HOVER_SPEED;
 
 	private:
 		IModel* mModel;
 		Timer mTimer;
 		CollisionCylinder mCollisionObject;
-
+		float mHeight;
 		float mHoverCounter;
 		//Particle emitter
 	};

@@ -69,7 +69,7 @@ bool ProgramSetup()
 	// Initialise the TL-Engine
 	gEngine = New3DEngine(kTLX);
 	gEngine->StartWindowed();
-	//gEngine->StartFullscreen();
+	//gEngine->StartFullscreen(1920, 1080);
 	gEngine->SetWindowCaption("Hyper Infinity Carnage");
 
 	// Add default folder for meshes and other media

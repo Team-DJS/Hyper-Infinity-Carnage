@@ -604,7 +604,7 @@ void Arena::CreateEnemies()
 void Arena::CreateNewPickup()
 {
 	int pickupType = static_cast<int>(Random(0.0f, 4.0f));
-	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 7.0f,
+	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 10.0f,
 									   Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
 	float lifetime = Random(5.0f, 9.2f);
 
