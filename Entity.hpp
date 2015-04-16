@@ -65,7 +65,7 @@ namespace HIC
 		IModel* GetModel();
 
 		// Returns the CollisionCylinder of the entity
-		CollisionCylinder& GetCollisionCylinder();
+		CollisionCylinder* GetCollisionCylinder();
 
 		//--------------
 		// Other

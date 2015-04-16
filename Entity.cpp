@@ -152,9 +152,9 @@ IModel* Entity::GetModel()
 	return mModel;
 }
 
-CollisionCylinder& Entity::GetCollisionCylinder()
+CollisionCylinder* Entity::GetCollisionCylinder()
 {
-	return mCollisionCylinder;
+	return &mCollisionCylinder;
 }
 
 //-----------------------------------

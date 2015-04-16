@@ -240,10 +240,10 @@ void Arena::Update(float frameTime)
 #ifdef _DEBUG
 	if (gEngine->KeyHit(Key_M))
 	{
-		mPlayer.GetCollisionCylinder().ToggleMarkers();
+		mPlayer.GetCollisionCylinder()->ToggleMarkers();
 		for (size_t i = 0; i < mEnemies.size(); i++)
 		{
-			mEnemies[i]->GetCollisionCylinder().ToggleMarkers();
+			mEnemies[i]->GetCollisionCylinder()->ToggleMarkers();
 		}
 		mCollisionBox.ToggleMarkers();
 	}
@@ -299,7 +299,7 @@ void Arena::Update(float frameTime)
 	mPlayer.Update(frameTime);
 
 	// check if player is colliding with arena
-	if (!CollisionDetect(&mPlayer.GetCollisionCylinder(), &mCollisionBox))
+	if (!CollisionDetect(mPlayer.GetCollisionCylinder(), &mCollisionBox))
 	{
 		mPlayer.SetPosition(enitityPos);
 	}
@@ -312,7 +312,7 @@ void Arena::Update(float frameTime)
 		enitityPos = enemy->GetWorldPos();
 		enemy->Update(frameTime);
 
-		if (!CollisionDetect(&enemy->GetCollisionCylinder(), &mCollisionBox))
+		if (!CollisionDetect(enemy->GetCollisionCylinder(), &mCollisionBox))
 		{
 			enemy->SetPosition(enitityPos);
 		}
@@ -357,7 +357,7 @@ void Arena::Update(float frameTime)
 	{
 		hitEnemy = false;
 		// get a temp cylinder so you dont need to get it again for each collision
-		CollisionCylinder currentEnemy = mEnemies[i]->GetCollisionCylinder();
+		CollisionCylinder* currentEnemy = mEnemies[i]->GetCollisionCylinder();
 
 		// Check whether colliding with a projectile
 		for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
@@ -371,7 +371,7 @@ void Arena::Update(float frameTime)
 				mPlayer.GetWeapon()->RemoveProjectile(j);
 				j--;
 			}
-			else if (CollisionDetect(&currentEnemy, &currentProjectile)) // Else check if colliding with enemy
+			else if (CollisionDetect(currentEnemy, &currentProjectile)) // Else check if colliding with enemy
 			{
 				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
 				if (mEnemies[i]->TakeHealth(damage))
@@ -386,7 +386,7 @@ void Arena::Update(float frameTime)
 		}
 
 		// check if player is colliding with enemies
-		if (CollisionDetect(&currentEnemy, &mPlayer.GetCollisionCylinder()))
+		if (CollisionDetect(currentEnemy, mPlayer.GetCollisionCylinder()))
 		{
 			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
 			hitEnemy = true;
@@ -394,7 +394,7 @@ void Arena::Update(float frameTime)
 
 		if (mBombSwitch)
 		{
-			if (CollisionDetect(&mBombCollisionCylinder, &currentEnemy))
+			if (CollisionDetect(&mBombCollisionCylinder, currentEnemy))
 			{
 				hitEnemy = true;
 				damage = 100;
@@ -432,7 +432,7 @@ void Arena::Update(float frameTime)
 	{
 		bool deletePickup = false;
 		mPickups[i]->Update(frameTime);
-		if (CollisionDetect(&mPickups[i]->GetCollisionCylinder(), &mPlayer.GetCollisionCylinder()))
+		if (CollisionDetect(mPickups[i]->GetCollisionCylinder(), mPlayer.GetCollisionCylinder()))
 		{
 			mPickups[i]->OnPickup(&mPlayer);
 			deletePickup = true;
@@ -587,7 +587,7 @@ void Arena::SpawnEnemy()
 		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
 
 		enemy->SetPosition(newPosition);
-	} while (CollisionDetect(&enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder().GetPosition(), 150.0f)));
+	} while (CollisionDetect(enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder()->GetPosition(), 150.0f)));
 
 	mSpawnTunnels.push_back(new SpawnTunnel(enemy->GetWorldPos()));
 	mSpawnTunnels.back()->SetPosition(enemy->GetWorldPos());
@@ -616,22 +616,22 @@ void Arena::CreateNewPickup()
 	{
 		case 0:
 			{
-				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 3.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
+				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
 				break;
 			}
 		case 1:
 			{
-				mPickups.push_back(new HealthPack(position, 3.0f, lifetime, 50U));
+				mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
 				break;
 			}
 		case 2:
 			{
-				mPickups.push_back(new ExtraLife(position, 3.0f, lifetime));
+				mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
 				break;
 			}
 		case 3:
 			{
-				mPickups.push_back(new Bomb(position, 3.0f, lifetime));
+				mPickups.push_back(new Bomb(position, 15.0f, lifetime));
 				break;
 			}
 		default:

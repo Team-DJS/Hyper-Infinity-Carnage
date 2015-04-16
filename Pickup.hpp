@@ -36,7 +36,7 @@ namespace HIC
 		bool IsLifetimeComplete();
 
 		// Returns the collisionObject for the pickup
-		CollisionCylinder& GetCollisionCylinder();
+		CollisionCylinder* GetCollisionCylinder();
 		
 		//--------------
 		// Other

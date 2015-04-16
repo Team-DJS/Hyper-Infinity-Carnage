@@ -31,9 +31,9 @@ bool Pickup::IsLifetimeComplete()
 	return mTimer.IsComplete();
 }
 
-CollisionCylinder& Pickup::GetCollisionCylinder()
+CollisionCylinder* Pickup::GetCollisionCylinder()
 {
-	return mCollisionObject;
+	return &mCollisionObject;
 }
 
 // Called to update the pickup each frame

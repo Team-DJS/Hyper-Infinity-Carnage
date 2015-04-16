@@ -97,16 +97,7 @@ void Player::Respawn()
 // Called to update the entity
 void Player::Update(float frameTime)
 {
-	//***** Face the player in the direction of the mouse *****// - incomplete
-
-	////Convert the mouse pixel location to a -1 to 1 coordinate system (0 in the middle)
-	//D3DXVECTOR2 mouseVector;
-	//mouseVector.x = gEngine->GetMouseX() - (gEngine->GetWidth() / 2.0f) - 1.0f;
-	//mouseVector.y = 1.0f - (gEngine->GetMouseY() - gEngine->GetHeight() / 2.0f);
-
-	//////Normalise the mouse vector
-	//D3DXVec2Normalize(&mouseVector, &mouseVector);
-
+	//***** Face the player in the direction of the mouse *****//
 	D3DXVECTOR3 rightVect3 = GetRightVector();	//Create and obtain the right vector of the ship
 	D3DXVECTOR2 rightVect2;
 	D3DXVec2Normalize(&rightVect2, &D3DXVECTOR2(rightVect3.x, rightVect3.z));
@@ -197,7 +188,7 @@ void Player::Update(float frameTime)
 	//****************************** MOVEMENT ******************************// //DO NOT MESS WITH THE MOVEMENT CODE OR VARIABLES IF YOU NEED SOMETHING - ASK DANIEL
 
 	//Update collision object to meet new position
-	GetCollisionCylinder().SetPosition(D3DXVECTOR2(GetWorldPos().x, GetWorldPos().z));
+	GetCollisionCylinder()->SetPosition(D3DXVECTOR2(GetWorldPos().x, GetWorldPos().z));
 }
 
 //-----------------------------------

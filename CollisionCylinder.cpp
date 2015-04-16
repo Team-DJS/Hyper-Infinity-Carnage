@@ -18,7 +18,6 @@ CollisionCylinder::CollisionCylinder(const D3DXVECTOR2& centre, float radius) :
 	CollisionObject(centre),
 	mRadius(radius)
 {
-
 }
 
 // Destructor for CollisionCylinder
@@ -75,11 +74,11 @@ void CollisionCylinder::ToggleMarkers()
 			float degreeOfMarker = 0.0f;
 			for (int i = 0; i < NO_COLLISION_MARKERS; i++)
 			{
-				mCollisionMarkers.push_back(MARKER_MESH->CreateModel(cosf((float)D3DXToRadian(degreeOfMarker)) * mRadius + GetPosition().x,
-					mHeight,
-					sinf((float)(D3DXToRadian(degreeOfMarker)) * mRadius + GetPosition().y)));	//Create marker
+				mCollisionMarkers.push_back(MARKER_MESH->CreateModel((sinf(D3DXToRadian(degreeOfMarker)) * mRadius) + GetPosition().x,
+				mHeight,
+				cosf(D3DXToRadian(degreeOfMarker)) * mRadius + GetPosition().y)); //Create marker
 
-				degreeOfMarker += (360.0f / NO_COLLISION_MARKERS);	//Increase angle for new marker placement
+				degreeOfMarker += (360.0f / NO_COLLISION_MARKERS);	//Increase angle for new marker placement 
 				mCollisionMarkers.back()->Scale(MARKER_SCALE);		//Scale the markers to the correct scale so they are visible
 			}
 		}

@@ -82,5 +82,5 @@ void Enemy::Update(float frameTime)
 	MoveZ(GetFacingVector().z * 50.0f * frameTime);
 
 	//Set new collision position
-	GetCollisionCylinder().SetPosition(D3DXVECTOR2(GetWorldPos().x, GetWorldPos().z));
+	GetCollisionCylinder()->SetPosition(D3DXVECTOR2(GetWorldPos().x, GetWorldPos().z));
 }
