@@ -55,8 +55,9 @@ ISprite* gHUDLives = nullptr;
 ISprite* gHUDStage = nullptr;
 ISprite* gHUDBombs = nullptr;
 
-const float HUD_WIDTH = 350U;
-const float HUD_HEIGHT = 94U;
+const float HUD_WIDTH = 254U;
+const float HUD_SCORE_WIDTH = 300U;
+const float HUD_HEIGHT = 56U;
 
 //-------------------------------------------
 // Program
@@ -308,7 +309,7 @@ bool GameSetup()
 	Projectile::MESH = gEngine->LoadMesh("quad_additive.x");
 
 	// HUD Setup
-	gHUDScore = gEngine->CreateSprite("HUD_Score.png", gEngine->GetWidth() / 2 - (HUD_WIDTH / 2), 0.0f, 0.0f);
+	gHUDScore = gEngine->CreateSprite("HUD_Score.png", gEngine->GetWidth() / 2 - (HUD_SCORE_WIDTH / 2), 0.0f, 0.0f);
 	gHUDHealth = gEngine->CreateSprite("HUD_Health.png", 0.0f, 0.0f, 0.0f);
 	gHUDStage = gEngine->CreateSprite("HUD_Stage.png", gEngine->GetWidth() - HUD_WIDTH, 0.0f, 0.0f);
 	gHUDLives = gEngine->CreateSprite("HUD_Lives.png", 0.0f, gEngine->GetHeight() - HUD_HEIGHT, 0.0f);

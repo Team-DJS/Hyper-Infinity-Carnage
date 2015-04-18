@@ -8,6 +8,7 @@ using namespace HIC;
 IMesh* Arena::ARENA_MESH = nullptr;
 IMesh* Arena::ENEMY_MESH = nullptr;
 
+IFont* HUDFont = nullptr;
 #ifdef _DEBUG
 tle::IFont* Arena::DebugHUD = nullptr;
 #endif
@@ -109,6 +110,9 @@ Arena::Arena(bool loadFromFile) :
 	mBombModel->RotateLocalX(90.0f);
 	mBombSwitch = true;
 
+
+	// Load the HUD font
+	HUDFont = gEngine->LoadFont("Berlin Sans FB Demi", 44);
 #ifdef _DEBUG
 	DebugHUD = gEngine->LoadFont("Lucida Console", 12);
 #endif
@@ -233,6 +237,21 @@ void Arena::Update(float frameTime)
 		mBombSound->Play();
 	}
 
+	// InGame HUD update
+	int screenWidth = gEngine->GetWidth();
+	int screenHeight = gEngine->GetHeight();
+	string hudText = to_string(mCurrentScore);  // Score ( Top Middle )
+	HUDFont->Draw(hudText, screenWidth / 2 + 138, 6, kGreen, kRight);
+	hudText = to_string(mPlayer.GetHealth());	// Health ( Top Left )
+	HUDFont->Draw(hudText, 245, 6, kGreen, kRight);
+	hudText = to_string(mCurrentStage);			// Stage ( Top Right )
+	HUDFont->Draw(hudText, screenWidth - 20, 6, kGreen, kRight);
+	hudText = to_string(mPlayer.GetLives());	// Lives ( Bottom Left )
+	HUDFont->Draw(hudText, 235, screenHeight - 50, kGreen, kRight);
+	hudText = to_string(mPlayer.GetBombs());	// Bombs ( Bottom Right )
+	HUDFont->Draw(hudText, screenWidth - 20, screenHeight - 50, kGreen, kRight);
+
+
 #ifdef _DEBUG
 	if (gEngine->KeyHit(Key_M))
 	{
@@ -267,7 +286,7 @@ void Arena::Update(float frameTime)
 	}
 
 	// Debug HUD
-	string hudText = "Stage: " + to_string(mCurrentStage);
+	hudText = "Stage: " + to_string(mCurrentStage);
 	DebugHUD->Draw(hudText, 10, 10, kRed);
 	hudText = "Lives: " + to_string(mPlayer.GetLives());
 	DebugHUD->Draw(hudText, 10, 22, kRed);
@@ -286,8 +305,6 @@ void Arena::Update(float frameTime)
 	gEngine->SetWindowCaption(to_string(1 / frameTime));
 
 #endif
-
-	// Actual HUD update
 
 
 	D3DXVECTOR3 enitityPos = mPlayer.GetWorldPos();
