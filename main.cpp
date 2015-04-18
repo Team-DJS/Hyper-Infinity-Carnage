@@ -59,6 +59,21 @@ const float HUD_WIDTH = 254U;
 const float HUD_SCORE_WIDTH = 300U;
 const float HUD_HEIGHT = 56U;
 
+//------------------------
+// InGame HUD Data
+//------------------------
+
+bool gShowHighScores = false;
+
+ISprite* gHighScoreCard = nullptr;
+IFont* gHighScoreFont = nullptr;
+
+const float HIGH_SCORE_WIDTH = 900;
+const float HIGH_SCORE_HEIGHT = 600;
+
+string gHighScoreNames[10];
+string gHighScoreScores[10];
+
 //-------------------------------------------
 // Program
 //-------------------------------------------
@@ -149,6 +164,57 @@ bool ProgramShutdown()
 }
 
 //-------------------------------------------
+// High Score
+//-------------------------------------------
+
+// Set up the high score list
+bool HighScoreSetup()
+{
+	gHighScoreCard = gEngine->CreateSprite("High_Score_Card.tga", 200, 60);
+	gHighScoreFont = gEngine->LoadFont("Berlin Sans FB Demi", 48);
+
+	std::ifstream file("High_Scores.hic");
+
+	if (!file.is_open())
+	{
+		return false;
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		file >> gHighScoreNames[i];
+		file >> gHighScoreScores[i];
+	}
+
+	file.close();
+
+	return true;
+}
+
+// update the high score list
+bool HighScoreUpdate()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		gHighScoreFont->Draw(gHighScoreNames[i], gHighScoreCard->GetX() + 20, gHighScoreCard->GetX() + i * 30, kBlue);
+		gHighScoreFont->Draw(gHighScoreScores[i], gHighScoreCard->GetX() + 120, gHighScoreCard->GetX() + i * 30, kBlue);
+	}
+
+	return true;
+}
+
+// Shutdown the high score list
+bool HighScoreShutdown()
+{
+	gEngine->RemoveSprite(gHighScoreCard);
+	gHighScoreCard = nullptr;
+
+	gEngine->RemoveFont(gHighScoreFont);
+	gHighScoreFont = nullptr;
+	return true;
+}
+
+//-------------------------------------------
 // Front End
 //-------------------------------------------
 
@@ -183,6 +249,16 @@ bool FrontEndSetup()
 bool FrontEndUpdate(float frameTime, bool& quitProgram, bool& playNewGame, bool& playSavedGame)
 {
 	gFrontEndPlayer->RotateLocalY(30 * frameTime);
+
+	if (gShowHighScores)
+	{
+		if (!HighScoreUpdate())
+		{
+			ProgramShutdown();
+			return EXIT_FAILURE;
+		}
+	}
+
 	// Draw the scene
 	gEngine->DrawScene(gCamera);
 
@@ -220,7 +296,24 @@ bool FrontEndUpdate(float frameTime, bool& quitProgram, bool& playNewGame, bool&
 	else if (gViewHiScoreButton->MouseIsOver() && isMouseDown)
 	{
 		Button::BUTTON_CLICK_SOUND->Play();
-		//TODO: Load high scores
+		if (gShowHighScores)
+		{
+			if (!HighScoreShutdown())
+			{
+				ProgramShutdown();
+				return EXIT_FAILURE;
+			}
+			gShowHighScores = false;
+		}
+		else
+		{
+			if (!HighScoreSetup())
+			{
+				ProgramShutdown();
+				return EXIT_FAILURE;
+			}
+			gShowHighScores = true;
+		}
 	}
 	//Click quit game
 	else if (gQuitGameButton->MouseIsOver() && isMouseDown)
@@ -259,6 +352,15 @@ bool FrontEndShutdown()
 
 	gFrontEndPlayer->GetMesh()->RemoveModel(gFrontEndPlayer);
 	gFrontEndPlayer = nullptr;
+
+	if (gShowHighScores)
+	{
+		if (!HighScoreShutdown())
+		{
+			ProgramShutdown();
+			return EXIT_FAILURE;
+		}
+	}
 
 	return true;
 }
@@ -391,7 +493,7 @@ bool PauseMenuSetup()
 	return true;
 }
 
-void PauseMenuUpdate(bool &quitGame)
+bool PauseMenuUpdate(bool &quitGame)
 {
 	bool isMouseDown = gEngine->KeyHit(Mouse_LButton);
 
@@ -399,13 +501,40 @@ void PauseMenuUpdate(bool &quitGame)
 	if (gViewHiScoreButton->MouseIsOver() && isMouseDown)
 	{
 		Button::BUTTON_CLICK_SOUND->Play();
-		//TODO: Load high scores
+
+		if (gShowHighScores)
+		{
+			if (!HighScoreShutdown())
+			{
+				ProgramShutdown();
+				return EXIT_FAILURE;
+			}
+			gShowHighScores = false;
+		}
+		else
+		{
+			if (!HighScoreSetup())
+			{
+				ProgramShutdown();
+				return EXIT_FAILURE;
+			}
+			gShowHighScores = true;
+		}
 	}
 	//Click quit game
 	else if (gQuitGameButton->MouseIsOver() && isMouseDown)
 	{
 		Button::BUTTON_CLICK_SOUND->Play();
 		quitGame = true;
+	}
+
+	if (gShowHighScores)
+	{
+		if (!HighScoreUpdate())
+		{
+			ProgramShutdown();
+			return EXIT_FAILURE;
+		}
 	}
 }
 
@@ -415,6 +544,17 @@ bool PauseMenuShutdown()
 	SafeRelease(gQuitGameButton);
 	gEngine->RemoveSprite(gPauseBackground);
 	gPauseBackground = nullptr;
+
+	if (gShowHighScores)
+	{
+		if (!HighScoreShutdown())
+		{
+			ProgramShutdown();
+			return EXIT_FAILURE;
+		}
+		gShowHighScores = false;
+	}
+
 	return true;
 }
 
@@ -527,7 +667,7 @@ int main(int argc, char* argv[])
 					if (!gEngine->IsRunning())
 					{
 						ProgramShutdown();
-						return EXIT_SUCCESS;
+						return EXIT_FAILURE;
 					}
 				}
 
