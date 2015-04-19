@@ -14,6 +14,7 @@ tle::IFont* Arena::DebugHUD = nullptr;
 #endif
 
 const std::string Arena::SAVE_FILENAME = "Save.hic";
+const std::string Arena::HIGH_SCORES_FILENAME = "High_Scores.hic";
 
 const uint32_t MAX_ENEMIES_ON_SCREEN = 30U;
 const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -800);
@@ -23,7 +24,7 @@ const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -800);
 //-----------------------------------
 
 // Default constructor for Arena
-Arena::Arena(bool loadFromFile) :
+Arena::Arena(bool loadFromFile, string name) :
 	mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
 	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
 	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
@@ -33,7 +34,8 @@ Arena::Arena(bool loadFromFile) :
 	mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
 	mCollisionSwitch(false),
 	mBombSwitch(false),
-	mPlayerStatus(true)
+	mPlayerStatus(true),
+	mPlayerName(name)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
@@ -486,6 +488,7 @@ void Arena::Update(float frameTime)
 		mScore = mCurrentScore;
 		// Save the game after loading the next state
 		SaveToFile();
+		SaveHighScores();
 	}
 
 	for (uint32_t i = 0; i < mSpawnTunnels.size(); i++)
@@ -529,11 +532,80 @@ bool Arena::LoadFromFile()
 	// Read the game data
 	file >> mCurrentStage;
 	file >> mScore;
+	file >> mPlayerName;
 
 	// Read the player data
 	file >> mPlayer;
 
 	return true;
+}
+
+void Arena::SaveHighScores()
+{
+
+	// used for sorting the highscore list
+	struct HighScore
+	{
+		string name;
+		string score;
+	};
+
+	std::fstream highScoreFile(HIGH_SCORES_FILENAME);	
+
+	if (!highScoreFile.is_open())
+	{
+		throw std::runtime_error("Failed to open file: " + HIGH_SCORES_FILENAME);
+	}
+
+	std::list<HighScore> HighScores;
+	bool isNewName = true;
+	for (int i = 0; i < 10; i++)
+	{
+		HighScores.push_back(HighScore());
+		string name;
+		highScoreFile >> name;
+		HighScores.back().name = name;
+		if (name != mPlayerName)
+		{
+			highScoreFile >> HighScores.back().score;
+		}
+		else
+		{
+			HighScores.back().name = name;
+			string score;
+			highScoreFile >> score;
+			if (std::stoi(score) > mCurrentScore)
+			{
+				HighScores.back().score = score;
+			}
+			else
+			{
+				HighScores.back().score = to_string(mCurrentScore);
+			}
+			isNewName = false;
+		}
+	}
+
+	if (isNewName)
+	{
+		HighScores.push_back(HighScore());
+		HighScores.back().name = mPlayerName;
+		HighScores.back().score = to_string(mCurrentScore);
+	}
+	typedef std::pair<int, int> ipair;
+	HighScores.sort([](HighScore const& first, HighScore const& second){return (std::stoi(first.score) > std::stoi(second.score)); });
+
+	std::ofstream file(HIGH_SCORES_FILENAME);
+
+	if (!file.is_open())
+	{
+		throw std::runtime_error("Failed to open file: " + HIGH_SCORES_FILENAME);
+	}
+
+	for (auto it : HighScores)
+	{
+		file << it.name << " " << it.score << std::endl;
+	}
 }
 
 // Saves the game to be loaded at a later date
@@ -551,6 +623,7 @@ void Arena::SaveToFile()
 	// Save the game data
 	file << mCurrentStage << std::endl;
 	file << mScore << std::endl;
+	file << mPlayerName << std::endl;
 
 	// Save the player data
 	file << mPlayer << std::endl;

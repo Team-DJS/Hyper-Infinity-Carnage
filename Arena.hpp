@@ -23,7 +23,7 @@ namespace HIC
 		//-----------------------------
 
 		// Default constructor for Arena
-		Arena(bool loadFromFile);
+		Arena(bool loadFromFile, string name = "");
 
 		// Destructor for Arena
 		~Arena();
@@ -56,6 +56,9 @@ namespace HIC
 		// Returns true if the load file exist, false otherwise
 		bool LoadFromFile();
 
+		// Saves the high score list
+		void SaveHighScores();
+
 		// Saves the game to be loaded at a later date
 		void SaveToFile();
 
@@ -84,10 +87,12 @@ namespace HIC
 #endif
 	private:
 		static const std::string SAVE_FILENAME;
+		static const std::string HIGH_SCORES_FILENAME;
 	private:
 		// Pointer to the game engine
 
 		// The player character
+		string mPlayerName;
 		Player mPlayer;
 		bool mPlayerStatus;
 

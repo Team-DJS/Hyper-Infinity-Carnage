@@ -16,6 +16,7 @@ ICamera* gDebugCamera = nullptr;
 
 // The game arena
 Arena* gArena = nullptr;
+string gPlayerName;
 
 //------------------------
 // Front End Data
@@ -38,6 +39,8 @@ const float TITLE_CARD_HEIGHT = 256;
 //------------------------
 
 ISprite* gLoadingScreen = nullptr;
+ISprite* gNameInputScreen = nullptr;
+IFont* gLoadingScreenFont = nullptr;
 
 //------------------------
 // Pause Screen data
@@ -170,7 +173,7 @@ bool ProgramShutdown()
 // Set up the high score list
 bool HighScoreSetup()
 {
-	gHighScoreCard = gEngine->CreateSprite("High_Score_Card.tga", 200, 60);
+	gHighScoreCard = gEngine->CreateSprite("High_Score_Card.tga", 400, 60, 0.0f);
 	gHighScoreFont = gEngine->LoadFont("Berlin Sans FB Demi", 48);
 
 	std::ifstream file("High_Scores.hic");
@@ -186,18 +189,17 @@ bool HighScoreSetup()
 		file >> gHighScoreScores[i];
 	}
 
-	file.close();
-
 	return true;
 }
 
 // update the high score list
 bool HighScoreUpdate()
 {
+	int height = gHighScoreCard->GetX() - (HIGH_SCORE_HEIGHT / 2) + 60;
 	for (int i = 0; i < 10; i++)
 	{
-		gHighScoreFont->Draw(gHighScoreNames[i], gHighScoreCard->GetX() + 20, gHighScoreCard->GetX() + i * 30, kBlue);
-		gHighScoreFont->Draw(gHighScoreScores[i], gHighScoreCard->GetX() + 120, gHighScoreCard->GetX() + i * 30, kBlue);
+		gHighScoreFont->Draw(gHighScoreNames[i], gHighScoreCard->GetX() + 30, height + i * 35, kBlue);
+		gHighScoreFont->Draw(gHighScoreScores[i], gHighScoreCard->GetX() + 500, height + i * 35, kBlue);
 	}
 
 	return true;
@@ -228,7 +230,7 @@ bool FrontEndSetup()
 	// TODO: Check if save file exists
 
 	//Create menu buttons
-	gTitleCard = gEngine->CreateSprite("Title_Card.png", halfScreenWidth - (TITLE_CARD_WIDTH / 2), 20.0f, 0.0f);
+	gTitleCard = gEngine->CreateSprite("Title_Card.png", halfScreenWidth - (TITLE_CARD_WIDTH / 2), 20.0f, 0.1f);
 
 	gNewGameButton = new Button("New_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 350.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	gContinueButton = new Button("Continue_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
@@ -369,23 +371,175 @@ bool FrontEndShutdown()
 // Loading Screen
 //-------------------------------------------
 
-bool LoadingSreenSetup(bool loadSaveGame)
+// Gets the key the player is pressing and returns char of that key
+char GetNameInput()
 {
-	if (!loadSaveGame)
+	if (gEngine->IsRunning())
 	{
-		// do insert name stuff
+		if (gEngine->KeyHit(Key_A))
+		{
+			return 'A';
+		}
+		if (gEngine->KeyHit(Key_B))
+		{
+			return 'B';
+		}
+		if (gEngine->KeyHit(Key_C))
+		{
+			return 'C';
+		}
+		if (gEngine->KeyHit(Key_D))
+		{
+			return 'D';
+		}
+		if (gEngine->KeyHit(Key_E))
+		{
+			return 'E';
+		}
+		if (gEngine->KeyHit(Key_F))
+		{
+			return 'F';
+		}
+		if (gEngine->KeyHit(Key_G))
+		{
+			return 'G';
+		}
+		if (gEngine->KeyHit(Key_H))
+		{
+			return 'H';
+		}
+		if (gEngine->KeyHit(Key_I))
+		{
+			return 'I';
+		}
+		if (gEngine->KeyHit(Key_J))
+		{
+			return 'J';
+		}
+		if (gEngine->KeyHit(Key_K))
+		{
+			return 'L';
+		}
+		if (gEngine->KeyHit(Key_L))
+		{
+			return 'L';
+		}
+		if (gEngine->KeyHit(Key_M))
+		{
+			return 'M';
+		}
+		if (gEngine->KeyHit(Key_N))
+		{
+			return 'N';
+		}
+		if (gEngine->KeyHit(Key_O))
+		{
+			return 'O';
+		}
+		if (gEngine->KeyHit(Key_P))
+		{
+			return 'P';
+		}
+		if (gEngine->KeyHit(Key_Q))
+		{
+			return 'Q';
+		}
+		if (gEngine->KeyHit(Key_R))
+		{
+			return 'R';
+		}
+		if (gEngine->KeyHit(Key_S))
+		{
+			return 'S';
+		}
+		if (gEngine->KeyHit(Key_T))
+		{
+			return 'T';
+		}
+		if (gEngine->KeyHit(Key_U))
+		{
+			return 'U';
+		}
+		if (gEngine->KeyHit(Key_V))
+		{
+			return 'V';
+		}
+		if (gEngine->KeyHit(Key_W))
+		{
+			return 'W';
+		}
+		if (gEngine->KeyHit(Key_X))
+		{
+			return 'X';
+		}
+		if (gEngine->KeyHit(Key_Y))
+		{
+			return 'Y';
+		}
+		if (gEngine->KeyHit(Key_Z))
+		{
+			return 'Z';
+		}
+
+		if (gEngine->KeyHit(Key_Back))
+		{
+			return '<';
+		}
+
+		if (gEngine->KeyHit(Key_Return))
+		{
+			return '%';
+		}
 	}
-	
+	return '$';
+}
+
+bool LoadingSreenSetup(const bool nameEntered)
+{
+
+	if (!nameEntered)
+	{
+		gNameInputScreen = gEngine->CreateSprite("Enter_Name_Card.tga", 200, 60);
+		gLoadingScreenFont = gEngine->LoadFont("Berlin Sans FB Demi", 48);
+	}
 	// display loading screen
 	gLoadingScreen = gEngine->CreateSprite("Loading_Screen_Temp.png", 0.0f, 0.0f, 0.0f);
-
-
+	
+	
 	return true;
 }
 
-bool LoadingScreenUpdate()
+bool LoadingScreenUpdate(bool nameEntered)
 {
+	if (!nameEntered)
+	{
+		// do insert name stuff
+		char input = GetNameInput();
+
+		if (input != '$' && input != '<' && input != '%' && gPlayerName.length() < 10)
+		{
+			gPlayerName += input;
+		}
+
+		if (input == '<' && gPlayerName.length() > 0)
+		{
+			gPlayerName.pop_back();
+		}
+
+		if (input == '%')
+		{
+			nameEntered = true;
+			return true;
+		}
+		gLoadingScreenFont->Draw(gPlayerName, gNameInputScreen->GetX() + 50, gNameInputScreen->GetY() + 200, kBlue);
+		
+		gEngine->DrawScene();
+
+		return false;
+	}
+
 	gEngine->DrawScene();
+	
 	return true;
 }
 
@@ -393,6 +547,17 @@ bool LoadingScreenShutdown()
 {
 	gEngine->RemoveSprite(gLoadingScreen);
 	gLoadingScreen = nullptr;
+
+	if (gNameInputScreen)
+	{
+		gEngine->RemoveSprite(gNameInputScreen);
+		gNameInputScreen = nullptr;
+	}
+	if (gLoadingScreenFont)
+	{
+		gEngine->RemoveFont(gLoadingScreenFont);
+		gLoadingScreenFont = nullptr;
+	}
 	return true;
 }
 
@@ -488,8 +653,8 @@ bool GameShutdown()
 bool PauseMenuSetup()
 {
 	gPauseBackground = gEngine->CreateSprite("PauseBackground.tga", 0.0f, 0.0f, 0.1f);
-	gViewHiScoreButton = new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	gQuitGameButton = new Button("Quit_Game_Button.png", D3DXVECTOR2((float)TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gViewHiScoreButton = new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)gEngine->GetWidth() / 2 - TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	gQuitGameButton = new Button("Quit_Game_Button.png", D3DXVECTOR2((float)gEngine->GetWidth() / 2 - TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	return true;
 }
 
@@ -622,9 +787,24 @@ int main(int argc, char* argv[])
 
 		// Front End Exit
 		///////////////////////////////////
+		
+		gPlayerName = "";
+		bool nameEntered;
+		if (!loadSaveGame)
+		{
+			nameEntered = false;
+		}
+		else
+		{
+			nameEntered = true;
+		}
 
-		LoadingSreenSetup(loadSaveGame);
-		LoadingScreenUpdate();
+		LoadingSreenSetup(nameEntered);
+
+		while (!LoadingScreenUpdate(nameEntered))
+		{
+			Sleep(2);
+		}
 		LoadingScreenShutdown();
 
 		///////////////////////////////////
@@ -638,7 +818,7 @@ int main(int argc, char* argv[])
 		}
 
 		// Load the arena
-		gArena = new Arena(loadSaveGame);
+		gArena = new Arena(loadSaveGame, gPlayerName);
 		// Continue in game loop until exited
 		while (!quitGame)
 		{
