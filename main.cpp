@@ -418,7 +418,7 @@ char GetNameInput()
 		}
 		if (gEngine->KeyHit(Key_K))
 		{
-			return 'L';
+			return 'K';
 		}
 		if (gEngine->KeyHit(Key_L))
 		{
@@ -503,13 +503,13 @@ bool LoadingSreenSetup(const bool nameEntered)
 		gLoadingScreenFont = gEngine->LoadFont("Berlin Sans FB Demi", 48);
 	}
 	// display loading screen
-	gLoadingScreen = gEngine->CreateSprite("Loading_Screen_Temp.png", 0.0f, 0.0f, 0.0f);
+	gLoadingScreen = gEngine->CreateSprite("Loading_Screen_Temp.png", 0.0f, 0.0f, 0.1f);
 	
 	
 	return true;
 }
 
-bool LoadingScreenUpdate(bool nameEntered)
+bool LoadingScreenUpdate(bool &nameEntered)
 {
 	if (!nameEntered)
 	{
@@ -526,9 +526,19 @@ bool LoadingScreenUpdate(bool nameEntered)
 			gPlayerName.pop_back();
 		}
 
-		if (input == '%')
+		if (input == '%' && gPlayerName.length() > 0)
 		{
 			nameEntered = true;
+			if (gNameInputScreen)
+			{
+				gEngine->RemoveSprite(gNameInputScreen);
+				gNameInputScreen = nullptr;
+			}
+			if (gLoadingScreenFont)
+			{
+				gEngine->RemoveFont(gLoadingScreenFont);
+				gLoadingScreenFont = nullptr;
+			}
 			return true;
 		}
 		gLoadingScreenFont->Draw(gPlayerName, gNameInputScreen->GetX() + 50, gNameInputScreen->GetY() + 200, kBlue);
@@ -805,6 +815,12 @@ int main(int argc, char* argv[])
 		{
 			Sleep(2);
 		}
+		if (!LoadingScreenUpdate(nameEntered))
+		{
+			ProgramShutdown();
+			return EXIT_FAILURE;
+		}
+
 		LoadingScreenShutdown();
 
 		///////////////////////////////////
