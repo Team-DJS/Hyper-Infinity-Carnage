@@ -76,6 +76,7 @@ const float HIGH_SCORE_HEIGHT = 600;
 
 string gHighScoreNames[10];
 string gHighScoreScores[10];
+const std::string HIGH_SCORES_FILENAME = "High_Scores.hic";
 
 //-------------------------------------------
 // Program
@@ -123,6 +124,18 @@ bool ProgramSetup()
 	Weapon::SHOOT_SOUND->SetLooping(false);
 
 	Player::MESH = gEngine->LoadMesh("Player.x");
+	
+	if (!std::ifstream(HIGH_SCORES_FILENAME))
+	{
+		std::ofstream file(HIGH_SCORES_FILENAME);
+		if (file.is_open())
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				file << "NONAME" << " " << to_string(1000 - i*100) << endl;
+			}
+		}
+	}
 
 	return true;
 }
