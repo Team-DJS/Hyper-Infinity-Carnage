@@ -493,6 +493,46 @@ char GetNameInput()
 		{
 			return 'Z';
 		}
+		if (gEngine->KeyHit(Key_1))
+		{
+			return '1';
+		}
+		if (gEngine->KeyHit(Key_2))
+		{
+			return '2';
+		}
+		if (gEngine->KeyHit(Key_3))
+		{
+			return '3';
+		}
+		if (gEngine->KeyHit(Key_4))
+		{
+			return '4';
+		}
+		if (gEngine->KeyHit(Key_5))
+		{
+			return '5';
+		}
+		if (gEngine->KeyHit(Key_6))
+		{
+			return '6';
+		}
+		if (gEngine->KeyHit(Key_7))
+		{
+			return '7';
+		}
+		if (gEngine->KeyHit(Key_8))
+		{
+			return '8';
+		}
+		if (gEngine->KeyHit(Key_9))
+		{
+			return '9';
+		}
+		if (gEngine->KeyHit(Key_0))
+		{
+			return '0';
+		}
 
 		if (gEngine->KeyHit(Key_Back))
 		{
