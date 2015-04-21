@@ -8,7 +8,7 @@ using namespace HIC;
 IMesh* Player::MESH = nullptr;
 
 const float Player::RADIUS = 1.0f;
-const uint32_t Player::DEFAULT_LIVES = 5U;
+const uint32_t Player::DEFAULT_LIVES = 3U;
 const uint32_t Player::DEFAULT_BOMBS = 3U;
 
 //-----------------------------------
