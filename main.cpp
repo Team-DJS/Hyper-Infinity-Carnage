@@ -855,7 +855,7 @@ int main(int argc, char* argv[])
 			float frameTime = gEngine->Timer();
 			GameUpdate(frameTime);
 
-			if (!gArena->GetPlayerStatus())
+			if (!gArena->PlayerHasLives())
 			{
 				quitGame = true;
 			}

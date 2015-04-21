@@ -464,7 +464,14 @@ void Arena::Update(float frameTime)
 	// check if Players life is 0;
 	if (mPlayer.GetHealth() <= 0.0f)
 	{
-		mPlayer.TakeLife();
+		if (mPlayer.GetLives() == 0)
+		{
+			mPlayerStatus = false;
+		}
+		else
+		{
+			mPlayer.TakeLife();
+		}
 		this->Clear();
 		LoadStage(mCurrentStage);
 		mCurrentScore = mScore;
