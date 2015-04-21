@@ -252,7 +252,7 @@ void Arena::Update(float frameTime)
 	string hudText = to_string(mCurrentScore);  // Score ( Top Middle )
 	HUDFont->Draw(hudText, screenWidth / 2 + 138, 6, kGreen, kRight);
 	hudText = "x " + to_string(mMultiplier);
-	HUDFont->Draw(hudText, screenWidth / 2 + 152, 25, kGreen, kRight);
+	HUDFont->Draw(hudText, screenWidth / 2 + 162, 35, 0xFFFF0000, kRight);
 	hudText = to_string(mPlayer.GetHealth());	// Health ( Top Left )
 	HUDFont->Draw(hudText, 245, 6, kGreen, kRight);
 	hudText = to_string(mCurrentStage);			// Stage ( Top Right )
