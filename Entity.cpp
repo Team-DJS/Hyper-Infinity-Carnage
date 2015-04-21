@@ -182,7 +182,36 @@ void Entity::CollisionResolution(CollisionCylinder& collidingWith)
 
 void Entity::CollisionResolution(CollisionAABB& collidingWith)
 {
-	//Needs Body
+	//mPlayer.SetPosition(enitityPos);
+
+
+	//Get all of the relevant data from the collision objects
+	//Sphere object
+	float radius = GetCollisionCylinder()->GetRadius();
+	D3DXVECTOR2 spherePos = GetCollisionCylinder()->GetPosition();
+
+	//Axis Alligned Bounding Box object 
+	//Also applies the radius of the sphere to the box
+	float minX = collidingWith.GetMinPosition().x - radius;
+	float maxX = collidingWith.GetMaxPosition().x + radius;
+	float minZ = collidingWith.GetMinPosition().y - radius;
+	float maxZ = collidingWith.GetMaxPosition().y + radius;
+
+
+	if (GetCollisionCylinder()->GetPreviousPosition().x >= minX && GetCollisionCylinder()->GetPreviousPosition().x <= maxX)	//If the sphere is outside the x boundaries of the box
+	{
+		//Side X hit
+		mVelocity.y = -mVelocity.y * 0.5f;	//Reverse direction of movement and reduce the speed of the reversed component
+		mModel->SetZ( GetCollisionCylinder()->GetPreviousPosition().y);	//Reset position to outside of the collision area
+	}
+	if (GetCollisionCylinder()->GetPreviousPosition().y >= minZ && GetCollisionCylinder()->GetPreviousPosition().y <= maxZ)
+	{
+		//Side Z hit
+		mVelocity.x = -mVelocity.x * 0.5f;	//Reverse direction of movement and reduce the speed of the reversed component
+		mModel->SetX(GetCollisionCylinder()->GetPreviousPosition().x);	//Reset position to outside of the collision area
+	}
+
+	GetCollisionCylinder()->SetPosition({ mModel->GetX(), mModel->GetZ() });
 }
 
 // Points the model at a given position

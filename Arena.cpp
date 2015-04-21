@@ -29,7 +29,7 @@ Arena::Arena(bool loadFromFile, string name) :
 	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
 	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
 	mScore(0U),
-	mPickupTimer(15.0f),
+	mPickupTimer(10.0f),
 	mBombExplosionTimer(0.0f),
 	mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
 	mCollisionSwitch(false),
@@ -55,8 +55,8 @@ Arena::Arena(bool loadFromFile, string name) :
 	//		pos.x = -1170.0f + 1170.0f * j;
 	//		pos.y = -700.0f;
 	//		pos.z = 1170.0f * i;
-			Scenery* sceneryTemp = new Scenery(buildingsMesh, D3DXVECTOR3(0,-1805,-50), 800.0f);
-			mSceneryObjects.push_back(sceneryTemp);
+	Scenery* sceneryTemp = new Scenery(buildingsMesh, D3DXVECTOR3(0,-1805,-50), 800.0f);
+	mSceneryObjects.push_back(sceneryTemp);
 	//	}
 	//}
 
@@ -206,22 +206,18 @@ void Arena::Update(float frameTime)
 	if (gEngine->KeyHeld(Key_W))
 	{
 		mPlayer.SetMoveForward();
-		//mPlayer->MoveZ(50.0f * frameTime);
 	}
 	if (gEngine->KeyHeld(Key_A))
 	{
 		mPlayer.SetMoveLeft();
-		//mPlayer->MoveX(-50.0f * frameTime);
 	}
 	if (gEngine->KeyHeld(Key_S))
 	{
 		mPlayer.SetMoveBackward();
-		//mPlayer->MoveZ(-50.0f * frameTime);
 	}
 	if (gEngine->KeyHeld(Key_D))
 	{
 		mPlayer.SetMoveRight();
-		//mPlayer->MoveX(50.0f * frameTime);
 	}
 
 	if (gEngine->KeyHeld(Mouse_LButton))
@@ -344,7 +340,7 @@ void Arena::Update(float frameTime)
 	// check if player is colliding with arena
 	if (!CollisionDetect(mPlayer.GetCollisionCylinder(), &mCollisionBox))
 	{
-		mPlayer.SetPosition(enitityPos);
+		mPlayer.CollisionResolution(mCollisionBox);
 	}
 
 	// Update all the enemies
@@ -479,7 +475,7 @@ void Arena::Update(float frameTime)
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
-	if (mPickupTimer.IsComplete() && mNoOfEnemies > 5)
+	if (mPickupTimer.IsComplete())
 	{
 		CreateNewPickup();
 	}
@@ -745,7 +741,7 @@ void Arena::CreateNewPickup()
 {
 	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 10.0f,
 									   Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
-	float lifetime = Random(10.0f, 25.0f);
+	float lifetime = Random(8.0f, 15.0f);
 
 	float pickupSeed = Random(0.0f, 100.0f);
 
@@ -759,7 +755,7 @@ void Arena::CreateNewPickup()
 		//bomb
 		mPickups.push_back(new Bomb(position, 15.0f, lifetime));
 	}
-	else if (pickupSeed <= 90)
+	else if (pickupSeed <= 95)
 	{
 		//weapon upgrade
 		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime, 0.02f, static_cast<uint32_t>(Random(1.0f, 10.0f))));
