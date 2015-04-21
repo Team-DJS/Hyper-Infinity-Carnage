@@ -208,11 +208,11 @@ bool HighScoreSetup()
 // update the high score list
 bool HighScoreUpdate()
 {
-	int height = gHighScoreCard->GetX() - (HIGH_SCORE_HEIGHT / 2) + 60;
+	int height = static_cast<int>(gHighScoreCard->GetX()) - static_cast<int>(HIGH_SCORE_HEIGHT / 2) + 60;
 	for (int i = 0; i < 10; i++)
 	{
-		gHighScoreFont->Draw(gHighScoreNames[i], gHighScoreCard->GetX() + 30, height + i * 35, kBlue);
-		gHighScoreFont->Draw(gHighScoreScores[i], gHighScoreCard->GetX() + 500, height + i * 35, kBlue);
+		gHighScoreFont->Draw(gHighScoreNames[i], static_cast<int>(gHighScoreCard->GetX()) + 30, height + i * 35, kBlue);
+		gHighScoreFont->Draw(gHighScoreScores[i], static_cast<int>(gHighScoreCard->GetX()) + 500, height + i * 35, kBlue);
 	}
 
 	return true;
@@ -554,7 +554,7 @@ bool LoadingScreenUpdate(bool &nameEntered)
 			}
 			return true;
 		}
-		gLoadingScreenFont->Draw(gPlayerName, gNameInputScreen->GetX() + 50, gNameInputScreen->GetY() + 200, kBlue);
+		gLoadingScreenFont->Draw(gPlayerName, static_cast<int>(gNameInputScreen->GetX()) + 50, static_cast<int>(gNameInputScreen->GetY()) + 200, kBlue);
 		
 		gEngine->DrawScene();
 
@@ -728,6 +728,7 @@ bool PauseMenuUpdate(bool &quitGame)
 			return EXIT_FAILURE;
 		}
 	}
+	return true;
 }
 
 bool PauseMenuShutdown()

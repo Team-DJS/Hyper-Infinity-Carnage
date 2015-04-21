@@ -262,7 +262,6 @@ void Arena::Update(float frameTime)
 	hudText = to_string(mPlayer.GetBombs());	// Bombs ( Bottom Right )
 	HUDFont->Draw(hudText, screenWidth - 20, screenHeight - 50, kGreen, kRight);
 
-
 #ifdef _DEBUG
 	if (gEngine->KeyHit(Key_M))
 	{
@@ -270,6 +269,10 @@ void Arena::Update(float frameTime)
 		for (size_t i = 0; i < mEnemies.size(); i++)
 		{
 			mEnemies[i]->GetCollisionCylinder()->ToggleMarkers();
+		}
+		for (auto enemy : mEnemyPool)
+		{
+			enemy->GetCollisionCylinder()->ToggleMarkers();
 		}
 		mCollisionBox.ToggleMarkers();
 	}
@@ -456,7 +459,7 @@ void Arena::Update(float frameTime)
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
-	if (mPickupTimer.IsComplete() && mNoOfEnemies > 10)
+	if (mPickupTimer.IsComplete() && mNoOfEnemies > 5)
 	{
 		CreateNewPickup();
 	}
@@ -601,7 +604,7 @@ void Arena::SaveHighScores()
 			HighScores.back().name = name;
 			string score;
 			highScoreFile >> score;
-			if (std::stoi(score) > mCurrentScore)
+			if (static_cast<unsigned int>(std::stoi(score)) > mCurrentScore)
 			{
 				HighScores.back().score = score;
 			}
