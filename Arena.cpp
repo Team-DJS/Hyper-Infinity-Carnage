@@ -75,7 +75,6 @@ Arena::Arena(bool loadFromFile, string name) :
 	mEnemySpawnSound = gAudioManager->CreateSource("EnemySpawn", { 0.0f, 0.0f, 0.0f });
 	mEnemySpawnSound->SetLooping(false);
 
-
 	// Initialise the Mesh for the pickups
 	WeaponUpgrade::mMesh = gEngine->LoadMesh("WeaponPickup.x");
 	HealthPack::MESH = gEngine->LoadMesh("HealthPickup.x");
@@ -90,7 +89,7 @@ Arena::Arena(bool loadFromFile, string name) :
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(arenaEdge, 0, 0), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(arenaEdge, 0, -arenaEdge), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(0, 0, arenaEdge), emissionRate, lifetime));
-	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(0, 0, -arenaEdge), emissionRate, lifetime));
+	//mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(0, 0, -arenaEdge), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, arenaEdge), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, 0), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, -arenaEdge), emissionRate, lifetime));
