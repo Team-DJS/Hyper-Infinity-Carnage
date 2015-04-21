@@ -175,8 +175,8 @@ void Player::Update(float frameTime)
 	mVelocity.y += thrust.y + drag.y;
 
 	//Move model by velocity vector
-	MoveX(mVelocity.x * frameTime);
-	MoveZ(mVelocity.y * frameTime);
+	MoveX(2 * mVelocity.x * frameTime);
+	MoveZ(2 *mVelocity.y * frameTime);
 
 	//Unset flags
 	mMoveLeft = false;
