@@ -101,6 +101,11 @@ void Entity::ResetHealth()
 	mHealth = DEFAULT_HEALTH;
 }
 
+void Entity::SetHealth(uint32_t health)
+{
+	mHealth = health;
+}
+
 //-----------------------------------
 // Getters
 //-----------------------------------
