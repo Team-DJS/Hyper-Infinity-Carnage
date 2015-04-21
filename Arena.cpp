@@ -292,23 +292,23 @@ void Arena::Update(float frameTime)
 		iter->Update(frameTime);
 	}
 
-	// Debug HUD
-	hudText = "Stage: " + to_string(mCurrentStage);
-	DebugHUD->Draw(hudText, 10, 10, kRed);
-	hudText = "Lives: " + to_string(mPlayer.GetLives());
-	DebugHUD->Draw(hudText, 10, 22, kRed);
-	hudText = "Health: " + to_string(mPlayer.GetHealth());
-	DebugHUD->Draw(hudText, 10, 34, kRed);
-	hudText = "Enemies: " + to_string(mNoOfEnemies + mEnemies.size());
-	DebugHUD->Draw(hudText, 10, 46, kRed);
-	hudText = "Enemy Pool: " + to_string(mEnemyPool.size());
-	DebugHUD->Draw(hudText, 10, 58, kRed);
-	hudText = "Bombs: " + to_string(mPlayer.GetBombs());
-	DebugHUD->Draw(hudText, 10, 70, kRed);
-
-	hudText = "Score: " + to_string(mCurrentScore);
-	DebugHUD->Draw(hudText, gEngine->GetWidth() - 200, 10, kRed);
-
+	//// Debug HUD
+	//hudText = "Stage: " + to_string(mCurrentStage);
+	//DebugHUD->Draw(hudText, 10, 10, kRed);
+	//hudText = "Lives: " + to_string(mPlayer.GetLives());
+	//DebugHUD->Draw(hudText, 10, 22, kRed);
+	//hudText = "Health: " + to_string(mPlayer.GetHealth());
+	//DebugHUD->Draw(hudText, 10, 34, kRed);
+	//hudText = "Enemies: " + to_string(mNoOfEnemies + mEnemies.size());
+	//DebugHUD->Draw(hudText, 10, 46, kRed);
+	//hudText = "Enemy Pool: " + to_string(mEnemyPool.size());
+	//DebugHUD->Draw(hudText, 10, 58, kRed);
+	//hudText = "Bombs: " + to_string(mPlayer.GetBombs());
+	//DebugHUD->Draw(hudText, 10, 70, kRed);
+	//
+	//hudText = "Score: " + to_string(mCurrentScore);
+	//DebugHUD->Draw(hudText, gEngine->GetWidth() - 200, 10, kRed);
+	//
 	gEngine->SetWindowCaption(to_string(1 / frameTime));
 
 #endif
@@ -418,6 +418,7 @@ void Arena::Update(float frameTime)
 			{
 				hitEnemy = true;
 				damage = 100;
+				mCurrentScore += mEnemies[i]->GetDamage() / 2;
 			}
 		}
 
@@ -523,7 +524,7 @@ void Arena::LoadStage(uint32_t stageNumber)
 
 
 	// Determne number of enemies to defeat this stage
-	mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 10U) * 1.5f);
+	mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 30U) * 1.5f);
 
 	mBombExplosionTimer.Update(20.0f);
 	//this->Clear();

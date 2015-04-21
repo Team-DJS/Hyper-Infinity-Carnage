@@ -43,14 +43,10 @@ void WeaponUpgrade::OnPickup(Player* collectingPlayer)
 	if (Random(0.0f, 100.0f) > 87.0f)
 	{
 		collectingPlayer->GetWeapon()->AddBarrel();
-		if (mFireRate > 0.0f)
-			collectingPlayer->GetWeapon()->SetFireRate(mFireRate);
 	}
-	else
-	{
+
 	if (mFireRate > 0.0f)
 		collectingPlayer->GetWeapon()->SetFireRate(mFireRate);
-	}
 
 	if (mDamage > 0U)
 		collectingPlayer->GetWeapon()->SetDamage(mDamage);

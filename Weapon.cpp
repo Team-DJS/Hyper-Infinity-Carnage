@@ -5,8 +5,8 @@ using namespace HIC;
 // Static Initialisations
 //-----------------------------------
 
-const uint32_t MAX_PROJECTILES = 30;
-const float MAX_FIRE_RATE = 0.1f;
+const uint32_t MAX_PROJECTILES = 30U;
+float MAX_FIRE_RATE = 0.1f;
 
 AudioSource* Weapon::SHOOT_SOUND = nullptr;
 
@@ -50,7 +50,7 @@ void Weapon::SetFireRate(float bulletsPerSecond)
 	{
 		mFireRate = MAX_FIRE_RATE;
 	}
-	mFireTimer.Reset(mFireRate);
+	mFireTimer.Reset(mFireRate * mNoBarrels);
 }
 
 // Increases the damage of the weapon by the given amount
@@ -62,7 +62,10 @@ void Weapon::SetDamage(uint32_t damage)
 // Gives the weapon another barrel
 void Weapon::AddBarrel()
 {
-	mNoBarrels++;
+	if (mNoBarrels < 26)
+		mNoBarrels++;
+	
+	MAX_FIRE_RATE - 0.01;
 }
 
 //Sets whether or not the weapon should try to fire this frame (will decide to fire based on fire rate)
@@ -140,24 +143,50 @@ void Weapon::Clear()
 void Weapon::Shoot(const D3DXVECTOR3& playerPosition, const D3DXVECTOR3 playerFacingVector)
 {
 	// Create new projectiles moving in the provided direction (use an angle offset for additional barrels)
-	Projectile* projectile = nullptr;
-	if (!mProjectilePool.empty())
+	bool spread = false;
+	for (int i = 0; i < mNoBarrels; i++)
 	{
-		projectile = mProjectilePool.back();
-		mProjectilePool.pop_back();
-	}
-	else
-	{
-		projectile = mProjectiles.front();
-		mProjectiles.pop_front();
+		Projectile* projectile = nullptr;
+		if (!mProjectilePool.empty())
+		{
+			projectile = mProjectilePool.back();
+			mProjectilePool.pop_back();
+		}
+		else
+		{
+			projectile = mProjectiles.front();
+			mProjectiles.pop_front();
+		}
+		// Set the projectile data
+		projectile->SetPos(playerPosition);
+		float angleX;
+		if (i == 0)
+		{
+			angleX = 0.0f;
+		}
+		else if (!spread)
+		{
+			angleX = i * 3.0f * 0.0174532925;
+			spread = !spread;
+		}
+		else
+		{
+			angleX = -(i - 1) * 3.0f * 0.0174532925;
+			spread = !spread;
+		}
+
+		D3DXVECTOR2 newVelocity = { (playerFacingVector.x * cos(angleX)) - (playerFacingVector.z * sin(angleX)), 
+									(playerFacingVector.x * sin(angleX)) + (playerFacingVector.z * cos(angleX)) };
+
+		D3DXVec2Normalize(&newVelocity,&newVelocity);
+
+		projectile->SetVelocity({ newVelocity.x * -8.0f,
+								  newVelocity.y * -8.0f });
+		projectile->SetDamage(mDamage);
+		mProjectiles.push_back(projectile);
 	}
 
-	// Set the projectile data
-	projectile->SetPos(playerPosition);
-	projectile->SetVelocity({ -playerFacingVector.x * 8.0f, -playerFacingVector.z * 8.0f });
-	projectile->SetDamage(mDamage);
-	mProjectiles.push_back(projectile);
-	mFireTimer.Reset();
+	mFireTimer.Reset(mFireRate * mNoBarrels);
 
 	// Play the shooting audio clip
 	SHOOT_SOUND->Play();
