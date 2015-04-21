@@ -39,11 +39,14 @@ namespace HIC
 		// Rotates the entity in the world y-axis
 		void RotateY(float degrees);
 
-		//Places the entity at the provided world position
+		// Places the entity at the provided world position
 		void SetPosition(D3DXVECTOR3 newPos);
 
-		//Resets the players health to starting health
+		// Resets the players health to starting health
 		void ResetHealth();
+
+		// Set the health of the entity
+		void SetHealth(uint32_t health);
 
 		//---------------
 		// Getters

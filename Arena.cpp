@@ -693,7 +693,7 @@ void Arena::SpawnEnemy()
 	Enemy* enemy = mEnemyPool.back();
 	mEnemyPool.pop_back();
 
-	enemy->ResetHealth();
+	enemy->SetHealth(static_cast<uint32_t>(100 + mCurrentStage * 3));
 
 	do
 	{
