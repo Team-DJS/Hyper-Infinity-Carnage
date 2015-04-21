@@ -191,6 +191,11 @@ Arena::~Arena()
 void Arena::Update(float frameTime)
 {
 
+	if (gEngine->KeyHit(Key_T))
+	{
+		CreateNewPickup();
+	}
+
 	// Handle player input
 	if (gEngine->KeyHeld(Key_W))
 	{
