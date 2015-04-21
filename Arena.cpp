@@ -192,6 +192,11 @@ Arena::~Arena()
 // Updates all the entities inside the arena
 void Arena::Update(float frameTime)
 {
+	//Slowmo while bomb detonating
+	if (mBombSwitch)
+	{
+		frameTime *= 0.6f;
+	}
 
 	if (gEngine->KeyHit(Key_T))
 	{

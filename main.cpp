@@ -533,6 +533,10 @@ char GetNameInput()
 		{
 			return '0';
 		}
+		if (gEngine->KeyHit(Key_Minus))
+		{
+			return '-';
+		}
 
 		if (gEngine->KeyHit(Key_Back))
 		{
