@@ -35,7 +35,9 @@ Arena::Arena(bool loadFromFile, string name) :
 	mCollisionSwitch(false),
 	mBombSwitch(false),
 	mPlayerStatus(true),
-	mPlayerName(name)
+	mPlayerName(name),
+	mMultiplier(1U),
+	mKillCount(0U)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
@@ -249,6 +251,8 @@ void Arena::Update(float frameTime)
 	int screenHeight = gEngine->GetHeight();
 	string hudText = to_string(mCurrentScore);  // Score ( Top Middle )
 	HUDFont->Draw(hudText, screenWidth / 2 + 138, 6, kGreen, kRight);
+	hudText = "x " + to_string(mMultiplier);
+	HUDFont->Draw(hudText, screenWidth / 2 + 152, 25, kGreen, kRight);
 	hudText = to_string(mPlayer.GetHealth());	// Health ( Top Left )
 	HUDFont->Draw(hudText, 245, 6, kGreen, kRight);
 	hudText = to_string(mCurrentStage);			// Stage ( Top Right )
@@ -397,7 +401,8 @@ void Arena::Update(float frameTime)
 				if (mEnemies[i]->TakeHealth(damage))
 				{
 					hitEnemy = true;
-					mCurrentScore += mEnemies[i]->GetDamage();
+					mCurrentScore += mEnemies[i]->GetDamage() * mMultiplier;
+					mKillCount++;
 				}
 				mPlayer.GetWeapon()->RemoveProjectile(j);
 				j--;
@@ -409,6 +414,8 @@ void Arena::Update(float frameTime)
 		if (CollisionDetect(currentEnemy, mPlayer.GetCollisionCylinder()))
 		{
 			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
+			mMultiplier = 1;
+			mKillCount = 0;
 			hitEnemy = true;
 		}
 
@@ -439,6 +446,12 @@ void Arena::Update(float frameTime)
 		{
 			end = mEnemies.size() / 2;
 		}
+	}
+
+	if (mKillCount > 5)
+	{
+		mMultiplier++;
+		mKillCount = 0;
 	}
 
 	// Pickups
@@ -477,6 +490,7 @@ void Arena::Update(float frameTime)
 		else
 		{
 			mPlayer.TakeLife();
+			mMultiplier = 1;
 		}
 		this->Clear();
 		LoadStage(mCurrentStage);
