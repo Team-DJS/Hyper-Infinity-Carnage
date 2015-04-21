@@ -9,7 +9,7 @@ SpawnTunnel::SpawnTunnel(D3DXVECTOR3 pos) :
 {
 	mModel = SPAWN_TUNNEL_MESH->CreateModel(pos.x,pos.y,pos.z);
 	mModel->SetSkin("SpawnTunnel_tlxadd.tga");
-	mModel->ScaleY(30.0f);
+	mModel->ScaleY(40.0f);
 }
 
 
@@ -30,7 +30,7 @@ bool SpawnTunnel::Update(float frameTime)
 	mTimer.Update(frameTime);
 	mSize -= frameTime;
 	mModel->ResetScale();
-	mModel->ScaleY(30.0f);
+	mModel->ScaleY(40.0f);
 	mModel->ScaleX(mSize);
 	if (mTimer.IsComplete())
 		return true;
