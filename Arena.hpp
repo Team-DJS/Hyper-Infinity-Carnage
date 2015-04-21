@@ -37,7 +37,7 @@ namespace HIC
 		// Getters
 		//---------------
 
-		bool GetPlayerStatus()
+		bool PlayerHasLives()
 		{
 			return mPlayerStatus;
 		}

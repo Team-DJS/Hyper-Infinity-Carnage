@@ -46,7 +46,7 @@ Weapon::~Weapon()
 void Weapon::SetFireRate(float bulletsPerSecond)
 {
 	mFireRate -= bulletsPerSecond;
-	if (mFireRate < 0.0f)
+	if (mFireRate < 0.3f)
 	{
 		mFireRate = MAX_FIRE_RATE;
 	}
