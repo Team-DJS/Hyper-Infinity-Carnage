@@ -38,9 +38,22 @@ namespace HIC
 		// Getters
 		//---------------
 
+		// returns true when player has lives
 		bool PlayerHasLives()
 		{
 			return mPlayerStatus;
+		}
+
+		// returns the players name
+		string GetPlayerName()
+		{
+			return mPlayerName;
+		}
+
+		// returns the player score
+		uint32_t GetScore()
+		{
+			return mScore;
 		}
 
 		//--------------

@@ -17,6 +17,8 @@ ICamera* gDebugCamera = nullptr;
 // The game arena
 Arena* gArena = nullptr;
 string gPlayerName;
+string gPlayerScore;
+
 
 //------------------------
 // Front End Data
@@ -46,6 +48,8 @@ IFont* gLoadingScreenFont = nullptr;
 // Pause Screen data
 //------------------------
 
+Button* gResumeButton = nullptr;
+
 ISprite* gPauseBackground = nullptr;
 
 //------------------------
@@ -63,9 +67,10 @@ const float HUD_SCORE_WIDTH = 300U;
 const float HUD_HEIGHT = 56U;
 
 //------------------------
-// InGame HUD Data
+// High Scores Data
 //------------------------
 
+ISprite* gGameOverScreen = nullptr;
 bool gShowHighScores = false;
 
 ISprite* gHighScoreCard = nullptr;
@@ -184,8 +189,12 @@ bool ProgramShutdown()
 //-------------------------------------------
 
 // Set up the high score list
-bool HighScoreSetup()
+bool HighScoreSetup(bool gameOver = false)
 {
+	if (gameOver)
+	{
+		gGameOverScreen = gEngine->CreateSprite("Game_Over_screen.png", 0.0f, 0.0f, 0.1f);
+	}
 	gHighScoreCard = gEngine->CreateSprite("High_Score_Card.tga", 400, 60, 0.0f);
 	gHighScoreFont = gEngine->LoadFont("Berlin Sans FB Demi", 48);
 
@@ -206,7 +215,7 @@ bool HighScoreSetup()
 }
 
 // update the high score list
-bool HighScoreUpdate()
+bool HighScoreUpdate(bool gameOver = false)
 {
 	int height = static_cast<int>(gHighScoreCard->GetX()) - static_cast<int>(HIGH_SCORE_HEIGHT / 2) + 60;
 	for (int i = 0; i < 10; i++)
@@ -215,12 +224,23 @@ bool HighScoreUpdate()
 		gHighScoreFont->Draw(gHighScoreScores[i], static_cast<int>(gHighScoreCard->GetX()) + 500, height + i * 35, kBlue);
 	}
 
+	if (gameOver)
+	{
+		gHighScoreFont->Draw(gPlayerName, static_cast<int>(gHighScoreCard->GetX()) + 30, height + 390, 0xFFFF0000);
+		gHighScoreFont->Draw(gPlayerScore, static_cast<int>(gHighScoreCard->GetX()) + 500, height + 390, 0xFFFF0000);
+	}
+
 	return true;
 }
 
 // Shutdown the high score list
-bool HighScoreShutdown()
+bool HighScoreShutdown(bool gameOver = false)
 {
+	if (gameOver)
+	{
+		gEngine->RemoveSprite(gGameOverScreen);
+		gGameOverScreen = nullptr;
+	}
 	gEngine->RemoveSprite(gHighScoreCard);
 	gHighScoreCard = nullptr;
 
@@ -643,11 +663,11 @@ bool GameSetup(bool loadSaveGame)
 	Projectile::MESH = gEngine->LoadMesh("quad_additive.x");
 
 	// HUD Setup
-	gHUDScore = gEngine->CreateSprite("HUD_Score.png", gEngine->GetWidth() / 2 - (HUD_SCORE_WIDTH / 2), 0.0f, 0.0f);
-	gHUDHealth = gEngine->CreateSprite("HUD_Health.png", 0.0f, 0.0f, 0.0f);
-	gHUDStage = gEngine->CreateSprite("HUD_Stage.png", gEngine->GetWidth() - HUD_WIDTH, 0.0f, 0.0f);
-	gHUDLives = gEngine->CreateSprite("HUD_Lives.png", 0.0f, gEngine->GetHeight() - HUD_HEIGHT, 0.0f);
-	gHUDBombs = gEngine->CreateSprite("HUD_Bombs.png", gEngine->GetWidth() - HUD_WIDTH, gEngine->GetHeight() - HUD_HEIGHT, 0.0f);
+	gHUDScore = gEngine->CreateSprite("HUD_Score.png", gEngine->GetWidth() / 2 - (HUD_SCORE_WIDTH / 2), 0.0f, 0.2f);
+	gHUDHealth = gEngine->CreateSprite("HUD_Health.png", 0.0f, 0.0f, 0.2f);
+	gHUDStage = gEngine->CreateSprite("HUD_Stage.png", gEngine->GetWidth() - HUD_WIDTH, 0.0f, 0.2f);
+	gHUDLives = gEngine->CreateSprite("HUD_Lives.png", 0.0f, gEngine->GetHeight() - HUD_HEIGHT, 0.2f);
+	gHUDBombs = gEngine->CreateSprite("HUD_Bombs.png", gEngine->GetWidth() - HUD_WIDTH, gEngine->GetHeight() - HUD_HEIGHT, 0.2f);
 
 	// Load the bomb explosion audio
 	gAudioManager->LoadAudio("BombExplosion", "Media\\Audio\\BombExplosion.wav");
@@ -724,14 +744,22 @@ bool GameShutdown()
 bool PauseMenuSetup()
 {
 	gPauseBackground = gEngine->CreateSprite("PauseBackground.tga", 0.0f, 0.0f, 0.1f);
+	gResumeButton = new Button("Resume_Button.png", D3DXVECTOR2((float)gEngine->GetWidth() / 2 - TITLE_CARD_WIDTH / 2, 425.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	gViewHiScoreButton = new Button("View_Hi_Score_Button.png", D3DXVECTOR2((float)gEngine->GetWidth() / 2 - TITLE_CARD_WIDTH / 2, 500.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	gQuitGameButton = new Button("Quit_Game_Button.png", D3DXVECTOR2((float)gEngine->GetWidth() / 2 - TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	return true;
 }
 
-bool PauseMenuUpdate(bool &quitGame)
+bool PauseMenuUpdate(bool &quitGame, bool &quitPause)
 {
 	bool isMouseDown = gEngine->KeyHit(Mouse_LButton);
+
+	if (gResumeButton->MouseIsOver() && isMouseDown)
+	{
+		Button::BUTTON_CLICK_SOUND->Play();
+		quitPause = true;
+		return true;
+	}
 
 	//Click view high scores
 	if (gViewHiScoreButton->MouseIsOver() && isMouseDown)
@@ -777,6 +805,7 @@ bool PauseMenuUpdate(bool &quitGame)
 
 bool PauseMenuShutdown()
 {
+	SafeRelease(gResumeButton);
 	SafeRelease(gViewHiScoreButton);
 	SafeRelease(gQuitGameButton);
 	gEngine->RemoveSprite(gPauseBackground);
@@ -895,7 +924,8 @@ int main(int argc, char* argv[])
 			return EXIT_FAILURE;
 		}
 
-		
+		bool gameOver = false;
+
 		// Continue in game loop until exited
 		while (!quitGame)
 		{
@@ -906,6 +936,7 @@ int main(int argc, char* argv[])
 			if (!gArena->PlayerHasLives())
 			{
 				quitGame = true;
+				gameOver = true;
 			}
 
 			if (gEngine->KeyHit(Key_Escape))
@@ -916,9 +947,10 @@ int main(int argc, char* argv[])
 					ProgramShutdown();
 					return EXIT_FAILURE;
 				}
-				while (!gEngine->KeyHit(Key_Escape) && gEngine->IsRunning() && !quitGame)
+				bool quitPause = false;
+				while (!gEngine->KeyHit(Key_Escape) && gEngine->IsRunning() && !quitGame && !quitPause)
 				{
-					PauseMenuUpdate(quitGame);
+					PauseMenuUpdate(quitGame, quitPause);
 					gEngine->DrawScene(gCamera);
 
 					if (!gEngine->IsRunning())
@@ -947,6 +979,31 @@ int main(int argc, char* argv[])
 
 			// Draw the scene
 			gEngine->DrawScene(gCamera);
+		}
+
+		if (gameOver)
+		{
+			HighScoreSetup(true);
+			// Game over screen
+			gPlayerName = gArena->GetPlayerName();
+			gPlayerScore = to_string(gArena->GetScore());
+
+			Timer exitTimer(5.0f);
+			while (true)
+			{
+				HighScoreUpdate(true);
+				exitTimer.Update(gEngine->Timer());
+				if (exitTimer.IsComplete())
+				{
+					break;
+				}
+				else
+				{
+					gEngine->DrawScene();
+				}
+			}
+			
+			HighScoreShutdown(true);
 		}
 
 		if (!GameShutdown())
