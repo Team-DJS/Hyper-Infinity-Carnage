@@ -96,6 +96,10 @@ namespace HIC
 		Player mPlayer;
 		bool mPlayerStatus;
 
+		// Multiplier
+		uint32_t mMultiplier;
+		uint32_t mKillCount;
+
 		uint32_t mScore;
 		uint32_t mCurrentScore;
 
