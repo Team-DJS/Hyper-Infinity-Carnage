@@ -11,6 +11,7 @@
 #include "CollisionFunctions.hpp"
 #include "AudioManager.hpp"
 #include "FountainEmitter.hpp"
+#include "ExplosionEmitter.hpp"
 #include "SpawnTunnel.hpp"
 
 namespace HIC
@@ -133,6 +134,7 @@ namespace HIC
 
 		// Particle effects for the arena
 		std::vector<ParticleEmitter*> mArenaParticles;
+		IMesh* mExplosionMesh;
 
 		// Vector of scenery (non-interactive) items
 		std::vector<Scenery*> mSceneryObjects;

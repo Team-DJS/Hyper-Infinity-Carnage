@@ -82,23 +82,23 @@ Arena::Arena(bool loadFromFile, string name) :
 	ExtraLife::MESH = gEngine->LoadMesh("LifePickup.x");
 	Bomb::MESH = gEngine->LoadMesh("BombPickup.x");
 
-	IMesh* particleMesh = gEngine->LoadMesh("quad_multiplicative.x");
+	mExplosionMesh = gEngine->LoadMesh("quad_multiplicative.x");
 	const float arenaEdge = mCollisionBox.GetMaxOffset().x;
 	const float emissionRate = 0.0125f;
 	const float lifetime = 2.0f;
-	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(arenaEdge,  0,  arenaEdge), emissionRate, lifetime));
-	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(arenaEdge,  0,			0), emissionRate, lifetime));
-	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(arenaEdge,  0, -arenaEdge), emissionRate, lifetime));
-	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(		0,  0,  arenaEdge), emissionRate, lifetime));
-	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(		0,  0, -arenaEdge), emissionRate, lifetime));
-	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0,  arenaEdge), emissionRate, lifetime));
-	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0,			0), emissionRate, lifetime));
-	mArenaParticles.push_back(new FountainEmitter(particleMesh, D3DXVECTOR3(-arenaEdge, 0, -arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(arenaEdge, 0, arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(arenaEdge, 0, 0), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(arenaEdge, 0, -arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(0, 0, arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(0, 0, -arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, arenaEdge), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, 0), emissionRate, lifetime));
+	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, -arenaEdge), emissionRate, lifetime));
 
 	for (auto iter : mArenaParticles)
 	{
-		//iter->StartEmission();
-		iter->StopEmission();
+		iter->StartEmission();
+		//iter->StopEmission();
 	}
 
 	SpawnTunnel::SPAWN_TUNNEL_MESH = gEngine->LoadMesh("BombPortal.x");
@@ -294,9 +294,21 @@ void Arena::Update(float frameTime)
 	}
 
 	// Update all arena particle emitter
-	for (auto iter : mArenaParticles)
+	for (auto iter = mArenaParticles.begin(); iter != mArenaParticles.end();)
 	{
-		iter->Update(frameTime);
+		ParticleEmitter* emitter = *iter;
+		emitter->Update(frameTime);
+
+		if (!emitter->IsEmitting() && dynamic_cast<ExplosionEmitter*>(emitter) != nullptr)
+		{
+			delete(emitter);
+
+			iter = mArenaParticles.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
 	}
 
 	//// Debug HUD
@@ -435,6 +447,10 @@ void Arena::Update(float frameTime)
 		// ENEMY IS HIT
 		if (hitEnemy)
 		{
+			ParticleEmitter* explosion = new ExplosionEmitter(mExplosionMesh, mEnemies[i]->GetWorldPos(), 1.0f);
+			explosion->StartEmission();
+			mArenaParticles.push_back(explosion);
+
 			mEnemies[i]->SetPosition(OFF_SCREEN_POS);
 			mEnemyPool.push_back(mEnemies[i]);
 			mEnemies.erase(mEnemies.begin() + i);
