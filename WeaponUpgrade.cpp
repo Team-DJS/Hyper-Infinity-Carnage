@@ -42,7 +42,7 @@ void WeaponUpgrade::OnPickup(Player* collectingPlayer)
 {
 	if (mFireRate > 0.0f)
 		collectingPlayer->GetWeapon()->SetFireRate(mFireRate);
-
+	
 	if (mDamage > 0U)
 		collectingPlayer->GetWeapon()->SetDamage(mDamage);
 

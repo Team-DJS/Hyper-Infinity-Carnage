@@ -6,7 +6,7 @@ using namespace HIC;
 //-----------------------------------
 
 const uint32_t MAX_PROJECTILES = 30;
-const float MAX_FIRE_RATE = 0.05f;
+const float MAX_FIRE_RATE = 0.1f;
 
 AudioSource* Weapon::SHOOT_SOUND = nullptr;
 
@@ -46,7 +46,7 @@ Weapon::~Weapon()
 void Weapon::SetFireRate(float bulletsPerSecond)
 {
 	mFireRate -= bulletsPerSecond;
-	if (mFireRate < 0.3f)
+	if (mFireRate < MAX_FIRE_RATE)
 	{
 		mFireRate = MAX_FIRE_RATE;
 	}
