@@ -45,4 +45,9 @@ void WeaponUpgrade::OnPickup(Player* collectingPlayer)
 
 	if (mDamage > 0U)
 		collectingPlayer->GetWeapon()->SetDamage(mDamage);
+
+	if (Random(0.0f, 10.0f) > 7)
+	{
+		collectingPlayer->GetWeapon()->AddBarrel();
+	}
 }

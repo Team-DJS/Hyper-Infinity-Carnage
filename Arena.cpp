@@ -709,7 +709,7 @@ void Arena::CreateNewPickup()
 	{
 		case 0:
 			{
-				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime, Random(0.01, 0.1), static_cast<uint32_t>(Random(1.3f, 3.8f))));
+				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime, 0.02f, static_cast<uint32_t>(Random(1.3f, 3.8f))));
 				break;
 			}
 		case 1:
