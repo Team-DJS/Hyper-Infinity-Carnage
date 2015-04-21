@@ -75,6 +75,10 @@ Arena::Arena(bool loadFromFile, string name) :
 	mEnemySpawnSound = gAudioManager->CreateSource("EnemySpawn", { 0.0f, 0.0f, 0.0f });
 	mEnemySpawnSound->SetLooping(false);
 
+	gAudioManager->LoadAudio("EnemyDestroyed", "Media\\Audio\\EnemyDestroyed.wav");
+	mEnemyDestroyedSound = gAudioManager->CreateSource("EnemyDestroyed", {0.0f, 0.0f, 0.0f});
+	mEnemyDestroyedSound->SetLooping(false);
+
 	// Initialise the Mesh for the pickups
 	WeaponUpgrade::mMesh = gEngine->LoadMesh("WeaponPickup.x");
 	HealthPack::MESH = gEngine->LoadMesh("HealthPickup.x");
@@ -447,6 +451,8 @@ void Arena::Update(float frameTime)
 		// ENEMY IS HIT
 		if (hitEnemy)
 		{
+			mEnemyDestroyedSound->Play();
+
 			ParticleEmitter* explosion = new ExplosionEmitter(mExplosionMesh, mEnemies[i]->GetWorldPos(), 1.0f);
 			explosion->StartEmission();
 			mArenaParticles.push_back(explosion);

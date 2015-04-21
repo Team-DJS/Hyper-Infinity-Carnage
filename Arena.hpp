@@ -147,5 +147,6 @@ namespace HIC
 
 		AudioSource* mGameMusic;
 		AudioSource* mEnemySpawnSound;
+		AudioSource* mEnemyDestroyedSound;
 	};
 }
