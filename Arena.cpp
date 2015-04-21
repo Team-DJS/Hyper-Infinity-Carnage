@@ -29,7 +29,7 @@ Arena::Arena(bool loadFromFile, string name) :
 	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
 	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
 	mScore(0U),
-	mPickupTimer(5.0f),
+	mPickupTimer(15.0f),
 	mBombExplosionTimer(0.0f),
 	mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
 	mCollisionSwitch(false),
@@ -443,7 +443,7 @@ void Arena::Update(float frameTime)
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
-	if (mPickupTimer.IsComplete() && mNoOfEnemies > 15)
+	if (mPickupTimer.IsComplete() && mNoOfEnemies > 10)
 	{
 		CreateNewPickup();
 	}
@@ -706,36 +706,33 @@ void Arena::CreateEnemies()
 // Create a new pickup with random type
 void Arena::CreateNewPickup()
 {
-	int pickupType = static_cast<int>(Random(0.0f, 4.0f));
 	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 10.0f,
 									   Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
-	float lifetime = Random(5.0f, 9.2f);
+	float lifetime = Random(10.0f, 25.0f);
 
-	switch (pickupType)
+	float pickupSeed = Random(0.0f, 100.0f);
+
+	if (pickupSeed <= 40.0f)
 	{
-		case 0:
-			{
-				mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime, 0.02f, static_cast<uint32_t>(Random(1.3f, 3.8f))));
-				break;
-			}
-		case 1:
-			{
-				mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
-				break;
-			}
-		case 2:
-			{
-				mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
-				break;
-			}
-		case 3:
-			{
-				mPickups.push_back(new Bomb(position, 15.0f, lifetime));
-				break;
-			}
-		default:
-			break;
+		//health
+		mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
 	}
+	else if (pickupSeed <= 70)
+	{
+		//bomb
+		mPickups.push_back(new Bomb(position, 15.0f, lifetime));
+	}
+	else if (pickupSeed <= 90)
+	{
+		//weapon upgrade
+		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime, 0.02f, static_cast<uint32_t>(Random(1.0f, 10.0f))));
+	}
+	else
+	{
+		//life
+		mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
+	}
+
 	mPickups.back()->GetModel()->Scale(15.0f);
 
 	mPickupTimer.Reset(Random(8.6f, 12.2f));

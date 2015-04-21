@@ -40,11 +40,11 @@ WeaponUpgrade::~WeaponUpgrade()
 // Called when the pickup is collides with a player
 void WeaponUpgrade::OnPickup(Player* collectingPlayer)
 {
-	if (Random(0.0f, 100.0f) > 87.0f)
+	if (Random(0.0f, 100.0f) > 50.0f)
 	{
 		collectingPlayer->GetWeapon()->AddBarrel();
 	}
-
+	
 	if (mFireRate > 0.0f)
 		collectingPlayer->GetWeapon()->SetFireRate(mFireRate);
 

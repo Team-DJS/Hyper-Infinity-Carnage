@@ -42,11 +42,10 @@ CollisionCylinder* Pickup::GetCollisionCylinder()
 void Pickup::Update(float frameTime)
 {
 	// Update the timer
-	// mTimer.Update(frameTime);
+	mTimer.Update(frameTime);
 
 	mModel->RotateY(ROTATION_SPEED * frameTime);
 
 	mHoverCounter += frameTime * HOVER_SPEED;
-	mModel->SetY(cosf(mHoverCounter) * HOVER_RANGE + mHeight);// * HOVER_RANGE);
-
+	mModel->SetY(cosf(mHoverCounter) * HOVER_RANGE + mHeight);
 }

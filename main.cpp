@@ -590,7 +590,7 @@ bool LoadingScreenShutdown()
 
 // Setups the main game
 // Returns true on success, false on failure
-bool GameSetup()
+bool GameSetup(bool loadSaveGame)
 {
 	// Load the player mesh - now loaded in ProgramSetup!
 	// Load arena enemy and projectile meshes
@@ -611,6 +611,10 @@ bool GameSetup()
 #ifdef _DEBUG
 	CollisionObject::MARKER_MESH = gEngine->LoadMesh("dummy.x");
 #endif
+
+	// Load the arena
+	gArena = new Arena(loadSaveGame, gPlayerName);
+
 	return true;
 }
 
@@ -840,14 +844,13 @@ int main(int argc, char* argv[])
 		// Game Enter
 
 		// Setup the game
-		if (!GameSetup())
+		if (!GameSetup(loadSaveGame))
 		{
 			ProgramShutdown();
 			return EXIT_FAILURE;
 		}
 
-		// Load the arena
-		gArena = new Arena(loadSaveGame, gPlayerName);
+		
 		// Continue in game loop until exited
 		while (!quitGame)
 		{
