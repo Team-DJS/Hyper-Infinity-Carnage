@@ -29,8 +29,5 @@ namespace HIC
 		// Called when the pickup is collides with a player
 		void OnPickup(Player* collectingPlayer);
 
-	public:
-		static IMesh* MESH;
-
 	};
 }
