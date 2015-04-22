@@ -22,7 +22,6 @@ Player::Player(const D3DXVECTOR3& position, float radius) :
 	mBombs(DEFAULT_BOMBS),
 	mWeapon(new Weapon())
 {
-	//mWeapon->SetDamage(50U);
 }
 
 // Destructor for Player
@@ -173,6 +172,17 @@ void Player::Update(float frameTime)
 	//Set new velocity based upon current velocity, thrust and drag
 	mVelocity.x += thrust.x + drag.x;
 	mVelocity.y += thrust.y + drag.y;
+
+	if (mCollidedX)
+	{
+		mVelocity.x = -mVelocity.x * 0.5f;	//Reverse direction of movement and reduce the speed of the reversed component
+		mCollidedX = false;
+	}
+	if (mCollidedZ)
+	{
+		mVelocity.y = -mVelocity.y * 0.5f;	//Reverse direction of movement and reduce the speed of the reversed component
+		mCollidedZ = false;
+	}
 
 	//Move model by velocity vector
 	MoveX(2 * mVelocity.x * frameTime);

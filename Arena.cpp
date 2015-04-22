@@ -359,6 +359,18 @@ void Arena::Update(float frameTime)
 		{
 			enemy->SetPosition(enitityPos);
 		}
+		for (auto& otherEnemy : mEnemies)
+		{
+			if (enemy != otherEnemy)
+			{
+				if (CollisionDetect(enemy->GetCollisionCylinder(), otherEnemy->GetCollisionCylinder()))
+				{
+					enemy->CollisionResolution(*otherEnemy->GetCollisionCylinder());
+					otherEnemy->CollisionResolution(*enemy->GetCollisionCylinder());
+
+				}
+			}
+		}
 	}
 
 
@@ -725,6 +737,7 @@ void Arena::SpawnEnemy()
 		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
 
 		enemy->SetPosition(newPosition);
+		enemy->SetPosition(newPosition);	//Additional line to prevent issues with collsion detection the frame after spawning
 	} while (CollisionDetect(enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder()->GetPosition(), 150.0f)));
 
 	mSpawnTunnels.push_back(new SpawnTunnel(enemy->GetWorldPos()));

@@ -55,7 +55,7 @@ void Enemy::Update(float frameTime)
 	D3DXVECTOR3 playerVector3 = this->GetWorldPos() - PLAYER_POS;
 	D3DXVECTOR2 playerVector = D3DXVECTOR2(playerVector3.x, playerVector3.z);
 
-	//Normalise the mouse vector
+	//Normalise the player vector
 	D3DXVec2Normalize(&playerVector, &playerVector);
 
 	D3DXVECTOR3 rightVect3 = GetRightVector();	//Create and obtain the facing vector of the ship
@@ -78,8 +78,11 @@ void Enemy::Update(float frameTime)
 	}
 
 	//Decide whether to move forward (and how fast)
-	MoveX(GetFacingVector().x * 75.0f * frameTime);
-	MoveZ(GetFacingVector().z * 75.0f * frameTime);
+	D3DXVECTOR3 facingVect = GetFacingVector();
+	D3DXVec3Normalize(&facingVect, &facingVect);
+
+	MoveX(facingVect.x * 75.0f * frameTime);
+	MoveZ(facingVect.z * 75.0f * frameTime);
 
 	//Set new collision position
 	GetCollisionCylinder()->SetPosition(D3DXVECTOR2(GetWorldPos().x, GetWorldPos().z));
