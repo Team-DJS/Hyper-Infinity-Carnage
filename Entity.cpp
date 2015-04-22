@@ -161,23 +161,28 @@ CollisionCylinder* Entity::GetCollisionCylinder()
 
 void Entity::CollisionResolution(CollisionCylinder& collidingWith)
 {
-	//Reset model position to outside of the collision
-	mModel->SetX(mCollisionCylinder.GetPreviousPosition().x);
-	mModel->SetZ(mCollisionCylinder.GetPreviousPosition().y);
+	////Reset model position to outside of the collision
+	//mModel->SetX(mCollisionCylinder.GetPreviousPosition().x);
+	//mModel->SetZ(mCollisionCylinder.GetPreviousPosition().y);
 
 	//Modify the direction of movement based upon the ships position relative to the collision object it collided with and the current movement vector
 	D3DXVECTOR2 vectToOtherSphere = collidingWith.GetPosition() - mCollisionCylinder.GetPosition();	//Vector between ship and collided object
 	
-	//Angle by which the vector is to be rotated (degrees) - Based upon dot product and other trigonomety
-	//angle to rotate by equals 180 - 2 * alpha where alpha is the angle between the tangent of the spheres and the movement vector
-	float rotationAngle = 180.0f - (2.0f * (90.0f - AngleBetweenVectors(vectToOtherSphere, mVelocity)));
-	rotationAngle = D3DXToRadian(rotationAngle);	//Convert to radians for use with c++ trig formulae
 	
-	//Calculate the new velocity by rotating the vector using a 2D rotation matrix (multiply components by 0.8f to make movement more realistic)
-	mVelocity = D3DXVECTOR2(mVelocity.x * cosf(rotationAngle) - mVelocity.y * sinf(rotationAngle) * 0.8f,
-		mVelocity.x *sinf(rotationAngle) + mVelocity.y * cosf(rotationAngle) * 0.8f);
+	//Find out how overlapped they are and then offset them that amount
+	float distanceAway = D3DXVec2Length(&vectToOtherSphere);
+	distanceAway -= (this->GetCollisionCylinder()->GetRadius() + collidingWith.GetRadius());
 
-	mCollisionCylinder.SetPosition(D3DXVECTOR2(mModel->GetX(), mModel->GetZ()));
+	distanceAway /= 2;
+
+	D3DXVec2Normalize(&vectToOtherSphere, &vectToOtherSphere);
+
+	vectToOtherSphere.x *= distanceAway;
+	vectToOtherSphere.y *= distanceAway;
+
+	mModel->MoveX(vectToOtherSphere.x);
+	mModel->MoveZ(vectToOtherSphere.y);
+
 	mCollisionCylinder.SetPosition(D3DXVECTOR2(mModel->GetX(), mModel->GetZ()));
 }
 
