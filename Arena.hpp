@@ -84,7 +84,7 @@ namespace HIC
 
 	private:
 		// Spawn an enemy on to arena (TO DO: Create parameters for the rules of spawning enemies)
-		void SpawnEnemy();
+		void SpawnEnemy(bool boss);
 
 		// Create enemy pool
 		void CreateEnemies();

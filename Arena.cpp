@@ -528,7 +528,7 @@ void Arena::Update(float frameTime)
 		//while (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
 		//{
 		mNoOfEnemies--;
-		SpawnEnemy();
+		SpawnEnemy(false);
 		//}
 	}
 
@@ -563,7 +563,15 @@ void Arena::LoadStage(uint32_t stageNumber)
 
 
 	// Determne number of enemies to defeat this stage
-	mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 30U) * 1.5f);
+	if (mCurrentStage % 10 == 0)
+	{
+		mNoOfEnemies = 1;
+		SpawnEnemy(true);
+	}
+	else
+	{
+		mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 30U) * 1.5f);
+	}
 
 	mBombExplosionTimer.Update(20.0f);
 	//this->Clear();
@@ -707,7 +715,7 @@ void Arena::TargetCamera(ICamera* camera)
 	camera->LookAt(mPlayer.GetModel());
 }
 
-void Arena::SpawnEnemy()
+void Arena::SpawnEnemy(bool boss)
 {
 	// Play the enemy spawn sound
 	mEnemySpawnSound->Play();
@@ -715,7 +723,16 @@ void Arena::SpawnEnemy()
 	Enemy* enemy = mEnemyPool.back();
 	mEnemyPool.pop_back();
 
-	enemy->SetHealth(static_cast<uint32_t>(100 + mCurrentStage * 3));
+	if (boss)
+	{
+		enemy->SetHealth(static_cast<uint32_t>(500 + mCurrentStage * 15));
+		enemy->GetModel()->Scale(5.0f);
+	}
+	else
+	{
+		enemy->SetHealth(static_cast<uint32_t>(100 + mCurrentStage * 3));
+		enemy->GetModel()->ResetScale();
+	}
 
 	do
 	{
