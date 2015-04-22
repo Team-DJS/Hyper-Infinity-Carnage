@@ -8,6 +8,7 @@
 #include "ExtraLife.hpp"
 #include "HealthPack.hpp"
 #include "Bomb.hpp"
+#include "Shield.hpp"
 #include "CollisionFunctions.hpp"
 #include "AudioManager.hpp"
 #include "FountainEmitter.hpp"

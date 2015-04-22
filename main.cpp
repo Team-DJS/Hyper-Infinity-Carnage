@@ -659,6 +659,7 @@ bool GameSetup(bool loadSaveGame)
 	// Load the player mesh - now loaded in ProgramSetup!
 	// Load arena enemy and projectile meshes
 	Player::SHIELD = gEngine->LoadMesh("ShieldSphere.x");
+	Shield::MESH = gEngine->LoadMesh("ShieldSphere.x");
 	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
 	Arena::ENEMY_MESH = gEngine->LoadMesh("Enemy.x");
 	Projectile::MESH = gEngine->LoadMesh("quad_additive.x");
