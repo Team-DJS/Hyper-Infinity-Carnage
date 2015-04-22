@@ -36,7 +36,6 @@ Player::~Player()
 }
 
 //-----------------------------------
-// Setters
 //-----------------------------------
 
 // Gives an extra life to the player
@@ -55,6 +54,7 @@ void Player::GiveShield()
 {
 	mShield = true;
 	mShieldTimer.Reset();
+	mShieldModel->ResetScale();
 	mShieldModel->Scale(5.0f);
 }
 
