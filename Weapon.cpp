@@ -16,7 +16,7 @@ AudioSource* Weapon::SHOOT_SOUND = nullptr;
 // Constructor for Weapon
 Weapon::Weapon(float fireRate, uint32_t damage, uint32_t noBarrels) :
 	mFireRate(fireRate),
-	mMaxFireRate(1/50),
+	mMaxFireRate(1/7),
 	mDamage(damage),
 	mNoBarrels(noBarrels),
 	mTryFire(false),
