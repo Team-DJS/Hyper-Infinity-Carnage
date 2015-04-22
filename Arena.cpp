@@ -430,9 +430,13 @@ void Arena::Update(float frameTime)
 			// Check for collision with the player
 			if (CollisionDetect(enemyCollisionVolume, mPlayer.GetCollisionCylinder()))
 			{
-				mPlayer.TakeHealth(enemy->GetDamage());
-				mMultiplier = 1U;
-				mKillCount = 0U;
+				if (!mPlayer.IsShielded())
+				{
+					mPlayer.TakeHealth(enemy->GetDamage());
+					mMultiplier = 1U;
+					mKillCount = 0U;
+					
+				}
 				enemyHit = true;
 			}
 
