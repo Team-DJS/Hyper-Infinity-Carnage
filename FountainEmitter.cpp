@@ -17,8 +17,8 @@ FountainEmitter::FountainEmitter(IMesh* mesh, D3DXVECTOR3 position, float emissi
 	// Generate all the particles
 	for (uint32_t i = 0; i < maxSpawn; i++)
 	{
-		Particle* particle = new Particle(mesh, lifetime);
-		particle->SetVisibility(false);
+		Particle* particle = CreateParticle(mesh, position, {}, lifetime);
+		HideParticle(particle);
 		mParticlePool.push_back(particle);
 	}
 }
@@ -29,13 +29,13 @@ FountainEmitter::~FountainEmitter()
 	// Delete all the particles in the particle pool
 	for (auto particle : mParticlePool)
 	{
-		SafeRelease(particle);
+		DeleteParticle(particle);
 	}
 
 	// Delete all the active particles
 	for (auto particle : mActiveParticles)
 	{
-		SafeRelease(particle);
+		DeleteParticle(particle);
 	}
 }
 
@@ -58,10 +58,11 @@ void FountainEmitter::Update(float frameTime)
 		velocity.y = 80.0f;
 		velocity.z = Random(-40.0f, 40.0f);
 
-		particle->SetPosition(GetPosition());
-		particle->SetLifetime(mLifetime);
-		particle->SetVelocity(velocity);
-		particle->SetVisibility(true);
+		auto position = GetPosition();
+		particle->model->SetPosition(position.x, position.y, position.z);
+		particle->lifetime = mLifetime;
+		particle->velocity = velocity;
+		ShowParticle(particle);
 
 		// Activate the particle
 		mActiveParticles.push_back(particle);
@@ -74,14 +75,19 @@ void FountainEmitter::Update(float frameTime)
 	for (auto iter = mActiveParticles.begin(); iter != mActiveParticles.end();)
 	{
 		Particle* particle = (*iter);
-		particle->Update(frameTime);
+
+		// Update the particle
+		particle->lifetime -= frameTime;
+
+		auto velocity = particle->velocity;
+		particle->model->Move(velocity.x * frameTime, velocity.y * frameTime, velocity.z * frameTime);
+		particle->model->LookAt(gCamera);
 
 		// Reset any completed particles
-		if (particle->IsLifetimeOver())
+		if (particle->lifetime <= 0.0f)
 		{
-			particle->SetVisibility(false);
+			HideParticle(particle);
 			mParticlePool.push_back(particle);
-
 			iter = mActiveParticles.erase(iter);
 		}
 		else

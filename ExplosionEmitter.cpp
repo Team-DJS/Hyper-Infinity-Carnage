@@ -6,12 +6,9 @@ ExplosionEmitter::ExplosionEmitter(IMesh* mesh, D3DXVECTOR3 position, float life
 	ParticleEmitter(mesh, position),
 	mLifetime(lifetime)
 {
-	for (auto i = 0; i < 8; ++i)
+	for (auto i = 0; i < 6; ++i)
 	{
-		Particle* particle = new Particle{ mesh, lifetime };
-		particle->SetPosition(position);
-		particle->SetVelocity({ Random(-50.0f, 50.0f), Random(0.0f, 100.0f), Random(-50.0f, 50.0f) });
-
+		Particle* particle = CreateParticle(mesh, position, { Random(-25.0f, 25.0f), Random(0.0f, 50.0f), Random(-25.0f, 25.0f) }, lifetime);
 		mParticles.push_back(particle);
 	}
 }
@@ -21,7 +18,7 @@ ExplosionEmitter::~ExplosionEmitter()
 {
 	for (auto particle : mParticles)
 	{
-		delete(particle);
+		DeleteParticle(particle);
 	}
 }
 
@@ -35,7 +32,9 @@ void ExplosionEmitter::Update(float frameTime)
 		// Update all the particles
 		for (auto particle : mParticles)
 		{
-			particle->Update(frameTime);
+			auto velocity = particle->velocity;
+			particle->model->Move(velocity.x * frameTime, velocity.y * frameTime, velocity.z * frameTime);
+			particle->model->LookAt(gCamera);
 		}
 
 		// Stop emission
