@@ -784,51 +784,53 @@ void Arena::CreateNewPickup()
 
 	float pickupSeed = Random(0.0f, 100.0f);
 
+	float healthChance;
+	float bombChance;
+	float weaponUpgradeChance;
+	float lifeChance;
+	float shieldChance;
+
 	if (mCurrentStage <= 10)
 	{
-		if (pickupSeed <= 10.0f)
-		{
-			//health
-			mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
-		}
-		else if (pickupSeed <= 20.0f)
-		{
-			//bomb
-			mPickups.push_back(new Bomb(position, 15.0f, lifetime));
-		}
-		else if (pickupSeed <= 95.0f)
-		{
-			//weapon upgrade
-			mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime));
-		}
-		else
-		{
-			//life
-			mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
-		}
+		healthChance = 10.0f;
+		bombChance = 20.0f;
+		weaponUpgradeChance = 85.0f;
+		shieldChance = 95.0f;
+		//Extra life chance = 100.0f;
 	}
 	else
 	{
-		if (pickupSeed <= 60.0f)
-		{
-			//health
-			mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
-		}
-		else if (pickupSeed <= 85.0f)
-		{
-			//bomb
-			mPickups.push_back(new Bomb(position, 15.0f, lifetime));
-		}
-		else if (pickupSeed <= 95.0f)
-		{
-			//weapon upgrade
-			mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime));
-		}
-		else
-		{
-			//life
-			mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
-		}
+		healthChance = 40.0f;
+		bombChance = 65.0f;
+		weaponUpgradeChance = 75.0f;
+		shieldChance = 95.0f;
+		//Extra life chance = 100.0f;
+
+	}
+
+	if (pickupSeed <= healthChance)
+	{
+		//health
+		mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
+	}
+	else if (pickupSeed <= bombChance)
+	{
+		//bomb
+		mPickups.push_back(new Bomb(position, 15.0f, lifetime));
+	}
+	else if (pickupSeed <= weaponUpgradeChance)
+	{
+		//weapon upgrade
+		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime));
+	}
+	else if (pickupSeed <= shieldChance)
+	{
+		mPickups.push_back(new Shield(position, 15.0f, lifetime));
+	}
+	else
+	{
+		//life
+		mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
 	}
 
 	mNoPickupsThisRound++;

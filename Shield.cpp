@@ -7,7 +7,7 @@ IMesh* Shield::MESH = nullptr;
 Shield::Shield(const D3DXVECTOR3& position, float radius, float lifeTime) :
 Pickup(MESH, position, radius, lifeTime)
 {
-
+	
 }
 
 Shield::~Shield()

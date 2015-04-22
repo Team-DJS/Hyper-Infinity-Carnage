@@ -4,6 +4,7 @@ namespace HIC
 {
 	class Shield : public Pickup
 	{
+	public:
 		//-----------------------------
 		// Constructors/Destructors
 		//-----------------------------
