@@ -5,8 +5,7 @@ using namespace HIC;
 // Static Initialisations
 //-----------------------------------
 
-const uint32_t MAX_PROJECTILES = 30U;
-float MAX_FIRE_RATE = 0.1f;
+const uint32_t MAX_PROJECTILES = 64U;
 
 AudioSource* Weapon::SHOOT_SOUND = nullptr;
 
@@ -17,14 +16,16 @@ AudioSource* Weapon::SHOOT_SOUND = nullptr;
 // Constructor for Weapon
 Weapon::Weapon(float fireRate, uint32_t damage, uint32_t noBarrels) :
 	mFireRate(fireRate),
+	mMaxFireRate(0.125f / noBarrels),
 	mDamage(damage),
 	mNoBarrels(noBarrels),
 	mTryFire(false),
-	mFireTimer(fireRate)
+	mFireTimer(fireRate),
+	mProjectilePool(MAX_PROJECTILES)
 {
-	for (uint32_t i = 0; i < MAX_PROJECTILES; i++)
+	for (uint32_t i = 0; i < mProjectilePool.size(); i++)
 	{
-		mProjectilePool.push_back(new Projectile(D3DXVECTOR3(0, 0, -800), D3DXVECTOR2(0, 0)));
+		mProjectilePool[i] = new Projectile({ 0.0f, 0.0f, -800.0f }, { 0.0f, 0.0f });
 	}
 }
 
@@ -46,9 +47,9 @@ Weapon::~Weapon()
 void Weapon::SetFireRate(float bulletsPerSecond)
 {
 	mFireRate -= bulletsPerSecond;
-	if (mFireRate < MAX_FIRE_RATE)
+	if (mFireRate < mMaxFireRate)
 	{
-		mFireRate = MAX_FIRE_RATE;
+		mFireRate = mMaxFireRate;
 	}
 	mFireTimer.Reset(mFireRate * mNoBarrels);
 }
@@ -65,7 +66,7 @@ void Weapon::AddBarrel()
 	if (mNoBarrels < 26)
 		mNoBarrels++;
 	
-	MAX_FIRE_RATE -= 0.01f;
+	mMaxFireRate = 0.125f / mNoBarrels;
 }
 
 //Sets whether or not the weapon should try to fire this frame (will decide to fire based on fire rate)

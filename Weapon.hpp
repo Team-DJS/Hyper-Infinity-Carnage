@@ -89,14 +89,14 @@ namespace HIC
 	private:
 		// Shoots a projectile in a direction
 		void Shoot(const D3DXVECTOR3& direction, const D3DXVECTOR3 playerFacingVector);
-
 	private:
-		float mFireRate;					//Length of time between bullet fires
-		uint32_t mDamage;					//Amount of damage a bullet deals upon contact
-		uint32_t mNoBarrels;				//Number of barrels the ship fires at once
-		deque <Projectile*> mProjectiles;	//Vector of projectiles that this weapon has fired
-		vector <Projectile*> mProjectilePool; // Vector of projectiles that the weapon can fire
-		Timer mFireTimer;
-		bool mTryFire;						//Whether or not the weapon should try to fire a round this frame
+		float mFireRate;						// Length of time between bullet fires
+		float mMaxFireRate;						// The maximum fire rate with the current number of barrels
+		uint32_t mDamage;						// Amount of damage a bullet deals upon contact
+		uint32_t mNoBarrels;					// Number of barrels the ship fires at once
+		deque <Projectile*> mProjectiles;		// Vector of projectiles that this weapon has fired
+		vector <Projectile*> mProjectilePool;	// Vector of projectiles that the weapon can fire
+		Timer mFireTimer;						// The timer used to determine when the next projectile can be shot
+		bool mTryFire;							//Whether or not the weapon should try to fire a round this frame
 	};
 }

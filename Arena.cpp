@@ -47,18 +47,8 @@ Arena::Arena(bool loadFromFile, string name) :
 	mSceneryObjects.push_back(new Scenery(skyboxMesh, D3DXVECTOR3(0, -2400.0f, 0), 2.0f));
 
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
-	//D3DXVECTOR3 pos;
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	for (int j = 0; j < 3; j++)
-	//	{
-	//		pos.x = -1170.0f + 1170.0f * j;
-	//		pos.y = -700.0f;
-	//		pos.z = 1170.0f * i;
-	Scenery* sceneryTemp = new Scenery(buildingsMesh, D3DXVECTOR3(0,-1805,-50), 800.0f);
+	Scenery* sceneryTemp = new Scenery(buildingsMesh, D3DXVECTOR3(0, -1805, -50), 800.0f);
 	mSceneryObjects.push_back(sceneryTemp);
-	//	}
-	//}
 
 	// Create the gameplay music audio source
 	mGameMusic = gAudioManager->CreateSource("GameplayMusic", { 0.0f, 0.0f, 0.0f });
@@ -85,7 +75,7 @@ Arena::Arena(bool loadFromFile, string name) :
 	ExtraLife::MESH = gEngine->LoadMesh("LifePickup.x");
 	Bomb::MESH = gEngine->LoadMesh("BombPickup.x");
 
-	mExplosionMesh = gEngine->LoadMesh("quad_multiplicative.x");
+	mExplosionMesh = gEngine->LoadMesh("ExplosionQuad.x");
 	const float arenaEdge = mCollisionBox.GetMaxOffset().x;
 	const float emissionRate = 0.0125f;
 	const float lifetime = 2.0f;
@@ -93,7 +83,6 @@ Arena::Arena(bool loadFromFile, string name) :
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(arenaEdge, 0, 0), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(arenaEdge, 0, -arenaEdge), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(0, 0, arenaEdge), emissionRate, lifetime));
-	//mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(0, 0, -arenaEdge), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, arenaEdge), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, 0), emissionRate, lifetime));
 	mArenaParticles.push_back(new FountainEmitter(mExplosionMesh, D3DXVECTOR3(-arenaEdge, 0, -arenaEdge), emissionRate, lifetime));
@@ -101,7 +90,6 @@ Arena::Arena(bool loadFromFile, string name) :
 	for (auto iter : mArenaParticles)
 	{
 		iter->StartEmission();
-		//iter->StopEmission();
 	}
 
 	SpawnTunnel::SPAWN_TUNNEL_MESH = gEngine->LoadMesh("BombPortal.x");
@@ -198,7 +186,7 @@ void Arena::Update(float frameTime)
 	//Slowmo while bomb detonating
 	if (mBombSwitch)
 	{
-		frameTime *= 0.6f;
+		frameTime *= 0.25f;
 	}
 
 	if (gEngine->KeyHit(Key_T))
