@@ -65,7 +65,7 @@ void Weapon::AddBarrel()
 	if (mNoBarrels < 26)
 		mNoBarrels++;
 	
-	MAX_FIRE_RATE - 0.01;
+	MAX_FIRE_RATE -= 0.01f;
 }
 
 //Sets whether or not the weapon should try to fire this frame (will decide to fire based on fire rate)
@@ -144,7 +144,7 @@ void Weapon::Shoot(const D3DXVECTOR3& playerPosition, const D3DXVECTOR3 playerFa
 {
 	// Create new projectiles moving in the provided direction (use an angle offset for additional barrels)
 	bool spread = false;
-	for (int i = 0; i < mNoBarrels; i++)
+	for (auto i = 0U; i < mNoBarrels; i++)
 	{
 		Projectile* projectile = nullptr;
 		if (!mProjectilePool.empty())
@@ -166,12 +166,12 @@ void Weapon::Shoot(const D3DXVECTOR3& playerPosition, const D3DXVECTOR3 playerFa
 		}
 		else if (!spread)
 		{
-			angleX = i * 3.0f * 0.0174532925;
+			angleX = i * 3.0f * 0.0174532925f;
 			spread = !spread;
 		}
 		else
 		{
-			angleX = -(i - 1) * 3.0f * 0.0174532925;
+			angleX = -((i - 1) * 3.0f * 0.0174532925f);
 			spread = !spread;
 		}
 
