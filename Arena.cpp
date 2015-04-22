@@ -196,6 +196,14 @@ void Arena::Update(float frameTime)
 	}
 #endif
 
+	if (gEngine->KeyHit(Key_9))
+	{
+		for (int i = 0; i < mPickups.size(); i++)
+		{
+			mPickups[i]->GetCollisionCylinder()->ToggleMarkers();
+		}
+	}
+
 	// Handle player input
 	{
 		if (gEngine->KeyHeld(Key_W))
@@ -825,11 +833,12 @@ void Arena::CreateNewPickup()
 	}
 	else if (pickupSeed <= shieldChance)
 	{
+		position.y += 15.0f;
 		mPickups.push_back(new Shield(position, 15.0f, lifetime));
+		mPickups.back()->GetModel()->Scale(0.1f);
 	}
 	else
 	{
-		//life
 		mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
 	}
 
