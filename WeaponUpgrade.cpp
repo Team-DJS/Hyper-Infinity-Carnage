@@ -12,10 +12,8 @@ IMesh* WeaponUpgrade::mMesh = nullptr;
 //-----------------------------------
 
 // Constructor for WeaponUpgrade
-WeaponUpgrade::WeaponUpgrade(IMesh* mesh, const D3DXVECTOR3& position, float radius, float lifeTime, float fireRateUpAmount, uint32_t damageUpAmount) :
-	Pickup(mesh, position, radius, lifeTime),
-	mFireRate(fireRateUpAmount),
-	mDamage(damageUpAmount)
+WeaponUpgrade::WeaponUpgrade(IMesh* mesh, const D3DXVECTOR3& position, float radius, float lifeTime) :
+	Pickup(mesh, position, radius, lifeTime)
 {
 }
 
@@ -40,16 +38,19 @@ WeaponUpgrade::~WeaponUpgrade()
 // Called when the pickup is collides with a player
 void WeaponUpgrade::OnPickup(Player* collectingPlayer)
 {
-	if (Random(0.0f, 100.0f) > 50.0f)
+	float seed = Random(0.0f, 100.0f);
+
+	if (seed <= 40.0f)
+	{
+		collectingPlayer->GetWeapon()->SetFireRate(collectingPlayer->GetWeapon()->GetFireRate() + 1.0f);
+	}
+	else if (seed <= 70.0f)
+	{
+		collectingPlayer->GetWeapon()->SetDamage(25.0f);
+	}
+	else
 	{
 		collectingPlayer->GetWeapon()->AddBarrel();
 	}
 	
-	if (mFireRate > 0.0f)
-		collectingPlayer->GetWeapon()->SetFireRate(mFireRate);
-
-	if (mDamage > 0U)
-		collectingPlayer->GetWeapon()->SetDamage(mDamage);
-
-
 }

@@ -16,7 +16,7 @@ AudioSource* Weapon::SHOOT_SOUND = nullptr;
 // Constructor for Weapon
 Weapon::Weapon(float fireRate, uint32_t damage, uint32_t noBarrels) :
 	mFireRate(fireRate),
-	mMaxFireRate(0.125f / noBarrels),
+	mMaxFireRate(1/50),
 	mDamage(damage),
 	mNoBarrels(noBarrels),
 	mTryFire(false),
@@ -46,12 +46,12 @@ Weapon::~Weapon()
 // Increases the fire rate of the weapon by the given amount - (make the bullets faster)
 void Weapon::SetFireRate(float bulletsPerSecond)
 {
-	mFireRate -= bulletsPerSecond;
+	mFireRate = 1/bulletsPerSecond;
 	if (mFireRate < mMaxFireRate)
 	{
 		mFireRate = mMaxFireRate;
 	}
-	mFireTimer.Reset(mFireRate * mNoBarrels);
+	mFireTimer.Reset(mFireRate);
 }
 
 // Increases the damage of the weapon by the given amount
@@ -65,8 +65,6 @@ void Weapon::AddBarrel()
 {
 	if (mNoBarrels < 26)
 		mNoBarrels++;
-	
-	mMaxFireRate = 0.125f / mNoBarrels;
 }
 
 //Sets whether or not the weapon should try to fire this frame (will decide to fire based on fire rate)
@@ -82,7 +80,7 @@ void Weapon::SetFire()
 //Returns the number of bullets fired per second
 float Weapon::GetFireRate()
 {
-	return mFireRate;
+	return 1.0f/mFireRate;
 }
 
 //Returns the damage that a new projectile will deliver upon collision
@@ -188,7 +186,7 @@ void Weapon::Shoot(const D3DXVECTOR3& playerPosition, const D3DXVECTOR3 playerFa
 		mProjectiles.push_back(projectile);
 	}
 
-	mFireTimer.Reset(mFireRate * mNoBarrels);
+	mFireTimer.Reset(mFireRate);
 
 	// Play the shooting audio clip
 	SHOOT_SOUND->Play();

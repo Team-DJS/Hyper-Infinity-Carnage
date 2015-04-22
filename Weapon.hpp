@@ -15,7 +15,7 @@ namespace HIC
 		//-----------------------------
 
 		// Constructor for Weapon
-		Weapon(float fireRate = 0.3f, uint32_t damage = 50U, uint32_t noBarrels = 1U);
+		Weapon(float fireRate = 0.5f, uint32_t damage = 50U, uint32_t noBarrels = 1U);
 
 		// Destructor for Weapon
 		~Weapon();
