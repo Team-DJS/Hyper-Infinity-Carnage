@@ -48,7 +48,7 @@ namespace HIC
 		uint32_t GetDamage();
 
 		//Returns the projectiles for collision
-		deque<Projectile*> GetProjectiles();
+		deque<Projectile*>& GetProjectiles();
 
 		//--------------
 		// Other
@@ -58,7 +58,7 @@ namespace HIC
 		void Update(float frameTime, const D3DXVECTOR3 playerPosition, const D3DXVECTOR3 playerFacingVector);
 
 		// Removes a projectile from the arena
-		void RemoveProjectile(uint32_t i);
+		void RemoveProjectile(std::deque<Projectile*>::iterator& iter);
 
 		// Called to clear all projectiles currently alive
 		void Clear();

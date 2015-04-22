@@ -92,7 +92,7 @@ uint32_t Weapon::GetDamage()
 }
 
 
-deque<Projectile*> Weapon::GetProjectiles()
+deque<Projectile*>& Weapon::GetProjectiles()
 {
 	return mProjectiles;
 }
@@ -123,19 +123,20 @@ void Weapon::Update(float frameTime, const D3DXVECTOR3 playerPosition, const D3D
 	mTryFire = false;
 }
 
-void Weapon::RemoveProjectile(uint32_t i)
+void Weapon::RemoveProjectile(std::deque<Projectile*>::iterator& iter)
 {
-	mProjectiles[i]->SetPosOffscreen();
-	mProjectilePool.push_back(mProjectiles[i]);
-	mProjectiles.erase(mProjectiles.begin() + i);
+	Projectile* projectile = (*iter);
+	projectile->SetPosOffscreen();
+	
+	mProjectilePool.push_back(projectile);
+	iter = mProjectiles.erase(iter);
 }
 
 void Weapon::Clear()
 {
-	for (uint32_t i = 0; i < mProjectiles.size(); i++)
+	for (auto iter = mProjectiles.begin(); iter != mProjectiles.end();)
 	{
-		RemoveProjectile(i);
-		i--;
+		RemoveProjectile(iter);
 	}
 	mProjectiles.clear();
 }

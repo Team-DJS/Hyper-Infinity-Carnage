@@ -32,7 +32,6 @@ Arena::Arena(bool loadFromFile, string name) :
 	mPickupTimer(10.0f),
 	mBombExplosionTimer(0.0f),
 	mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
-	mCollisionSwitch(false),
 	mBombSwitch(false),
 	mPlayerStatus(true),
 	mPlayerName(name),
@@ -66,7 +65,7 @@ Arena::Arena(bool loadFromFile, string name) :
 	mEnemySpawnSound->SetLooping(false);
 
 	gAudioManager->LoadAudio("EnemyDestroyed", "Media\\Audio\\EnemyDestroyed.wav");
-	mEnemyDestroyedSound = gAudioManager->CreateSource("EnemyDestroyed", {0.0f, 0.0f, 0.0f});
+	mEnemyDestroyedSound = gAudioManager->CreateSource("EnemyDestroyed", { 0.0f, 0.0f, 0.0f });
 	mEnemyDestroyedSound->SetLooping(false);
 
 	// Initialise the Mesh for the pickups
@@ -183,78 +182,103 @@ Arena::~Arena()
 // Updates all the entities inside the arena
 void Arena::Update(float frameTime)
 {
-	//Slowmo while bomb detonating
+	// Slow-motion while bomb is detonating
 	if (mBombSwitch)
 	{
 		frameTime *= 0.25f;
 	}
 
+#ifdef _DEBUG
 	if (gEngine->KeyHit(Key_T))
 	{
 		CreateNewPickup();
 	}
+#endif
 
 	// Handle player input
-	if (gEngine->KeyHeld(Key_W))
 	{
-		mPlayer.SetMoveForward();
-	}
-	if (gEngine->KeyHeld(Key_A))
-	{
-		mPlayer.SetMoveLeft();
-	}
-	if (gEngine->KeyHeld(Key_S))
-	{
-		mPlayer.SetMoveBackward();
-	}
-	if (gEngine->KeyHeld(Key_D))
-	{
-		mPlayer.SetMoveRight();
+		if (gEngine->KeyHeld(Key_W))
+		{
+			mPlayer.SetMoveForward();
+		}
+		if (gEngine->KeyHeld(Key_A))
+		{
+			mPlayer.SetMoveLeft();
+		}
+		if (gEngine->KeyHeld(Key_S))
+		{
+			mPlayer.SetMoveBackward();
+		}
+		if (gEngine->KeyHeld(Key_D))
+		{
+			mPlayer.SetMoveRight();
+		}
+
+		if (gEngine->KeyHeld(Mouse_LButton))
+		{
+			mPlayer.SetTryFire();
+		}
 	}
 
-	if (gEngine->KeyHeld(Mouse_LButton))
+	// Update the bomb
 	{
-		mPlayer.SetTryFire();
+		mBombExplosionTimer.Update(frameTime);
+		if (mBombExplosionTimer.IsComplete())
+		{
+			if (mBombSwitch)
+			{
+				mBombSwitch = false;
+				mBombModel->ResetScale();
+				mBombModel->SetPosition(OFF_SCREEN_POS.x, OFF_SCREEN_POS.y, OFF_SCREEN_POS.z);
+				mBombSound->Stop();
+			}
+			else if (mPlayer.GetBombs() > 0 && gEngine->KeyHit(Key_Space))
+			{
+				mBombSwitch = true;
+				mBombExplosionTimer.Reset(0.9f);
+				mBombCollisionCylinder.SetRadius(0.0);
+				mBombCollisionCylinder.SetPosition(D3DXVECTOR2(mPlayer.GetWorldPos().x, mPlayer.GetWorldPos().z));
+				mBombModel->SetPosition(mPlayer.GetWorldPos().x, 7.0f, mPlayer.GetWorldPos().z);
+				mPlayer.TakeBomb();
+				mBombSound->Play();
+			}
+		}
 	}
 
-	mBombExplosionTimer.Update(frameTime);
 
-	if (mBombSwitch && mBombExplosionTimer.IsComplete())
+	// Display the HUD
 	{
-		mBombSwitch = false;
-		mBombModel->ResetScale();
-		mBombModel->SetPosition(OFF_SCREEN_POS.x, OFF_SCREEN_POS.y, OFF_SCREEN_POS.z);
-		mBombSound->Stop();
+		static const auto screenWidth = gEngine->GetWidth();
+		static const auto screenHeight = gEngine->GetHeight();
+
+		// Draw the score
+		auto hudText = to_string(mCurrentScore);
+		HUDFont->Draw(hudText, screenWidth / 2 + 138, 6, kGreen, kRight);
+
+		// Draw the multiplier
+		hudText = "x " + to_string(mMultiplier);
+		HUDFont->Draw(hudText, screenWidth / 2 + 162, 35, 0xFFFF0000, kRight);
+
+		// Draw current health
+		hudText = to_string(mPlayer.GetHealth());
+		HUDFont->Draw(hudText, 245, 6, kGreen, kRight);
+
+		// Draw the current stage
+		hudText = to_string(mCurrentStage);
+		HUDFont->Draw(hudText, screenWidth - 20, 6, kGreen, kRight);
+
+		// Draw remaining lives
+		hudText = to_string(mPlayer.GetLives());
+		HUDFont->Draw(hudText, 235, screenHeight - 50, kGreen, kRight);
+
+		// Draw remaining bombs
+		hudText = to_string(mPlayer.GetBombs());
+		HUDFont->Draw(hudText, screenWidth - 20, screenHeight - 50, kGreen, kRight);
 	}
 
-	if (gEngine->KeyHit(Key_Space) && mBombExplosionTimer.IsComplete() && mPlayer.GetBombs() > 0)
-	{
-		mBombSwitch = true;
-		mBombExplosionTimer.Reset(0.9f);
-		mBombCollisionCylinder.SetRadius(0.0);
-		mBombCollisionCylinder.SetPosition(D3DXVECTOR2(mPlayer.GetWorldPos().x, mPlayer.GetWorldPos().z));
-		mBombModel->SetPosition(mPlayer.GetWorldPos().x, 7.0f, mPlayer.GetWorldPos().z);
-		mPlayer.TakeBomb();
-		mBombSound->Play();
-	}
-
-	// InGame HUD update
-	int screenWidth = gEngine->GetWidth();
-	int screenHeight = gEngine->GetHeight();
-	string hudText = to_string(mCurrentScore);  // Score ( Top Middle )
-	HUDFont->Draw(hudText, screenWidth / 2 + 138, 6, kGreen, kRight);
-	hudText = "x " + to_string(mMultiplier);
-	HUDFont->Draw(hudText, screenWidth / 2 + 162, 35, 0xFFFF0000, kRight);
-	hudText = to_string(mPlayer.GetHealth());	// Health ( Top Left )
-	HUDFont->Draw(hudText, 245, 6, kGreen, kRight);
-	hudText = to_string(mCurrentStage);			// Stage ( Top Right )
-	HUDFont->Draw(hudText, screenWidth - 20, 6, kGreen, kRight);
-	hudText = to_string(mPlayer.GetLives());	// Lives ( Bottom Left )
-	HUDFont->Draw(hudText, 235, screenHeight - 50, kGreen, kRight);
-	hudText = to_string(mPlayer.GetBombs());	// Bombs ( Bottom Right )
-	HUDFont->Draw(hudText, screenWidth - 20, screenHeight - 50, kGreen, kRight);
 
 #ifdef _DEBUG
+	// Toggle collision box markers
 	if (gEngine->KeyHit(Key_M))
 	{
 		mPlayer.GetCollisionCylinder()->ToggleMarkers();
@@ -269,7 +293,7 @@ void Arena::Update(float frameTime)
 		mCollisionBox.ToggleMarkers();
 	}
 
-	// turn on and off the particles for the arena
+	// Toggle the arena particle
 	if (gEngine->KeyHit(Key_J))
 	{
 		for (auto iter : mArenaParticles)
@@ -277,7 +301,7 @@ void Arena::Update(float frameTime)
 			iter->StartEmission();
 		}
 	}
-	if (gEngine->KeyHit(Key_K))
+	else if (gEngine->KeyHit(Key_K))
 	{
 		for (auto iter : mArenaParticles)
 		{
@@ -285,191 +309,167 @@ void Arena::Update(float frameTime)
 		}
 	}
 
-	// Update all arena particle emitter
-	for (auto iter = mArenaParticles.begin(); iter != mArenaParticles.end();)
-	{
-		ParticleEmitter* emitter = *iter;
-		emitter->Update(frameTime);
-
-		if (!emitter->IsEmitting() && dynamic_cast<ExplosionEmitter*>(emitter) != nullptr)
-		{
-			delete(emitter);
-
-			iter = mArenaParticles.erase(iter);
-		}
-		else
-		{
-			iter++;
-		}
-	}
-
-	//// Debug HUD
-	//hudText = "Stage: " + to_string(mCurrentStage);
-	//DebugHUD->Draw(hudText, 10, 10, kRed);
-	//hudText = "Lives: " + to_string(mPlayer.GetLives());
-	//DebugHUD->Draw(hudText, 10, 22, kRed);
-	//hudText = "Health: " + to_string(mPlayer.GetHealth());
-	//DebugHUD->Draw(hudText, 10, 34, kRed);
-	//hudText = "Enemies: " + to_string(mNoOfEnemies + mEnemies.size());
-	//DebugHUD->Draw(hudText, 10, 46, kRed);
-	//hudText = "Enemy Pool: " + to_string(mEnemyPool.size());
-	//DebugHUD->Draw(hudText, 10, 58, kRed);
-	//hudText = "Bombs: " + to_string(mPlayer.GetBombs());
-	//DebugHUD->Draw(hudText, 10, 70, kRed);
-	//
-	//hudText = "Score: " + to_string(mCurrentScore);
-	//DebugHUD->Draw(hudText, gEngine->GetWidth() - 200, 10, kRed);
-	//
-	gEngine->SetWindowCaption(to_string(1 / frameTime));
+	// Display the FPS on the window title
+	gEngine->SetWindowCaption(to_string(1.0f / frameTime));
 
 #endif
 
-
-	D3DXVECTOR3 enitityPos = mPlayer.GetWorldPos();
-	// Update the player
-	mPlayer.Update(frameTime);
-
-	// check if player is colliding with arena
-	if (!CollisionDetect(mPlayer.GetCollisionCylinder(), &mCollisionBox))
+	// Update all arena particle emitters
 	{
-		mPlayer.CollisionResolution(mCollisionBox);
+		for (auto iter = mArenaParticles.begin(); iter != mArenaParticles.end();)
+		{
+			ParticleEmitter* emitter = *iter;
+			emitter->Update(frameTime);
+
+			// Delete the emitter if it is an explosion and is finished
+			if (!emitter->IsEmitting() && dynamic_cast<ExplosionEmitter*>(emitter) != nullptr)
+			{
+				delete(emitter);
+				iter = mArenaParticles.erase(iter);
+			}
+			else
+			{
+				iter++;
+			}
+		}
+	}
+
+	// Update the player
+	{
+		mPlayer.Update(frameTime);
+
+		// Check if player is colliding with arena
+		if (!CollisionDetect(mPlayer.GetCollisionCylinder(), &mCollisionBox))
+		{
+			mPlayer.CollisionResolution(mCollisionBox);
+		}
+	}
+
+	// Update all the projectiles
+	{
+		auto playerWeapon = mPlayer.GetWeapon();
+		auto& weaponProjectiles = playerWeapon->GetProjectiles();
+		for (auto iter = weaponProjectiles.begin(); iter != weaponProjectiles.end();)
+		{
+			auto projectile = (*iter);
+			auto projectileCollisionVolume = projectile->GetCollisionObject();
+
+			// Check if the projectile collides with the arena
+			if (!CollisionDetect(&projectileCollisionVolume, &mCollisionBox))
+			{
+				playerWeapon->RemoveProjectile(iter);
+			}
+			else
+			{
+				++iter;
+			}
+		}
 	}
 
 	// Update all the enemies
-	Enemy::SetPlayerPosition(mPlayer.GetWorldPos());
-
-	for (auto& enemy : mEnemies)
 	{
-		enitityPos = enemy->GetWorldPos();
-		enemy->Update(frameTime);
+		const auto playerPosition = mPlayer.GetWorldPos();
+		Enemy::SetPlayerPosition(playerPosition);
 
-		if (!CollisionDetect(enemy->GetCollisionCylinder(), &mCollisionBox))
+		auto playerWeapon = mPlayer.GetWeapon();
+		auto& weaponProjectiles = playerWeapon->GetProjectiles();
+
+		for (auto i = 0U; i < mEnemies.size(); ++i)
 		{
-			enemy->SetPosition(enitityPos);
-		}
-		for (auto& otherEnemy : mEnemies)
-		{
-			if (enemy != otherEnemy)
+			auto enemy = mEnemies[i];
+			auto entityPosition = enemy->GetWorldPos();
+			enemy->Update(frameTime);
+
+			auto enemyHit = false;
+			auto enemyCollisionVolume = enemy->GetCollisionCylinder();
+
+			// Check for collision with the arena boundary
+			if (!CollisionDetect(enemyCollisionVolume, &mCollisionBox))
 			{
-				if (CollisionDetect(enemy->GetCollisionCylinder(), otherEnemy->GetCollisionCylinder()))
-				{
-					enemy->CollisionResolution(*otherEnemy->GetCollisionCylinder());
-					otherEnemy->CollisionResolution(*enemy->GetCollisionCylinder());
+				enemy->SetPosition(entityPosition);
+			}
 
+			// Check for collision with all other enemies
+			for (auto j = i + 1; j < mEnemies.size(); ++j)
+			{
+				auto otherEnemy = mEnemies[j];
+				auto otherEnemyCollisionVolume = otherEnemy->GetCollisionCylinder();
+				if (CollisionDetect(enemyCollisionVolume, otherEnemyCollisionVolume))
+				{
+					enemy->CollisionResolution(*otherEnemyCollisionVolume);
+					otherEnemy->CollisionResolution(*enemyCollisionVolume);
 				}
 			}
-		}
-	}
 
-
-
-	// Collision
-	// Bomb Collision Radius increase
-	if (mBombSwitch)
-	{
-		mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + 300 * frameTime);
-		mBombModel->ResetScale();
-		mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.1f);
-
-		//mBombPhase++;
-		//if (mBombPhase > 9)
-		//	mBombModel->SetSkin("PlasmaRing_00" + to_string(mBombPhase) + "_tlxadd.tga");
-		//else
-		//	mBombModel->SetSkin("PlasmaRing_000" + to_string(mBombPhase) + "_tlxadd.tga");
-	}
-
-	// Check which enemies to do collision for
-	// True is the second half, false is the first half
-	uint32_t end;
-	uint32_t beginning;
-	mCollisionSwitch = !mCollisionSwitch;
-	if (mCollisionSwitch)
-	{
-		beginning = mEnemies.size() / 2;
-		end = mEnemies.size();
-	}
-	else
-	{
-		beginning = 0;
-		end = mEnemies.size() / 2;
-	}
-	bool hitEnemy;
-	uint32_t damage = 0;
-	// Check enemy - player collision
-	for (uint32_t i = beginning; i < end; i++)
-	{
-		hitEnemy = false;
-		// get a temp cylinder so you dont need to get it again for each collision
-		CollisionCylinder* currentEnemy = mEnemies[i]->GetCollisionCylinder();
-
-		// Check whether colliding with a projectile
-		for (uint32_t j = 0; j < mPlayer.GetWeapon()->GetProjectiles().size(); j++)
-		{
-			// temp cylinder for the projectile
-			CollisionCylinder currentProjectile = mPlayer.GetWeapon()->GetProjectiles()[j]->GetCollisionObject();
-
-			// check if projectiles are colliding with arena
-			if (!CollisionDetect(&currentProjectile, &mCollisionBox))
+			// Check if this enemy has collided with any projectiles
+			for (auto iter = weaponProjectiles.begin(); iter != weaponProjectiles.end();)
 			{
-				mPlayer.GetWeapon()->RemoveProjectile(j);
-				j--;
-			}
-			else if (CollisionDetect(currentEnemy, &currentProjectile)) // Else check if colliding with enemy
-			{
-				damage = mPlayer.GetWeapon()->GetProjectiles()[j]->GetDamage();
-				if (mEnemies[i]->TakeHealth(damage))
+				auto projectile = (*iter);
+				auto projectileCollisionVolume = projectile->GetCollisionObject();
+
+				// Check if the projectile collides with the enemy
+				if (CollisionDetect(enemyCollisionVolume, &projectileCollisionVolume))
 				{
-					hitEnemy = true;
-					mCurrentScore += mEnemies[i]->GetDamage() * mMultiplier;
-					mKillCount++;
+					auto damage = projectile->GetDamage();
+					if (enemy->TakeHealth(damage))
+					{
+						enemyHit = true;
+						mCurrentScore += enemy->GetDamage() * mMultiplier;
+						mKillCount++;
+					}
+
+					playerWeapon->RemoveProjectile(iter);
+					break;
 				}
-				mPlayer.GetWeapon()->RemoveProjectile(j);
-				j--;
-				break;
+				else
+				{
+					++iter;
+				}
+			}
+
+			// Check for collision with the player
+			if (CollisionDetect(enemyCollisionVolume, mPlayer.GetCollisionCylinder()))
+			{
+				mPlayer.TakeHealth(enemy->GetDamage());
+				mMultiplier = 1U;
+				mKillCount = 0U;
+				enemyHit = true;
+			}
+
+			// Check for collision with the bomb
+			if (mBombSwitch && CollisionDetect(&mBombCollisionCylinder, enemyCollisionVolume))
+			{
+				enemyHit = true;
+				mCurrentScore += enemy->GetDamage() / 2;
+			}
+
+			// If the enemy was hit then create an explosion and play the audio source
+			if (enemyHit)
+			{
+				mEnemyDestroyedSound->Play();
+
+				ParticleEmitter* explosion = new ExplosionEmitter(mExplosionMesh, entityPosition, 1.0f);
+				explosion->StartEmission();
+				mArenaParticles.push_back(explosion);
+
+				enemy->SetPosition(OFF_SCREEN_POS);
+
+				mEnemyPool.push_back(enemy);
+				mEnemies.erase(mEnemies.begin() + i--);
 			}
 		}
+	}
 
-		// check if player is colliding with enemies
-		if (CollisionDetect(currentEnemy, mPlayer.GetCollisionCylinder()))
-		{
-			mPlayer.TakeHealth(mEnemies[i]->GetDamage());
-			mMultiplier = 1;
-			mKillCount = 0;
-			hitEnemy = true;
-		}
-
+	// Update the bomb
+	{
 		if (mBombSwitch)
 		{
-			if (CollisionDetect(&mBombCollisionCylinder, currentEnemy))
-			{
-				hitEnemy = true;
-				damage = 100;
-				mCurrentScore += mEnemies[i]->GetDamage() / 2;
-			}
-		}
+			// Increase the collision volume radius
+			mBombCollisionCylinder.SetRadius(mBombCollisionCylinder.GetRadius() + (300.0f * frameTime));
 
-		// ENEMY IS HIT
-		if (hitEnemy)
-		{
-			mEnemyDestroyedSound->Play();
-
-			ParticleEmitter* explosion = new ExplosionEmitter(mExplosionMesh, mEnemies[i]->GetWorldPos(), 1.0f);
-			explosion->StartEmission();
-			mArenaParticles.push_back(explosion);
-
-			mEnemies[i]->SetPosition(OFF_SCREEN_POS);
-			mEnemyPool.push_back(mEnemies[i]);
-			mEnemies.erase(mEnemies.begin() + i);
-			i--;
-		}
-
-		if (mCollisionSwitch)
-		{
-			end = mEnemies.size();
-		}
-		else
-		{
-			end = mEnemies.size() / 2;
+			// Scale the bomb model
+			mBombModel->ResetScale();
+			mBombModel->Scale(mBombCollisionCylinder.GetRadius() * 0.1f);
 		}
 	}
 
@@ -611,7 +611,7 @@ void Arena::SaveHighScores()
 		string score;
 	};
 
-	std::fstream highScoreFile(HIGH_SCORES_FILENAME);	
+	std::fstream highScoreFile(HIGH_SCORES_FILENAME);
 
 	if (!highScoreFile.is_open())
 	{
@@ -768,7 +768,7 @@ void Arena::CreateEnemies()
 void Arena::CreateNewPickup()
 {
 	D3DXVECTOR3 position = D3DXVECTOR3(Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15), 10.0f,
-									   Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
+		Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15));
 	float lifetime = Random(8.0f, 15.0f);
 
 	float pickupSeed = Random(0.0f, 100.0f);
