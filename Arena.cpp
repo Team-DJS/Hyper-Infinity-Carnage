@@ -36,7 +36,8 @@ Arena::Arena(bool loadFromFile, string name) :
 	mPlayerStatus(true),
 	mPlayerName(name),
 	mMultiplier(1U),
-	mKillCount(0U)
+	mKillCount(0U),
+	mNoPickupsThisRound(0)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
@@ -488,7 +489,7 @@ void Arena::Update(float frameTime)
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
-	if (mPickupTimer.IsComplete())
+	if (mPickupTimer.IsComplete() && mNoPickupsThisRound < 3)
 	{
 		CreateNewPickup();
 	}
@@ -581,6 +582,8 @@ void Arena::LoadStage(uint32_t stageNumber)
 	{
 		mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 30U) * 1.5f);
 	}
+
+	mNoPickupsThisRound = 0;
 
 	mBombExplosionTimer.Update(20.0f);
 	//this->Clear();
@@ -781,26 +784,56 @@ void Arena::CreateNewPickup()
 
 	float pickupSeed = Random(0.0f, 100.0f);
 
-	if (pickupSeed <= 40.0f)
+	float healthChance;
+	float bombChance;
+	float weaponUpgradeChance;
+	float lifeChance;
+	float shieldChance;
+
+	if (mCurrentStage <= 10)
+	{
+		healthChance = 10.0f;
+		bombChance = 20.0f;
+		weaponUpgradeChance = 85.0f;
+		shieldChance = 95.0f;
+		//Extra life chance = 100.0f;
+	}
+	else
+	{
+		healthChance = 40.0f;
+		bombChance = 65.0f;
+		weaponUpgradeChance = 75.0f;
+		shieldChance = 95.0f;
+		//Extra life chance = 100.0f;
+
+	}
+
+	if (pickupSeed <= healthChance)
 	{
 		//health
 		mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
 	}
-	else if (pickupSeed <= 70)
+	else if (pickupSeed <= bombChance)
 	{
 		//bomb
 		mPickups.push_back(new Bomb(position, 15.0f, lifetime));
 	}
-	else if (pickupSeed <= 95)
+	else if (pickupSeed <= weaponUpgradeChance)
 	{
 		//weapon upgrade
 		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime));
+	}
+	else if (pickupSeed <= shieldChance)
+	{
+		mPickups.push_back(new Shield(position, 15.0f, lifetime));
 	}
 	else
 	{
 		//life
 		mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
 	}
+
+	mNoPickupsThisRound++;
 
 	mPickups.back()->GetModel()->Scale(15.0f);
 

@@ -19,7 +19,6 @@ namespace HIC
 		// Destructor for Entity
 		virtual ~Pickup();
 		
-
 	public:
 		//--------------
 		// Setters
