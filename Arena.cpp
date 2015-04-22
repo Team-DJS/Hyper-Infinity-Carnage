@@ -577,7 +577,8 @@ void Arena::LoadStage(uint32_t stageNumber)
 	// Determne number of enemies to defeat this stage
 	if (mCurrentStage % 10 == 0)
 	{
-		mNoOfEnemies = 1;
+		mNoOfEnemies = mCurrentStage;
+		CreateEnemies();
 		SpawnEnemy(true);
 	}
 	else
@@ -706,6 +707,7 @@ void Arena::Clear()
 {
 	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
+		mEnemies[i]->SetPosition(OFF_SCREEN_POS);
 		mEnemyPool.push_back(mEnemies[i]);
 	}
 	mEnemies.clear();
@@ -739,11 +741,13 @@ void Arena::SpawnEnemy(bool boss)
 	{
 		enemy->SetHealth(static_cast<uint32_t>(500 + mCurrentStage * 15));
 		enemy->GetModel()->Scale(5.0f);
+		enemy->GetCollisionCylinder()->SetRadius(50.0f);
 	}
 	else
 	{
 		enemy->SetHealth(static_cast<uint32_t>(100 + mCurrentStage * 3));
 		enemy->GetModel()->ResetScale();
+		enemy->GetCollisionCylinder()->SetRadius(15.0f);
 	}
 
 	do
