@@ -257,7 +257,7 @@ void Arena::Update(float frameTime)
 
 		// Draw the multiplier
 		hudText = "x " + to_string(mMultiplier);
-		HUDFont->Draw(hudText, screenWidth / 2 + 162, 35, 0xFFFF0000, kRight);
+		HUDFont->Draw(hudText, screenWidth / 2 + 165, 35, 0xFFFF0000, kRight);
 
 		// Draw current health
 		hudText = to_string(mPlayer.GetHealth());
@@ -479,8 +479,11 @@ void Arena::Update(float frameTime)
 
 	if (mKillCount > 5)
 	{
-		mMultiplier++;
-		mKillCount = 0;
+		if (mMultiplier < 99)
+		{
+			mMultiplier++;
+			mKillCount = 0;
+		}
 	}
 
 	// Pickups
