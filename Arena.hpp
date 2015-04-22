@@ -138,6 +138,7 @@ namespace HIC
 		// Vector of pickups
 		std::vector<Pickup*> mPickups;
 		Timer mPickupTimer;
+		int mNoPickupsThisRound;
 
 		// Model for arena area
 		Scenery mArenaModel;

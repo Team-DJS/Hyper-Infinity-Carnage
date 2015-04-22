@@ -36,7 +36,8 @@ Arena::Arena(bool loadFromFile, string name) :
 	mPlayerStatus(true),
 	mPlayerName(name),
 	mMultiplier(1U),
-	mKillCount(0U)
+	mKillCount(0U),
+	mNoPickupsThisRound(0)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
@@ -488,7 +489,7 @@ void Arena::Update(float frameTime)
 
 	// Pickups
 	mPickupTimer.Update(frameTime);
-	if (mPickupTimer.IsComplete())
+	if (mPickupTimer.IsComplete() && mNoPickupsThisRound < 3)
 	{
 		CreateNewPickup();
 	}
@@ -580,6 +581,8 @@ void Arena::LoadStage(uint32_t stageNumber)
 	{
 		mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 30U) * 1.5f);
 	}
+
+	mNoPickupsThisRound = 0;
 
 	mBombExplosionTimer.Update(20.0f);
 	//this->Clear();
@@ -780,26 +783,54 @@ void Arena::CreateNewPickup()
 
 	float pickupSeed = Random(0.0f, 100.0f);
 
-	if (pickupSeed <= 40.0f)
+	if (mCurrentStage <= 10)
 	{
-		//health
-		mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
-	}
-	else if (pickupSeed <= 70)
-	{
-		//bomb
-		mPickups.push_back(new Bomb(position, 15.0f, lifetime));
-	}
-	else if (pickupSeed <= 95)
-	{
-		//weapon upgrade
-		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime));
+		if (pickupSeed <= 10.0f)
+		{
+			//health
+			mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
+		}
+		else if (pickupSeed <= 20.0f)
+		{
+			//bomb
+			mPickups.push_back(new Bomb(position, 15.0f, lifetime));
+		}
+		else if (pickupSeed <= 95.0f)
+		{
+			//weapon upgrade
+			mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime));
+		}
+		else
+		{
+			//life
+			mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
+		}
 	}
 	else
 	{
-		//life
-		mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
+		if (pickupSeed <= 60.0f)
+		{
+			//health
+			mPickups.push_back(new HealthPack(position, 15.0f, lifetime, 50U));
+		}
+		else if (pickupSeed <= 85.0f)
+		{
+			//bomb
+			mPickups.push_back(new Bomb(position, 15.0f, lifetime));
+		}
+		else if (pickupSeed <= 95.0f)
+		{
+			//weapon upgrade
+			mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime));
+		}
+		else
+		{
+			//life
+			mPickups.push_back(new ExtraLife(position, 15.0f, lifetime));
+		}
 	}
+
+	mNoPickupsThisRound++;
 
 	mPickups.back()->GetModel()->Scale(15.0f);
 
