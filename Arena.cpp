@@ -347,6 +347,18 @@ void Arena::Update(float frameTime)
 		{
 			enemy->SetPosition(enitityPos);
 		}
+		for (auto& otherEnemy : mEnemies)
+		{
+			if (enemy != otherEnemy)
+			{
+				if (CollisionDetect(enemy->GetCollisionCylinder(), otherEnemy->GetCollisionCylinder()))
+				{
+					enemy->CollisionResolution(*otherEnemy->GetCollisionCylinder());
+					otherEnemy->CollisionResolution(*enemy->GetCollisionCylinder());
+
+				}
+			}
+		}
 	}
 
 
@@ -516,7 +528,7 @@ void Arena::Update(float frameTime)
 		//while (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
 		//{
 		mNoOfEnemies--;
-		SpawnEnemy();
+		SpawnEnemy(false);
 		//}
 	}
 
@@ -551,7 +563,16 @@ void Arena::LoadStage(uint32_t stageNumber)
 
 
 	// Determne number of enemies to defeat this stage
-	mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 30U) * 1.5f);
+	if (mCurrentStage % 10 == 0)
+	{
+		mNoOfEnemies = mCurrentStage;
+		CreateEnemies();
+		SpawnEnemy(true);
+	}
+	else
+	{
+		mNoOfEnemies = static_cast<uint32_t>((mCurrentStage + 30U) * 1.5f);
+	}
 
 	mBombExplosionTimer.Update(20.0f);
 	//this->Clear();
@@ -674,6 +695,7 @@ void Arena::Clear()
 {
 	for (uint32_t i = 0; i < mEnemies.size(); i++)
 	{
+		mEnemies[i]->SetPosition(OFF_SCREEN_POS);
 		mEnemyPool.push_back(mEnemies[i]);
 	}
 	mEnemies.clear();
@@ -695,7 +717,7 @@ void Arena::TargetCamera(ICamera* camera)
 	camera->LookAt(mPlayer.GetModel());
 }
 
-void Arena::SpawnEnemy()
+void Arena::SpawnEnemy(bool boss)
 {
 	// Play the enemy spawn sound
 	mEnemySpawnSound->Play();
@@ -703,7 +725,18 @@ void Arena::SpawnEnemy()
 	Enemy* enemy = mEnemyPool.back();
 	mEnemyPool.pop_back();
 
-	enemy->SetHealth(static_cast<uint32_t>(100 + mCurrentStage * 3));
+	if (boss)
+	{
+		enemy->SetHealth(static_cast<uint32_t>(500 + mCurrentStage * 15));
+		enemy->GetModel()->Scale(5.0f);
+		enemy->GetCollisionCylinder()->SetRadius(50.0f);
+	}
+	else
+	{
+		enemy->SetHealth(static_cast<uint32_t>(100 + mCurrentStage * 3));
+		enemy->GetModel()->ResetScale();
+		enemy->GetCollisionCylinder()->SetRadius(15.0f);
+	}
 
 	do
 	{
@@ -713,6 +746,7 @@ void Arena::SpawnEnemy()
 		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
 
 		enemy->SetPosition(newPosition);
+		enemy->SetPosition(newPosition);	//Additional line to prevent issues with collsion detection the frame after spawning
 	} while (CollisionDetect(enemy->GetCollisionCylinder(), &CollisionCylinder(mPlayer.GetCollisionCylinder()->GetPosition(), 150.0f)));
 
 	mSpawnTunnels.push_back(new SpawnTunnel(enemy->GetWorldPos()));

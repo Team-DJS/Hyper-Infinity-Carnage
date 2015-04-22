@@ -165,26 +165,26 @@ void Entity::CollisionResolution(CollisionCylinder& collidingWith)
 	mModel->SetX(mCollisionCylinder.GetPreviousPosition().x);
 	mModel->SetZ(mCollisionCylinder.GetPreviousPosition().y);
 	
-	//Modify the direction of movement based upon the ships position relative to the collision object it collided with and the current movement vector
-	D3DXVECTOR2 vectToOtherSphere = collidingWith.GetPosition() - mCollisionCylinder.GetPosition();	//Vector between ship and collided object
 
-	//Angle by which the vector is to be rotated (degrees) - Based upon dot product and other trigonomety
-	//angle to rotate by equals 180 - 2 * alpha where alpha is the angle between the tangent of the spheres and the movement vector
-	float rotationAngle = 180.0f - (2.0f * (90.0f - AngleBetweenVectors(vectToOtherSphere, mVelocity)));
-	rotationAngle = D3DXToRadian(rotationAngle);	//Convert to radians for use with c++ trig formulae
 
-	//Calculate the new velocity by rotating the vector using a 2D rotation matrix (multiply components by 0.8f to make movement more realistic)
-	mVelocity = D3DXVECTOR2(mVelocity.x * cosf(rotationAngle) - mVelocity.y * sinf(rotationAngle) * 0.8f,
-		mVelocity.x *sinf(rotationAngle) + mVelocity.y * cosf(rotationAngle) * 0.8f);
+	////Modify the direction of movement based upon the ships position relative to the collision object it collided with and the current movement vector
+	//D3DXVECTOR2 vectToOtherSphere = collidingWith.GetPosition() - mCollisionCylinder.GetPosition();	//Vector between ship and collided object
+	//
+	////Angle by which the vector is to be rotated (degrees) - Based upon dot product and other trigonomety
+	////angle to rotate by equals 180 - 2 * alpha where alpha is the angle between the tangent of the spheres and the movement vector
+	//float rotationAngle = 180.0f - (2.0f * (90.0f - AngleBetweenVectors(vectToOtherSphere, mVelocity)));
+	//rotationAngle = D3DXToRadian(rotationAngle);	//Convert to radians for use with c++ trig formulae
+	//
+	////Calculate the new velocity by rotating the vector using a 2D rotation matrix (multiply components by 0.8f to make movement more realistic)
+	//mVelocity = D3DXVECTOR2(mVelocity.x * cosf(rotationAngle) - mVelocity.y * sinf(rotationAngle) * 0.8f,
+	//	mVelocity.x *sinf(rotationAngle) + mVelocity.y * cosf(rotationAngle) * 0.8f);
 
+	mCollisionCylinder.SetPosition(D3DXVECTOR2(mModel->GetX(), mModel->GetZ()));
 	mCollisionCylinder.SetPosition(D3DXVECTOR2(mModel->GetX(), mModel->GetZ()));
 }
 
 void Entity::CollisionResolution(CollisionAABB& collidingWith)
 {
-	//mPlayer.SetPosition(enitityPos);
-
-
 	//Get all of the relevant data from the collision objects
 	//Sphere object
 	float radius = GetCollisionCylinder()->GetRadius();
@@ -201,13 +201,13 @@ void Entity::CollisionResolution(CollisionAABB& collidingWith)
 	if (GetCollisionCylinder()->GetPreviousPosition().x >= minX && GetCollisionCylinder()->GetPreviousPosition().x <= maxX)	//If the sphere is outside the x boundaries of the box
 	{
 		//Side X hit
-		mVelocity.y = -mVelocity.y * 0.5f;	//Reverse direction of movement and reduce the speed of the reversed component
+		mCollidedX = true;
 		mModel->SetZ( GetCollisionCylinder()->GetPreviousPosition().y);	//Reset position to outside of the collision area
 	}
 	if (GetCollisionCylinder()->GetPreviousPosition().y >= minZ && GetCollisionCylinder()->GetPreviousPosition().y <= maxZ)
 	{
 		//Side Z hit
-		mVelocity.x = -mVelocity.x * 0.5f;	//Reverse direction of movement and reduce the speed of the reversed component
+		mCollidedZ = true;
 		mModel->SetX(GetCollisionCylinder()->GetPreviousPosition().x);	//Reset position to outside of the collision area
 	}
 
