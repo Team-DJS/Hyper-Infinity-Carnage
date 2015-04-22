@@ -116,6 +116,7 @@ void Player::Update(float frameTime)
 	if (mShield)
 	{
 		mShieldModel->SetPosition(GetWorldPos().x, GetWorldPos().y, GetWorldPos().z);
+		mShieldModel->RotateY(60 * frameTime);
 		mShieldTimer.Update(frameTime);
 	}
 	if (mShield && mShieldTimer.IsComplete())
