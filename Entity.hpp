@@ -102,5 +102,7 @@ namespace HIC
 		static const float TURN_SPEED;
 		bool mCollidedX;
 		bool mCollidedZ;
+
+		int mDelayed = false;
 	};
 }

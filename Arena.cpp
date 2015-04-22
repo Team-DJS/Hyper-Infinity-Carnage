@@ -786,7 +786,7 @@ void Arena::CreateNewPickup()
 	else if (pickupSeed <= 95)
 	{
 		//weapon upgrade
-		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime, 0.02f, static_cast<uint32_t>(Random(1.0f, 10.0f))));
+		mPickups.push_back(new WeaponUpgrade(WeaponUpgrade::mMesh, position, 15.0f, lifetime));
 	}
 	else
 	{
