@@ -35,6 +35,9 @@ namespace HIC
 		// Takes a bomb from the player
 		void TakeBomb();
 
+		// Gives gives shield to the player
+		void GiveShield();
+
 		//---------------
 		// Getters
 		//---------------
@@ -47,6 +50,9 @@ namespace HIC
 
 		// Returns the weapon which the player has
 		Weapon* GetWeapon();
+
+		// returns if the players shield is up
+		bool IsShielded();
 
 		//--------------
 		// Other
@@ -80,6 +86,7 @@ namespace HIC
 		}
 	public:
 		static IMesh* MESH;
+		static IMesh* SHIELD;
 
 	private:
 		static const float RADIUS;
@@ -90,6 +97,10 @@ namespace HIC
 		uint32_t mLives;
 		uint32_t mBombs;
 		Weapon* mWeapon;
+
+		bool mShield;
+		Timer mShieldTimer;
+		IModel* mShieldModel;
 
 	private:
 		// Movement Variables

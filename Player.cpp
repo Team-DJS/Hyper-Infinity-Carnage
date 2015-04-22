@@ -6,6 +6,7 @@ using namespace HIC;
 //-----------------------------------
 
 IMesh* Player::MESH = nullptr;
+IMesh* Player::SHIELD = nullptr;
 
 const float Player::RADIUS = 1.0f;
 const uint32_t Player::DEFAULT_LIVES = 3U;
@@ -18,15 +19,20 @@ const uint32_t Player::DEFAULT_BOMBS = 3U;
 // Default constructor for Player
 Player::Player(const D3DXVECTOR3& position, float radius) :
 	Entity(MESH, position, radius),
+	mShieldModel(SHIELD->CreateModel(position.x, position.y, position.z)),
 	mLives(DEFAULT_LIVES),
 	mBombs(DEFAULT_BOMBS),
-	mWeapon(new Weapon())
+	mWeapon(new Weapon()),
+	mShield(true),
+	mShieldTimer(3.0f)
 {
+	mShieldModel->Scale(5.0f);
 }
 
 // Destructor for Player
 Player::~Player()
 {
+	mShieldModel->GetMesh()->RemoveModel(mShieldModel);
 }
 
 //-----------------------------------
@@ -43,6 +49,13 @@ void Player::GiveLife()
 void Player::GiveBomb()
 {
 	mBombs++;
+}
+
+void Player::GiveShield()
+{
+	mShield = true;
+	mShieldTimer.Reset();
+	mShieldModel->Scale(5.0f);
 }
 
 //-----------------------------------
@@ -67,6 +80,10 @@ Weapon* Player::GetWeapon()
 	return mWeapon;
 }
 
+bool Player::IsShielded()
+{
+	return mShield;
+}
 
 //-----------------------------------
 // Setters
@@ -96,6 +113,18 @@ void Player::Respawn()
 // Called to update the entity
 void Player::Update(float frameTime)
 {
+	if (mShield)
+	{
+		mShieldModel->SetPosition(GetWorldPos().x, GetWorldPos().y, GetWorldPos().z);
+		mShieldTimer.Update(frameTime);
+	}
+	if (mShield && mShieldTimer.IsComplete())
+	{
+		mShield = false;
+		mShieldTimer.Reset();
+		mShieldModel->Scale(0.01);
+	}
+	
 	//***** Face the player in the direction of the mouse *****//
 	D3DXVECTOR3 rightVect3 = GetRightVector();	//Create and obtain the right vector of the ship
 	D3DXVECTOR2 rightVect2;

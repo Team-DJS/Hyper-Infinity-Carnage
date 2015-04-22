@@ -658,6 +658,7 @@ bool GameSetup(bool loadSaveGame)
 {
 	// Load the player mesh - now loaded in ProgramSetup!
 	// Load arena enemy and projectile meshes
+	Player::SHIELD = gEngine->LoadMesh("ShieldSphere.x");
 	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
 	Arena::ENEMY_MESH = gEngine->LoadMesh("Enemy.x");
 	Projectile::MESH = gEngine->LoadMesh("quad_additive.x");
@@ -713,6 +714,10 @@ bool GameShutdown()
 
 	// Delete the arena
 	SafeRelease(gArena);
+
+	// Delete player shield mesh
+	gEngine->RemoveMesh(Player::SHIELD);
+	Player::SHIELD = nullptr;
 
 	//Delete the arena mesh
 	gEngine->RemoveMesh(Arena::ARENA_MESH);
