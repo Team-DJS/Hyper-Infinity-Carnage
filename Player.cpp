@@ -36,7 +36,6 @@ Player::~Player()
 }
 
 //-----------------------------------
-// Setters
 //-----------------------------------
 
 // Gives an extra life to the player
@@ -55,6 +54,7 @@ void Player::GiveShield()
 {
 	mShield = true;
 	mShieldTimer.Reset();
+	mShieldModel->ResetScale();
 	mShieldModel->Scale(5.0f);
 }
 
@@ -65,11 +65,7 @@ void Player::GiveShield()
 // Returns the number of remaining lives the player has
 uint32_t Player::GetLives() const
 {
-	return mLives;
-}
-
-// Returns the number of reminaing bombs the player has
-uint32_t Player::GetBombs() const
+	return mLives;s
 {
 	return mBombs;
 }

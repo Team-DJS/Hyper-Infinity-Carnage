@@ -523,6 +523,7 @@ void Arena::Update(float frameTime)
 		{
 			mPlayer.TakeLife();
 			mMultiplier = 1;
+			mPlayer.GiveShield();
 		}
 		this->Clear();
 		LoadStage(mCurrentStage);
