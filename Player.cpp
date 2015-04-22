@@ -65,7 +65,7 @@ void Player::GiveShield()
 // Returns the number of remaining lives the player has
 uint32_t Player::GetLives() const
 {
-	return mLives;s
+	return mLives;
 {
 	return mBombs;
 }
