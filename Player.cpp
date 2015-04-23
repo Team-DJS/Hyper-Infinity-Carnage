@@ -203,17 +203,6 @@ void Player::Update(float frameTime)
 	mVelocity.x += thrust.x + drag.x;
 	mVelocity.y += thrust.y + drag.y;
 
-	if (mCollidedX)
-	{
-		mVelocity.x = -mVelocity.x * 0.5f;	//Reverse direction of movement and reduce the speed of the reversed component
-		mCollidedX = false;
-	}
-	if (mCollidedZ)
-	{
-		mVelocity.y = -mVelocity.y * 0.5f;	//Reverse direction of movement and reduce the speed of the reversed component
-		mCollidedZ = false;
-	}
-
 	//Move model by velocity vector
 	MoveX(2 * mVelocity.x * frameTime);
 	MoveZ(2 *mVelocity.y * frameTime);

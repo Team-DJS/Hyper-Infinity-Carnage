@@ -192,29 +192,57 @@ void Entity::CollisionResolution(CollisionAABB& collidingWith)
 	//Sphere object
 	float radius = GetCollisionCylinder()->GetRadius();
 	D3DXVECTOR2 spherePos = GetCollisionCylinder()->GetPosition();
+	D3DXVECTOR2 previousPos = GetCollisionCylinder()->GetPreviousPosition();
 
 	//Axis Alligned Bounding Box object 
 	//Also applies the radius of the sphere to the box
-	float minX = collidingWith.GetMinPosition().x - radius;
-	float maxX = collidingWith.GetMaxPosition().x + radius;
-	float minZ = collidingWith.GetMinPosition().y - radius;
-	float maxZ = collidingWith.GetMaxPosition().y + radius;
+	D3DXVECTOR2 min = D3DXVECTOR2(collidingWith.GetMinPosition().x + radius, collidingWith.GetMinPosition().y + radius);
+	D3DXVECTOR2 max = D3DXVECTOR2(collidingWith.GetMaxPosition().x - radius, collidingWith.GetMaxPosition().y - radius);
 
+	//float distToEdge;
+	D3DXVECTOR2 vecToMinLimit;
+	D3DXVECTOR2 vecToMaxLimit;
+	D3DXVECTOR2 moveVector;	//The vector to move the player by
 
-	if (GetCollisionCylinder()->GetPreviousPosition().x >= minX && GetCollisionCylinder()->GetPreviousPosition().x <= maxX)	//If the sphere is outside the x boundaries of the box
+	if (spherePos.x <= min.x || spherePos.x >= max.x)	//If the sphere is outside the x boundary of the box (or on the edge)
 	{
 		//Side X hit
-		mCollidedX = true;
-		mModel->SetZ( GetCollisionCylinder()->GetPreviousPosition().y);	//Reset position to outside of the collision area
+		vecToMinLimit = D3DXVECTOR2(spherePos - D3DXVECTOR2(min.x, 0.0f));
+		vecToMaxLimit = D3DXVECTOR2(spherePos - D3DXVECTOR2(max.x, 0.0f));
+		
+		if (spherePos.x <= min.x)
+		{
+			// Left hand side
+			MoveX(-(vecToMinLimit.x - 0.01f));
+		}
+		else //if (spherePos.x >= max.x)
+		{
+			//Hitting right hand side
+			MoveX(-(vecToMaxLimit.x + 0.01f));
+		}
+		
 	}
-	if (GetCollisionCylinder()->GetPreviousPosition().y >= minZ && GetCollisionCylinder()->GetPreviousPosition().y <= maxZ)
+	if (spherePos.y <= min.y || spherePos.y >= max.y)	//If the sphere is outside the x boundary of the box (or on the edge)
 	{
 		//Side Z hit
-		mCollidedZ = true;
-		mModel->SetX(GetCollisionCylinder()->GetPreviousPosition().x);	//Reset position to outside of the collision area
+		vecToMinLimit = D3DXVECTOR2(spherePos - D3DXVECTOR2(0.0f, min.y));
+		vecToMaxLimit = D3DXVECTOR2(spherePos - D3DXVECTOR2(0.0f, max.y));
+
+		if (spherePos.y <= min.y)
+		{
+			//Hitting the bottom side
+			MoveZ(-(vecToMinLimit.y - 0.01f));
+		}
+		else //if (spherePos.y >= max.y)
+		{
+			//Hitting top side
+			MoveZ(-(vecToMaxLimit.y + 0.01f));
+		}
 	}
 
 	GetCollisionCylinder()->SetPosition({ mModel->GetX(), mModel->GetZ() });
+
+	spherePos = GetCollisionCylinder()->GetPosition();
 }
 
 // Points the model at a given position

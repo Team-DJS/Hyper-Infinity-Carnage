@@ -100,8 +100,6 @@ namespace HIC
 		static const float BASE_THRUST;
 		static const float DRAG_COEF;
 		static const float TURN_SPEED;
-		bool mCollidedX;
-		bool mCollidedZ;
 
 		int mDelayed = false;
 	};

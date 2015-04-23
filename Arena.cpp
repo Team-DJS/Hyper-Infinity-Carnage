@@ -196,14 +196,6 @@ void Arena::Update(float frameTime)
 	}
 #endif
 
-	if (gEngine->KeyHit(Key_9))
-	{
-		for (int i = 0; i < mPickups.size(); i++)
-		{
-			mPickups[i]->GetCollisionCylinder()->ToggleMarkers();
-		}
-	}
-
 	// Handle player input
 	{
 		if (gEngine->KeyHeld(Key_W))
@@ -348,6 +340,7 @@ void Arena::Update(float frameTime)
 		mPlayer.Update(frameTime);
 
 		// Check if player is colliding with arena
+
 		if (!CollisionDetect(mPlayer.GetCollisionCylinder(), &mCollisionBox))
 		{
 			mPlayer.CollisionResolution(mCollisionBox);
@@ -395,7 +388,8 @@ void Arena::Update(float frameTime)
 			// Check for collision with the arena boundary
 			if (!CollisionDetect(enemyCollisionVolume, &mCollisionBox))
 			{
-				enemy->SetPosition(entityPosition);
+				enemy->CollisionResolution(mCollisionBox);
+				//enemy->SetPosition(entityPosition);
 			}
 
 			// Check for collision with all other enemies
@@ -795,8 +789,8 @@ void Arena::CreateNewPickup()
 	float healthChance;
 	float bombChance;
 	float weaponUpgradeChance;
-	float lifeChance;
 	float shieldChance;
+	//float extra life Chance;	//Dont need this, just using else, keeping for completeness
 
 	if (mCurrentStage <= 10)
 	{
