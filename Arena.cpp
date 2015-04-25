@@ -570,8 +570,6 @@ void Arena::Update(float frameTime)
 			i--;
 		}
 	}
-
-	UpdateScenery(frameTime);
 }
 
 // Proceeds to the next stage
