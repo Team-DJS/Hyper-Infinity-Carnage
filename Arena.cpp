@@ -25,30 +25,30 @@ const D3DXVECTOR3 OFF_SCREEN_POS = D3DXVECTOR3(0, 0, -800);
 
 // Default constructor for Arena
 Arena::Arena(bool loadFromFile, string name) :
-	mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
-	mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
-	mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
-	mScore(0U),
-	mPickupTimer(10.0f),
-	mBombExplosionTimer(0.0f),
-	mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
-	mBombSwitch(false),
-	mPlayerStatus(true),
-	mPlayerName(name),
-	mMultiplier(1U),
-	mKillCount(0U),
-	mNoPickupsThisRound(0)
+mPlayer(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40.0f),
+mArenaModel(ARENA_MESH, D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+mCollisionBox(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(-450.0f, -450.0f), D3DXVECTOR2(450.0f, 450.0f)),
+mScore(0U),
+mPickupTimer(10.0f),
+mBombExplosionTimer(0.0f),
+mBombCollisionCylinder(D3DXVECTOR2(0.0f, 0.0f), 0.0f),
+mBombSwitch(false),
+mPlayerStatus(true),
+mPlayerName(name),
+mMultiplier(1U),
+mKillCount(0U),
+mNoPickupsThisRound(0)
 {
 	// Seed random
 	srand((uint32_t)(time(0)));
 
 	// Build the scenery
 	IMesh* skyboxMesh = gEngine->LoadMesh("Skybox.x");
-	mSceneryObjects.push_back(new Scenery(skyboxMesh, D3DXVECTOR3(0, -2400.0f, 0), 2.0f));
+	mStaticScenery.push_back(new Scenery(skyboxMesh, D3DXVECTOR3(0, -1700.0f, 0), 2.1f));
+	mStaticScenery.back()->GetModel()->ScaleY(0.8);
 
 	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
-	Scenery* sceneryTemp = new Scenery(buildingsMesh, D3DXVECTOR3(0, -1805, -50), 800.0f);
-	mSceneryObjects.push_back(sceneryTemp);
+	mStaticScenery.push_back(new Scenery(buildingsMesh, D3DXVECTOR3(0, -1805, -50), 800.0f));
 
 	// Create the gameplay music audio source
 	mGameMusic = gAudioManager->CreateSource("GameplayMusic", { 0.0f, 0.0f, 0.0f });
@@ -130,10 +130,10 @@ Arena::Arena(bool loadFromFile, string name) :
 // Destructor for Arena
 Arena::~Arena()
 {
-	while (!mSceneryObjects.empty())
+	while (!mStaticScenery.empty())
 	{
-		delete mSceneryObjects.back();
-		mSceneryObjects.pop_back();
+		delete mStaticScenery.back();
+		mStaticScenery.pop_back();
 	}
 
 	while (!mEnemies.empty())
@@ -160,7 +160,6 @@ Arena::~Arena()
 		delete mSpawnTunnels.back();
 		mSpawnTunnels.pop_back();
 	}
-
 
 	mGameMusic->Stop();
 	gAudioManager->ReleaseSource(mGameMusic);
@@ -193,6 +192,11 @@ void Arena::Update(float frameTime)
 	if (gEngine->KeyHit(Key_T))
 	{
 		CreateNewPickup();
+	}
+
+	if (gEngine->KeyHit(Key_Y))
+	{
+		mPlayer.SetHealth(10000000U);
 	}
 #endif
 
@@ -566,6 +570,8 @@ void Arena::Update(float frameTime)
 			i--;
 		}
 	}
+
+	UpdateScenery(frameTime);
 }
 
 // Proceeds to the next stage

@@ -92,7 +92,7 @@ namespace HIC
 
 		// Create a new pickup with random type
 		void CreateNewPickup();
-
+		
 	public:
 		static IMesh* ARENA_MESH;
 		static IMesh* ENEMY_MESH;
@@ -149,7 +149,7 @@ namespace HIC
 		IMesh* mExplosionMesh;
 
 		// Vector of scenery (non-interactive) items
-		std::vector<Scenery*> mSceneryObjects;
+		std::vector<Scenery*> mStaticScenery;
 
 		// Current stage number
 		uint32_t mCurrentStage;

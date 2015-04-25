@@ -123,7 +123,7 @@ void Player::Update(float frameTime)
 	{
 		mShield = false;
 		mShieldTimer.Reset();
-		mShieldModel->Scale(0.01);
+		mShieldModel->SetPosition(0.0f, 0.0f, -1200.0f);
 	}
 	
 	//***** Face the player in the direction of the mouse *****//
