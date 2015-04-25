@@ -8055,7 +8055,7 @@ Frame {
     0.000000;0.000000;0.000000;;
 
     TextureFilename {
-     "001_tlxadd.tga";
+     "Shield_tlxadd.tga";
     }
    }
   }
