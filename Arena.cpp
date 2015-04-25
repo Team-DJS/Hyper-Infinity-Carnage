@@ -435,10 +435,16 @@ void Arena::Update(float frameTime)
 			{
 				if (!mPlayer.IsShielded())
 				{
-					mPlayer.TakeHealth(enemy->GetDamage());
+					if (!enemy->GetBoss())
+					{
+						mPlayer.TakeHealth(enemy->GetDamage());
+					}
+					else
+					{
+						mPlayer.TakeHealth(mPlayer.GetHealth() - 1U);
+					}
 					mMultiplier = 1U;
 					mKillCount = 0U;
-					
 				}
 				enemyHit = true;
 			}
@@ -536,11 +542,8 @@ void Arena::Update(float frameTime)
 	// check if there should be an enemy spawned
 	if (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
 	{
-		//while (mEnemies.size() < MAX_ENEMIES_ON_SCREEN && mNoOfEnemies > 0)
-		//{
 		mNoOfEnemies--;
 		SpawnEnemy(false);
-		//}
 	}
 
 	// check if there are no more enemies on the field
@@ -740,16 +743,20 @@ void Arena::SpawnEnemy(bool boss)
 
 	if (boss)
 	{
-		enemy->SetHealth(static_cast<uint32_t>(500 + mCurrentStage * 15));
+		enemy->SetHealth(static_cast<uint32_t>(5000 + mCurrentStage * 15));
 		enemy->GetModel()->Scale(5.0f);
 		enemy->GetCollisionCylinder()->SetRadius(50.0f);
+		enemy->SetBoss(true);
 	}
 	else
 	{
 		enemy->SetHealth(static_cast<uint32_t>(100 + mCurrentStage * 3));
 		enemy->GetModel()->ResetScale();
 		enemy->GetCollisionCylinder()->SetRadius(15.0f);
+		enemy->SetBoss(false);
 	}
+
+	enemy->SetDamage(10U + mCurrentStage / 2U );
 
 	do
 	{

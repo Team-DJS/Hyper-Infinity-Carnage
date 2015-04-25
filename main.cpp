@@ -998,7 +998,7 @@ int main(int argc, char* argv[])
 			{
 				HighScoreUpdate(true);
 				exitTimer.Update(gEngine->Timer());
-				if (exitTimer.IsComplete())
+				if (exitTimer.IsComplete() || (gEngine->IsRunning() && gEngine->KeyHit(Key_Escape)))
 				{
 					break;
 				}

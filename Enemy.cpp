@@ -33,9 +33,27 @@ void Enemy::SetPlayerPosition(D3DXVECTOR3 playerPos)
 	PLAYER_POS = playerPos;
 }
 
+void Enemy::SetDamage(uint32_t damage)
+{
+	if (damage <= 99)
+	{
+		mDamage = damage;
+	}
+}
+
+void Enemy::SetBoss(bool boss)
+{
+	mBoss = boss;
+}
+
 //-----------------------------------
 // Getters
 //-----------------------------------
+
+bool Enemy::GetBoss()
+{
+	return mBoss;
+}
 
 // Returns the damage the enemy deals
 uint32_t Enemy::GetDamage() const

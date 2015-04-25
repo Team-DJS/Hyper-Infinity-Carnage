@@ -21,9 +21,17 @@ namespace HIC
 		//--------------
 		static void SetPlayerPosition(D3DXVECTOR3 playerPos);
 
+		void SetDamage(uint32_t damage);
+
+		// Sets the enemy to be a boss
+		void SetBoss(bool boss);
+
 		//---------------
 		// Getters
 		//---------------
+
+		// Returns whether the enemy is a boss
+		bool GetBoss();
 
 		// Returns the damage the enemy deals
 		uint32_t GetDamage() const;
@@ -36,6 +44,8 @@ namespace HIC
 		void Update(float frameTime);
 	private:
 		uint32_t mDamage;
+
+		bool mBoss;
 
 		static D3DXVECTOR3 PLAYER_POS;
 	};
