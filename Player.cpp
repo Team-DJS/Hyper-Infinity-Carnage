@@ -26,7 +26,8 @@ Player::Player(const D3DXVECTOR3& position, float radius) :
 	mShield(true),
 	mShieldTimer(3.0f)
 {
-	mShieldModel->Scale(5.0f);
+	mShieldModel->Scale(1.2f);
+	mShieldModel->AttachToParent(GetModel());
 }
 
 // Destructor for Player
@@ -55,7 +56,7 @@ void Player::GiveShield()
 	mShield = true;
 	mShieldTimer.Reset();
 	mShieldModel->ResetScale();
-	mShieldModel->Scale(5.0f);
+	mShieldModel->Scale(1.2f);
 }
 
 //-----------------------------------
@@ -115,15 +116,16 @@ void Player::Update(float frameTime)
 {
 	if (mShield)
 	{
-		mShieldModel->SetPosition(GetWorldPos().x, GetWorldPos().y, GetWorldPos().z);
-		mShieldModel->RotateY(60 * frameTime);
+		//mShieldModel->SetPosition(GetWorldPos().x, GetWorldPos().y, GetWorldPos().z);
+		//mShieldModel->RotateY(60 * frameTime);
 		mShieldTimer.Update(frameTime);
 	}
 	if (mShield && mShieldTimer.IsComplete())
 	{
 		mShield = false;
 		mShieldTimer.Reset();
-		mShieldModel->SetPosition(0.0f, 0.0f, -1200.0f);
+		mShieldModel->Scale(0.000001f);
+		//mShieldModel->SetPosition(0.0f, 0.0f, -1200.0f);
 	}
 	
 	//***** Face the player in the direction of the mouse *****//

@@ -74,6 +74,7 @@ mNoPickupsThisRound(0)
 	HealthPack::MESH = gEngine->LoadMesh("HealthPickup.x");
 	ExtraLife::MESH = gEngine->LoadMesh("LifePickup.x");
 	Bomb::MESH = gEngine->LoadMesh("BombPickup.x");
+	Shield::MESH = gEngine->LoadMesh("ShieldSphere.x");
 
 	mExplosionMesh = gEngine->LoadMesh("ExplosionQuad.x");
 	const float arenaEdge = mCollisionBox.GetMaxOffset().x;
@@ -347,7 +348,7 @@ void Arena::Update(float frameTime)
 
 		if (!CollisionDetect(mPlayer.GetCollisionCylinder(), &mCollisionBox))
 		{
-			mPlayer.CollisionResolution(mCollisionBox);
+			//mPlayer.CollisionResolution(mCollisionBox);
 		}
 	}
 

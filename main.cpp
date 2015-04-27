@@ -128,7 +128,7 @@ bool ProgramSetup()
 	Weapon::SHOOT_SOUND = gAudioManager->CreateSource("WeaponShoot", { 0.0f, 0.0f, 0.0f });
 	Weapon::SHOOT_SOUND->SetLooping(false);
 
-	Player::MESH = gEngine->LoadMesh("Player.x");
+	Player::MESH = gEngine->LoadMesh("FFstarfighter.x");
 	
 	if (!std::ifstream(HIGH_SCORES_FILENAME))
 	{
@@ -658,7 +658,7 @@ bool GameSetup(bool loadSaveGame)
 {
 	// Load the player mesh - now loaded in ProgramSetup!
 	// Load arena enemy and projectile meshes
-	Player::SHIELD = gEngine->LoadMesh("ShieldSphere.x");
+	Player::SHIELD = gEngine->LoadMesh("PlayerShield.x");
 	Arena::ARENA_MESH = gEngine->LoadMesh("Arena.x");
 	Arena::ENEMY_MESH = gEngine->LoadMesh("Enemy.x");
 	Projectile::MESH = gEngine->LoadMesh("quad_additive.x");

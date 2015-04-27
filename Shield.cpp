@@ -2,8 +2,10 @@
 
 using namespace HIC;
 
+IMesh* Shield::MESH = nullptr;
+
 Shield::Shield(const D3DXVECTOR3& position, float radius, float lifeTime) :
-Pickup(Player::SHIELD, position, radius, lifeTime)
+Pickup(MESH, position, radius, lifeTime)
 {
 	
 }
