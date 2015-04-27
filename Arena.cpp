@@ -348,7 +348,7 @@ void Arena::Update(float frameTime)
 
 		if (!CollisionDetect(mPlayer.GetCollisionCylinder(), &mCollisionBox))
 		{
-			//mPlayer.CollisionResolution(mCollisionBox);
+			mPlayer.CollisionResolution(mCollisionBox);
 		}
 	}
 
