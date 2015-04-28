@@ -202,7 +202,7 @@ void Arena::Update(float frameTime)
 
 	if (gEngine->KeyHit(Key_Y))
 	{
-		mPlayer.SetHealth(1U);
+		mPlayer.SetHealth(10000U);
 	}
 #endif
 
