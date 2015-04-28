@@ -493,7 +493,7 @@ void Arena::Update(float frameTime)
 
 	if (mKillCount > 5)
 	{
-		if (mMultiplier < 99)
+		//if (mMultiplier < 99)
 		{
 			mMultiplier++;
 			mKillCount = 0;
@@ -629,7 +629,7 @@ void Arena::SaveHighScores()
 	struct HighScore
 	{
 		string name;
-		string score;
+		uint32_t score;
 	};
 
 	std::fstream highScoreFile(HIGH_SCORES_FILENAME);
@@ -639,30 +639,31 @@ void Arena::SaveHighScores()
 		throw std::runtime_error("Failed to open file: " + HIGH_SCORES_FILENAME);
 	}
 
-	std::list<HighScore> HighScores;
+	std::list<HighScore> highScoresList;
 	bool isNewName = true;
+	
 	for (int i = 0; i < 10; i++)
 	{
-		HighScores.push_back(HighScore());
+		highScoresList.push_back(HighScore());
 		string name;
 		highScoreFile >> name;
-		HighScores.back().name = name;
+		highScoresList.back().name = name;
 		if (name != mPlayerName)
 		{
-			highScoreFile >> HighScores.back().score;
+			highScoreFile >> highScoresList.back().score;
 		}
 		else
 		{
-			HighScores.back().name = name;
-			string score;
+			highScoresList.back().name = name;
+			uint32_t score;
 			highScoreFile >> score;
-			if (static_cast<unsigned int>(std::stoi(score)) > mCurrentScore)
+			if (score > mCurrentScore)
 			{
-				HighScores.back().score = score;
+				highScoresList.back().score = score;
 			}
 			else
 			{
-				HighScores.back().score = to_string(mCurrentScore);
+				highScoresList.back().score = mCurrentScore;
 			}
 			isNewName = false;
 		}
@@ -670,12 +671,10 @@ void Arena::SaveHighScores()
 
 	if (isNewName)
 	{
-		HighScores.push_back(HighScore());
-		HighScores.back().name = mPlayerName;
-		HighScores.back().score = to_string(mCurrentScore);
+		highScoresList.push_back(HighScore());
+		highScoresList.back().name = mPlayerName;
+		highScoresList.back().score = mCurrentScore;
 	}
-	typedef std::pair<int, int> ipair;
-	HighScores.sort([](HighScore const& first, HighScore const& second){return (std::stoi(first.score) > std::stoi(second.score)); });
 
 	std::ofstream file(HIGH_SCORES_FILENAME);
 
@@ -684,7 +683,12 @@ void Arena::SaveHighScores()
 		throw std::runtime_error("Failed to open file: " + HIGH_SCORES_FILENAME);
 	}
 
-	for (auto it : HighScores)
+	highScoresList.sort([](const HighScore& lhs, const HighScore& rhs)
+	{
+		return lhs.score > rhs.score;
+	});
+
+	for (auto it : highScoresList)
 	{
 		file << it.name << " " << it.score << std::endl;
 	}
