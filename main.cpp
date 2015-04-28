@@ -30,6 +30,7 @@ Button* gContinueButton = nullptr;
 Button* gViewHiScoreButton = nullptr;
 Button* gQuitGameButton = nullptr;
 IModel* gFrontEndPlayer = nullptr;
+IModel* gFrontEndSkybox = nullptr;
 
 const float MENU_BUTTON_WIDTH = 192U;
 const float MENU_BUTTON_HEIGHT = 64U;
@@ -129,7 +130,12 @@ bool ProgramSetup()
 	Weapon::SHOOT_SOUND->SetLooping(false);
 
 	Player::MESH = gEngine->LoadMesh("FFstarfighter.x");
+	Arena::SKYBOX_MESH = gEngine->LoadMesh("Skybox.x");
 	
+	Arena::BOMB_MESH = gEngine->LoadMesh("quad_additive.x");
+
+	Arena::BUILDINGS_MESH = gEngine->LoadMesh("cityScape.x");
+
 	if (!std::ifstream(HIGH_SCORES_FILENAME))
 	{
 		std::ofstream file(HIGH_SCORES_FILENAME);
@@ -152,6 +158,12 @@ bool ProgramShutdown()
 	// Remove player mesh
 	gEngine->RemoveMesh(Player::MESH);
 	Player::MESH = nullptr;
+	gEngine->RemoveMesh(Arena::SKYBOX_MESH);
+	Arena::SKYBOX_MESH = nullptr;
+	gEngine->RemoveMesh(Arena::BOMB_MESH);
+	Arena::BOMB_MESH = nullptr;
+	gEngine->RemoveMesh(Arena::BUILDINGS_MESH);
+	Arena::BUILDINGS_MESH = nullptr;
 
 	// Release the button over source
 	gAudioManager->ReleaseSource(Button::BUTTON_OVER_SOUND);
@@ -271,10 +283,12 @@ bool FrontEndSetup()
 	gQuitGameButton = new Button("Quit_Game_Button.png", D3DXVECTOR2((float)halfScreenWidth - TITLE_CARD_WIDTH / 2, 575.0f), MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 
 	// Load player model for front end display
-	gFrontEndPlayer = Player::MESH->CreateModel(200, 0, 0);
+	gFrontEndPlayer = Player::MESH->CreateModel(200.0f, 0.0f, 0.0f);
 	gFrontEndPlayer->Scale(5.0f);
 
-	gCamera->LookAt(0, 150, 0);
+	gFrontEndSkybox = Arena::SKYBOX_MESH->CreateModel(200.0f, -1300.0f, 0.0f);
+
+	gCamera->LookAt(0.0f, 150.0f, 0.0f);
 
 	return true;
 }
@@ -387,6 +401,9 @@ bool FrontEndShutdown()
 
 	gFrontEndPlayer->GetMesh()->RemoveModel(gFrontEndPlayer);
 	gFrontEndPlayer = nullptr;
+
+	gFrontEndSkybox->GetMesh()->RemoveModel(gFrontEndSkybox);
+	gFrontEndSkybox = nullptr;
 
 	if (gShowHighScores)
 	{

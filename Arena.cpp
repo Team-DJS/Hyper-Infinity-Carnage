@@ -6,7 +6,10 @@ using namespace HIC;
 //-----------------------------------
 
 IMesh* Arena::ARENA_MESH = nullptr;
+IMesh* Arena::SKYBOX_MESH = nullptr;
 IMesh* Arena::ENEMY_MESH = nullptr;
+IMesh* Arena::BOMB_MESH = nullptr;
+IMesh* Arena::BUILDINGS_MESH = nullptr;
 
 IFont* HUDFont = nullptr;
 #ifdef _DEBUG
@@ -43,12 +46,10 @@ mNoPickupsThisRound(0)
 	srand((uint32_t)(time(0)));
 
 	// Build the scenery
-	IMesh* skyboxMesh = gEngine->LoadMesh("Skybox.x");
-	mStaticScenery.push_back(new Scenery(skyboxMesh, D3DXVECTOR3(0, -1700.0f, 0), 2.1f));
-	mStaticScenery.back()->GetModel()->ScaleY(0.8);
+	mStaticScenery.push_back(new Scenery(SKYBOX_MESH, D3DXVECTOR3(0, -1700.0f, 0), 2.1f));
+	mStaticScenery.back()->GetModel()->ScaleY(0.8f);
 
-	IMesh* buildingsMesh = gEngine->LoadMesh("cityScape.x");
-	mStaticScenery.push_back(new Scenery(buildingsMesh, D3DXVECTOR3(0, -1805, -50), 800.0f));
+	mStaticScenery.push_back(new Scenery(BUILDINGS_MESH, D3DXVECTOR3(0, -1805, -50), 800.0f));
 
 	// Create the gameplay music audio source
 	mGameMusic = gAudioManager->CreateSource("GameplayMusic", { 0.0f, 0.0f, 0.0f });
@@ -106,8 +107,7 @@ mNoPickupsThisRound(0)
 
 
 	// Load the bomb explosion model
-	IMesh* bombMesh = gEngine->LoadMesh("quad_additive.x");
-	mBombModel = bombMesh->CreateModel(0.0f, 1.0f, 0.0f);
+	mBombModel = BOMB_MESH->CreateModel(0.0f, 1.0f, 0.0f);
 	mBombModel->RotateLocalX(90.0f);
 	mBombSwitch = true;
 
@@ -191,7 +191,7 @@ void Arena::Update(float frameTime)
 	// Slow-motion while bomb is detonating
 	if (mBombSwitch)
 	{
-		frameTime *= 0.25f;
+		frameTime *= 0.3f;
 	}
 
 #ifdef _DEBUG
@@ -522,7 +522,7 @@ void Arena::Update(float frameTime)
 			mItemPickupSound->Play();
 
 			auto pickupPosition = mPickups[i]->GetCollisionCylinder()->GetPosition();
-			ParticleEmitter* sparkle = new ExplosionEmitter(mSparkleMesh, D3DXVECTOR3(pickupPosition.x, 0.0f, pickupPosition.y), 1.0f);
+			ParticleEmitter* sparkle = new ExplosionEmitter(mSparkleMesh, D3DXVECTOR3(pickupPosition.x, 0.0f, pickupPosition.y), 1.5f, 15);
 			sparkle->StartEmission();
 			mArenaParticles.push_back(sparkle);
 

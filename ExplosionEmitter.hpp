@@ -8,7 +8,7 @@ namespace HIC
 	{
 	public:
 		// Default construtor for ExplosionEmitter
-		ExplosionEmitter(IMesh* mesh, D3DXVECTOR3 position, float lifetime);
+		ExplosionEmitter(IMesh* mesh, D3DXVECTOR3 position, float lifetime, int numParticles = 6);
 
 		// Destructor for ExplosionEmitter
 		~ExplosionEmitter();

@@ -96,6 +96,10 @@ namespace HIC
 	public:
 		static IMesh* ARENA_MESH;
 		static IMesh* ENEMY_MESH;
+		static IMesh* SKYBOX_MESH;
+		static IMesh* BOMB_MESH;
+		static IMesh* BUILDINGS_MESH;
+
 		IFont* HUDFont;
 #ifdef _DEBUG
 		static tle::IFont* DebugHUD;

@@ -2,11 +2,11 @@
 using namespace HIC;
 
 // Default construtor for ExplosionEmitter
-ExplosionEmitter::ExplosionEmitter(IMesh* mesh, D3DXVECTOR3 position, float lifetime) :
+ExplosionEmitter::ExplosionEmitter(IMesh* mesh, D3DXVECTOR3 position, float lifetime, int numParticles) :
 	ParticleEmitter(mesh, position),
 	mLifetime(lifetime)
 {
-	for (auto i = 0; i < 6; ++i)
+	for (auto i = 0; i < numParticles; ++i)
 	{
 		Particle* particle = CreateParticle(mesh, position, { Random(-25.0f, 25.0f), Random(0.0f, 50.0f), Random(-25.0f, 25.0f) }, lifetime);
 		mParticles.push_back(particle);
