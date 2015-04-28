@@ -147,6 +147,7 @@ namespace HIC
 		// Particle effects for the arena
 		std::vector<ParticleEmitter*> mArenaParticles;
 		IMesh* mExplosionMesh;
+		IMesh* mSparkleMesh;
 
 		// Vector of scenery (non-interactive) items
 		std::vector<Scenery*> mStaticScenery;
@@ -160,5 +161,6 @@ namespace HIC
 		AudioSource* mGameMusic;
 		AudioSource* mEnemySpawnSound;
 		AudioSource* mEnemyDestroyedSound;
+		AudioSource* mItemPickupSound;
 	};
 }

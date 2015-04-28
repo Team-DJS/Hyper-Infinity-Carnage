@@ -69,6 +69,10 @@ mNoPickupsThisRound(0)
 	mEnemyDestroyedSound = gAudioManager->CreateSource("EnemyDestroyed", { 0.0f, 0.0f, 0.0f });
 	mEnemyDestroyedSound->SetLooping(false);
 
+	gAudioManager->LoadAudio("ItemPickup", "Media\\Audio\\ItemPickup.wav");
+	mItemPickupSound = gAudioManager->CreateSource("ItemPickup", { 0.0f, 0.0f, 0.0f });
+	mItemPickupSound->SetLooping(false);
+
 	// Initialise the Mesh for the pickups
 	WeaponUpgrade::mMesh = gEngine->LoadMesh("WeaponPickup.x");
 	HealthPack::MESH = gEngine->LoadMesh("HealthPickup.x");
@@ -76,6 +80,7 @@ mNoPickupsThisRound(0)
 	Bomb::MESH = gEngine->LoadMesh("BombPickup.x");
 	Shield::MESH = gEngine->LoadMesh("ShieldSphere.x");
 
+	mSparkleMesh = gEngine->LoadMesh("SparkleQuad.x");
 	mExplosionMesh = gEngine->LoadMesh("ExplosionQuad.x");
 	const float arenaEdge = mCollisionBox.GetMaxOffset().x;
 	const float emissionRate = 0.0125f;
@@ -197,7 +202,7 @@ void Arena::Update(float frameTime)
 
 	if (gEngine->KeyHit(Key_Y))
 	{
-		mPlayer.SetHealth(10000000U);
+		mPlayer.SetHealth(1U);
 	}
 #endif
 
@@ -514,6 +519,13 @@ void Arena::Update(float frameTime)
 		mPickups[i]->Update(frameTime);
 		if (CollisionDetect(mPickups[i]->GetCollisionCylinder(), mPlayer.GetCollisionCylinder()))
 		{
+			mItemPickupSound->Play();
+
+			auto pickupPosition = mPickups[i]->GetCollisionCylinder()->GetPosition();
+			ParticleEmitter* sparkle = new ExplosionEmitter(mSparkleMesh, D3DXVECTOR3(pickupPosition.x, 0.0f, pickupPosition.y), 1.0f);
+			sparkle->StartEmission();
+			mArenaParticles.push_back(sparkle);
+
 			mPickups[i]->OnPickup(&mPlayer);
 			deletePickup = true;
 		}
