@@ -5,7 +5,7 @@ using namespace HIC;
 // Static Initialisations
 //-----------------------------------
 
-const uint32_t MAX_PROJECTILES = 64U;
+const uint32_t MAX_PROJECTILES = 4096U;
 
 AudioSource* Weapon::SHOOT_SOUND = nullptr;
 

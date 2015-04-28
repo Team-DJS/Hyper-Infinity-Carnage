@@ -46,7 +46,7 @@ void WeaponUpgrade::OnPickup(Player* collectingPlayer)
 	}
 	else if (seed <= 70.0f)
 	{
-		collectingPlayer->GetWeapon()->SetDamage(25.0f);
+		collectingPlayer->GetWeapon()->SetDamage(25U);
 	}
 	else
 	{
