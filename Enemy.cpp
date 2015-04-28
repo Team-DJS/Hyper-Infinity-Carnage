@@ -44,6 +44,14 @@ void Enemy::SetDamage(uint32_t damage)
 void Enemy::SetBoss(bool boss)
 {
 	mBoss = boss;
+	if (mBoss)
+	{
+		GetModel()->SetSkin("bossShipA.jpg");
+	}
+	else
+	{
+		GetModel()->SetSkin("shipA.jpg");
+	}
 }
 
 //-----------------------------------

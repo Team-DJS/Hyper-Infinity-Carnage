@@ -452,6 +452,7 @@ void Arena::Update(float frameTime)
 					else
 					{
 						mPlayer.TakeHealth(mPlayer.GetHealth() - 1U);
+			
 					}
 					mMultiplier = 1U;
 					mKillCount = 0U;
@@ -469,6 +470,11 @@ void Arena::Update(float frameTime)
 			// If the enemy was hit then create an explosion and play the audio source
 			if (enemyHit)
 			{
+				if (enemy->GetBoss())
+				{
+					enemy->SetBoss(false);
+				}
+
 				mEnemyDestroyedSound->Play();
 
 				ParticleEmitter* explosion = new ExplosionEmitter(mExplosionMesh, entityPosition, 1.0f);
@@ -766,7 +772,7 @@ void Arena::SpawnEnemy(bool boss)
 	{
 		enemy->SetHealth(static_cast<uint32_t>(5000 + mCurrentStage * 15));
 		enemy->GetModel()->Scale(5.0f);
-		enemy->GetCollisionCylinder()->SetRadius(50.0f);
+		enemy->GetCollisionCylinder()->SetRadius(70.0f);
 		enemy->SetBoss(true);
 	}
 	else
@@ -774,7 +780,6 @@ void Arena::SpawnEnemy(bool boss)
 		enemy->SetHealth(static_cast<uint32_t>(100 + mCurrentStage * 3));
 		enemy->GetModel()->ResetScale();
 		enemy->GetCollisionCylinder()->SetRadius(15.0f);
-		enemy->SetBoss(false);
 	}
 
 	enemy->SetDamage(10U + mCurrentStage / 2U );
@@ -782,9 +787,16 @@ void Arena::SpawnEnemy(bool boss)
 	do
 	{
 		D3DXVECTOR3 newPosition;
-		newPosition.x = Random(mCollisionBox.GetMinOffset().x + 15, mCollisionBox.GetMaxOffset().x - 15);
-		newPosition.y = 7.0f;
-		newPosition.z = Random(mCollisionBox.GetMinOffset().y + 15, mCollisionBox.GetMaxOffset().y - 15);
+		newPosition.x = Random(mCollisionBox.GetMinOffset().x + enemy->GetCollisionCylinder()->GetRadius(), mCollisionBox.GetMaxOffset().x - enemy->GetCollisionCylinder()->GetRadius());
+		if (boss)
+		{
+			newPosition.y = 32.0f;
+		}
+		else
+		{
+			newPosition.y = 7.0f;
+		}
+		newPosition.z = Random(mCollisionBox.GetMinOffset().y + enemy->GetCollisionCylinder()->GetRadius(), mCollisionBox.GetMaxOffset().y - enemy->GetCollisionCylinder()->GetRadius());
 
 		enemy->SetPosition(newPosition);
 		enemy->SetPosition(newPosition);	//Additional line to prevent issues with collsion detection the frame after spawning
