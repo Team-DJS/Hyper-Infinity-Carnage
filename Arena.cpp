@@ -770,7 +770,7 @@ void Arena::SpawnEnemy(bool boss)
 
 	if (boss)
 	{
-		enemy->SetHealth(static_cast<uint32_t>(5000 + mCurrentStage * 15));
+		enemy->SetHealth(static_cast<uint32_t>(10000 + mCurrentStage * 15));
 		enemy->GetModel()->Scale(5.0f);
 		enemy->GetCollisionCylinder()->SetRadius(70.0f);
 		enemy->SetBoss(true);
